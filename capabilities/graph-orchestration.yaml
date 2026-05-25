@@ -1,0 +1,61 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LeanData Graph API — Orchestration
+  description: >-
+    LeanData Graph API endpoints for discovering routing graphs and invoking
+    one-time routing jobs. Returns trigger nodes, edges, and graph metadata
+    used to build custom orchestration UIs; accepts SOQL-conditioned routing
+    requests and returns job IDs for status polling.
+  tags:
+    - LeanData
+    - Orchestration
+    - Graph
+    - Routing
+    - One Time Routing
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+  - namespace: env
+    keys:
+      LEANDATA_GRAPH_TOKEN: LEANDATA_GRAPH_TOKEN
+capability:
+  consumes:
+    - type: http
+      namespace: leandata-graph
+      baseUri: https://api.leandata.com
+      description: LeanData Graph and One-Time Routing endpoints.
+      headers:
+        Authorization: Bearer ${LEANDATA_GRAPH_TOKEN}
+        Content-Type: application/json
+      resources:
+        - name: routing-graphs
+          path: /orchestration/v1/routing-graphs
+          operations:
+            - name: listRoutingGraphs
+              method: GET
+              description: Retrieve routing-graph metadata (trigger nodes, edges, graph name) for a Salesforce org.
+              outputRawFormat: json
+        - name: one-time-routing
+          path: /orchestration/v1/one-time-routing
+          operations:
+            - name: invokeOneTimeRouting
+              method: POST
+              description: Invoke a one-time routing job using a specified graph and SOQL condition.
+              outputRawFormat: json
+              inputParameters:
+                - name: body
+                  in: body
+                  type: object
+                  required: true
+        - name: one-time-routing-status
+          path: /orchestration/v1/one-time-routing/{jobId}
+          operations:
+            - name: getOneTimeRoutingStatus
+              method: GET
+              description: Retrieve the status of a previously submitted one-time routing job.
+              outputRawFormat: json
+              inputParameters:
+                - name: jobId
+                  in: path
+                  type: string
+                  required: true

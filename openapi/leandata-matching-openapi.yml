@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: LeanData Matching and Round Robin API
+  description: >-
+    Real-time Salesforce-native matching and routing via the LeanData managed
+    package Apex REST endpoint. Includes lead/contact/account matching,
+    duplicate detection, related-record lookups, and round-robin assignment.
+  version: 1.0.0
+servers:
+  - url: https://yourinstance.my.salesforce.com
+paths:
+  /services/apexrest/LeanData/LeanDataAPI:
+    post:
+      tags:
+        - Matching
+      summary: One Time Routing
+      description: >
+        <p><strong>Purpose:</strong> Runs one-time routing via a specified graph
+        on a set of standard objects (Lead, Contact, Account, Opportunity, Case)
+        based on SOQL query</p>
+
+        <p><strong>Required Body Params:</strong></p>
+
+        <ul>
+
+        <li>@param 'requesterName' Name of the API caller</li>
+
+        <li>@param 'apiType' Type of API call</li>
+
+        <li>@param 'version' LeanData API version (should be 2)</li>
+
+        <li>@param 'objectType' Type of object to route</li>
+
+        <li>@param 'condition' SOQL condition to query i.e. Title = 'CEO'</li>
+
+        <li>@param 'graphName' Name of the graph to use for 1x Routing</li>
+
+        <li>@param 'notificationsDisabled' Disables all notifications from 1x
+        Routing</li>
+
+        <li>@param 'nodeType' 'Trigger' or 'Update Trigger' to enter from Insert
+        Or Update Trigger Nodes respectively</li>
+
+        <li>@param 'edgeName' Name of edge from Trigger Node e.g. 'Lead is
+        MQL'</li>
+
+        </ul>
+
+        <p><strong>Optional Body Params:</strong></p>
+
+        <ul>
+
+        <li>@param 'allowDedupe' Flag to allow deduplication. Value will by
+        <code>false</code> by default</li>
+
+        <li>@param 'businessUnitId' Id of the specific business unit graph to
+        route the object through. Value will by <code>null</code> by
+        default</li>
+
+        <li>@param 'orderBy' sort records that are found from SOQL condition
+        (i.e. "CreatedDate DESC")</li>
+
+        <li>@param 'queryLimit' limit the records found from SOQL condition</li>
+
+        <li>@param 'respectSchedules' Route records only to available users</li>
+
+        </ul>
+
+        <p><em>Available in version 1.500+ of LeanData</em></p>
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                requesterName: LeanData
+                apiType: routing
+                operation: oneTime
+                version: '2'
+                objectType: Lead
+                condition: Title ='CEO'
+                graphName: Test Routing Api
+                notificationsDisabled: false
+                sendEmail: true
+                nodeType: Update Trigger
+                edgeName: Lead is MQL
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer {{sessionid}}
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

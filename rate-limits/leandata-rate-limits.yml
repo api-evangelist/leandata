@@ -1,0 +1,35 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: LeanData
+providerId: leandata
+created: '2026-05-25'
+modified: '2026-05-25'
+reconciled: false
+tags:
+  - Rate Limits
+  - Salesforce
+  - BookIt
+  - Orchestration
+description: >-
+  LeanData does not publish a public rate-limit table for its developer
+  APIs. The Matching and Round Robin APIs are dispatched through the
+  customer's Salesforce org via the managed package's Apex REST endpoint and
+  therefore inherit Salesforce platform governor limits (daily API request
+  limits per org edition, per-transaction CPU and heap limits, and
+  concurrent long-running Apex caps). The BookIt and Graph APIs hosted at
+  `api.leandata.com` are subject to internal throttling that is documented
+  privately to enterprise customers; specifics are not published.
+sources:
+  - https://docs.leandata.com
+  - https://api.leandatainc.com
+  - https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_overview.htm
+algorithm: governor-limits
+notes: >-
+  Matching and Round Robin API consumers should plan against Salesforce
+  daily-API-request quotas (Enterprise: 1,000 + 100 * licenses, max 1M;
+  Unlimited and Performance: 5,000 + 100 * licenses, max 1M) and Apex
+  governor limits documented by Salesforce. BookIt and Graph rate limits
+  are not publicly disclosed by LeanData; request a copy from your LeanData
+  Account Manager for production planning.
+limits: []

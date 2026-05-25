@@ -1,0 +1,167 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: LeanData
+providerId: leandata
+created: '2026-05-25'
+modified: '2026-05-25'
+reconciled: false
+tags:
+  - RevOps
+  - Lead Routing
+  - Scheduling
+  - Salesforce
+description: >-
+  LeanData prices on a contact-sales basis with structure based on features,
+  Salesforce users/queues, and objects routed. Public pricing dollars are not
+  disclosed on the LeanData website; this file captures the named editions
+  (Standard, Advanced, Premium, Enterprise) for the Orchestration product
+  line plus BookIt scheduling SKUs and the Buying Groups product, with
+  implementation services billed separately.
+sources:
+  - https://www.leandata.com/platform/pricing/
+  - https://www.leandata.com/platform/orchestration/
+  - https://www.leandata.com/platform/bookit/
+  - https://www.leandata.com/platform/buying-groups/
+plans:
+  - id: leandata-orchestration-standard
+    name: Orchestration Standard
+    type: contact-sales
+    description: >-
+      Automate core lead processes, drive accurate lead-to-account matching,
+      enforce SLAs, and maintain clean data. Includes intelligent
+      lead-to-account matching, basic routing rules, standard
+      deduplication/enrichment, audit logs, and managed reports.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-orchestration-advanced
+    name: Orchestration Advanced
+    type: contact-sales
+    description: >-
+      Best-value tier. Builds on Standard with routing for contacts and
+      accounts, signal-driven workflow automation, enhanced deduplication,
+      SLA tracking dashboards, and integrations for sales engagement and
+      enrichment tools.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-orchestration-premium
+    name: Orchestration Premium
+    type: contact-sales
+    description: >-
+      Everything in Advanced plus routing for any Salesforce object,
+      advanced territory matching, scheduled automations, complex
+      cross-object assignment, and channel/partner GTM support.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-orchestration-enterprise
+    name: Orchestration Enterprise
+    type: contact-sales
+    description: >-
+      Full Premium suite plus dedicated Account Manager and CSM, solution
+      consulting, sandbox and production support, and flexible compliance
+      frameworks.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-bookit-for-forms
+    name: BookIt for Forms
+    type: contact-sales
+    description: Web-form booking with intelligent CRM matching.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-bookit-handoff
+    name: BookIt Handoff
+    type: contact-sales
+    description: Automatic scheduling for team handoffs (SDR-to-AE, AE-to-CSM, etc.).
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-bookit-links
+    name: BookIt Links
+    type: contact-sales
+    description: Personalized scheduling links for sales outreach and follow-up.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+  - id: leandata-buying-groups
+    name: Buying Groups
+    type: contact-sales
+    description: >-
+      Buying-group identification, journey orchestration, and automated
+      engagement alerts for multi-stakeholder B2B procurement processes.
+    entries:
+      - label: License
+        name: license
+        type: contract
+        metric: contract
+        limit: -1
+        timeFrame: year
+        geo: global
+        unit: 1
+        price: Contact Sales
+        userMultiplied: true
+notes: >-
+  Implementation services are billed separately and not represented in this
+  plan file. LeanData also operates an OpsStars community, a Learning Center,
+  and a Certification program that are free or course-priced rather than
+  subscription-priced.

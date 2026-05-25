@@ -1,0 +1,74 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: LeanData Matching API — Records
+  description: >-
+    LeanData Matching API. Real-time Salesforce-native matching of leads,
+    contacts, and accounts via the managed package's Apex REST endpoint
+    `/services/apexrest/LeanData/LeanDataAPI`. All matching operations are
+    dispatched through the same path with a discriminating apiType in the
+    request body. 8 matching operations.
+  tags:
+    - LeanData
+    - Matching
+    - Lead Matching
+    - Contact Matching
+    - Account Matching
+    - Deduplication
+    - Salesforce
+  created: '2026-05-25'
+  modified: '2026-05-25'
+binds:
+  - namespace: env
+    keys:
+      LEANDATA_SF_INSTANCE_URL: LEANDATA_SF_INSTANCE_URL
+      LEANDATA_SF_ACCESS_TOKEN: LEANDATA_SF_ACCESS_TOKEN
+capability:
+  consumes:
+    - type: http
+      namespace: leandata-matching
+      baseUri: ${LEANDATA_SF_INSTANCE_URL}
+      description: LeanData Matching API — Salesforce Apex REST dispatch endpoint.
+      headers:
+        Authorization: Bearer ${LEANDATA_SF_ACCESS_TOKEN}
+        Content-Type: application/json
+      resources:
+        - name: leandata-api
+          path: /services/apexrest/LeanData/LeanDataAPI
+          operations:
+            - name: matchedLead
+              method: POST
+              description: Find the best-matching Lead for an external record.
+              outputRawFormat: json
+              inputParameters:
+                - name: body
+                  in: body
+                  type: object
+                  required: true
+            - name: duplicateLead
+              method: POST
+              description: Detect a duplicate Lead.
+              outputRawFormat: json
+            - name: allDuplicateLeads
+              method: POST
+              description: Return all duplicate Leads for an input record.
+              outputRawFormat: json
+            - name: allRelatedLeads
+              method: POST
+              description: Return all Leads related to a given account or contact.
+              outputRawFormat: json
+            - name: duplicateContact
+              method: POST
+              description: Detect a duplicate Contact.
+              outputRawFormat: json
+            - name: allDuplicateContacts
+              method: POST
+              description: Return all duplicate Contacts for an input record.
+              outputRawFormat: json
+            - name: matchedAccount
+              method: POST
+              description: Find the best-matching Account for an external record.
+              outputRawFormat: json
+            - name: allRelatedAccounts
+              method: POST
+              description: Return all related Accounts for an input record.
+              outputRawFormat: json
