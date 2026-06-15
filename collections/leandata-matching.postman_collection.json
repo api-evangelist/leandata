@@ -1,0 +1,141 @@
+{
+  "item": [
+    {
+      "id": "0ebff461-a46d-44c2-9b3f-f8413089f3fd",
+      "name": "Matching",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "8a30d715-7aad-48e7-91b0-e40116e553fb",
+          "name": "One Time Routing",
+          "request": {
+            "name": "One Time Routing",
+            "description": {
+              "content": "<p><strong>Purpose:</strong> Runs one-time routing via a specified graph on a set of standard objects (Lead, Contact, Account, Opportunity, Case) based on SOQL query</p>\n<p><strong>Required Body Params:</strong></p>\n<ul>\n<li>@param 'requesterName' Name of the API caller</li>\n<li>@param 'apiType' Type of API call</li>\n<li>@param 'version' LeanData API version (should be 2)</li>\n<li>@param 'objectType' Type of object to route</li>\n<li>@param 'condition' SOQL condition to query i.e. Title = 'CEO'</li>\n<li>@param 'graphName' Name of the graph to use for 1x Routing</li>\n<li>@param 'notificationsDisabled' Disables all notifications from 1x Routing</li>\n<li>@param 'nodeType' 'Trigger' or 'Update Trigger' to enter from Insert Or Update Trigger Nodes respectively</li>\n<li>@param 'edgeName' Name of edge from Trigger Node e.g. 'Lead is MQL'</li>\n</ul>\n<p><strong>Optional Body Params:</strong></p>\n<ul>\n<li>@param 'allowDedupe' Flag to allow deduplication. Value will by <code>false</code> by default</li>\n<li>@param 'businessUnitId' Id of the specific business unit graph to route the object through. Value will by <code>null</code> by default</li>\n<li>@param 'orderBy' sort records that are found from SOQL condition (i.e. \"CreatedDate DESC\")</li>\n<li>@param 'queryLimit' limit the records found from SOQL condition</li>\n<li>@param 'respectSchedules' Route records only to available users</li>\n</ul>\n<p><em>Available in version 1.500+ of LeanData</em></p>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "services",
+                "apexrest",
+                "LeanData",
+                "LeanDataAPI"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ec5e2f96-fc74-4008-b2c8-a19f4f01dc6c",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "services",
+                    "apexrest",
+                    "LeanData",
+                    "LeanDataAPI"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "Authorization",
+                    "value": "Bearer {{sessionid}}",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"requesterName\": \"LeanData\",\n  \"apiType\": \"routing\",\n  \"operation\": \"oneTime\",\n  \"version\": \"2\",\n  \"objectType\": \"Lead\",\n  \"condition\": \"Title ='CEO'\",\n  \"graphName\": \"Test Routing Api\",\n  \"notificationsDisabled\": false,\n  \"sendEmail\": true,\n  \"nodeType\": \"Update Trigger\",\n  \"edgeName\": \"Lead is MQL\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://yourinstance.my.salesforce.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "ddc958f5-e584-4925-a4e8-b5f02d9f966c",
+    "name": "LeanData Matching and Round Robin API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Real-time Salesforce-native matching and routing via the LeanData managed package Apex REST endpoint. Includes lead/contact/account matching, duplicate detection, related-record lookups, and round-robin assignment.",
+      "type": "text/plain"
+    }
+  }
+}

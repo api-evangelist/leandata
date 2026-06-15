@@ -1,0 +1,63 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData Graph API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Retrieve Routing Graphs Information",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "orchestration/v1/routing-graphs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.leandata.com/orchestration/v1/routing-graphs"
+          },
+          "docs": "<p>This endpoint retrieves a collection of configured routing graphs, allowing you to filter them by object type, deployment status, and name. This is useful for programmatically inspecting or listing the routing flows defined within your system.</p>\n<p><strong>Endpoint:</strong> <code>GET /orchestration/v1/routing-graphs</code></p>\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>objectType</code> (required) — A string value that specifies the type of object the r"
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "One Time Routing",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "orchestration/v1/one-time-routing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/orchestration/v1/one-time-routing",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p><strong>Endpoint:</strong> <code>POST https://api.leandata.com/orchestration/v1/one-time-routing</code></p>\n<p>❗️ <strong>Important:</strong> The API does <strong>not</strong> validate FlowBuilder graphs before triggering routing. If you invoke 1x Routing to an invalid or misconfigured graph, the request will still be processed—but routing will fail silently. No error response will be returned from the API.<br />✅ To avoid unexpected behavior, please ensure the graph is valid and functioning "
+        },
+        {
+          "info": {
+            "name": "orchestration/v1/one-time-routing/:jobId",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.leandata.com/orchestration/v1/one-time-routing/:jobId"
+          },
+          "docs": "<p><strong>Endpoint:</strong> <code>GET https://api.leandata.com/orchestration/v1/one-time-routing/:jobId</code></p>\n<p>This endpoint is used to obtain the status of a One-Time Routing job.</p>\n<p>💡 The <code>:jobId</code> path parameter should be replaced with the unique ID of the One-Time Routing job you want to read.</p>\n<h4 id=\"headers\">Headers</h4>\n<ul>\n<li><code>x-api-key</code> (required) — Your unique API key for authentication.</li>\n</ul>\n<hr />\n<h4 id=\"request-body-parameters\">Request"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

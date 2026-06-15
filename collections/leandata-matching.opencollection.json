@@ -1,0 +1,43 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData Matching and Round Robin API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Matching",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "One Time Routing",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://yourinstance.my.salesforce.com/services/apexrest/LeanData/LeanDataAPI",
+            "headers": [
+              {
+                "name": "Authorization",
+                "value": "Bearer {{sessionid}}"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p><strong>Purpose:</strong> Runs one-time routing via a specified graph on a set of standard objects (Lead, Contact, Account, Opportunity, Case) based on SOQL query</p>\n<p><strong>Required Body Params:</strong></p>\n<ul>\n<li>@param 'requesterName' Name of the API caller</li>\n<li>@param 'apiType' Type of API call</li>\n<li>@param 'version' LeanData API version (should be 2)</li>\n<li>@param 'objectType' Type of object to route</li>\n<li>@param 'condition' SOQL condition to query i.e. Title = 'CEO'</"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

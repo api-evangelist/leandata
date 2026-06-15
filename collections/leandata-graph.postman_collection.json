@@ -1,0 +1,288 @@
+{
+  "item": [
+    {
+      "id": "7cd431c7-57b6-4f0c-b348-b2fa1f4c988b",
+      "name": "Retrieve Routing Graphs Information",
+      "description": {
+        "content": "<p>This section outlines the endpoints used to retrieve Routing Graphs information for building a custom orchestration experience. The endpoint returns information such as trigger node names, the edges in those trigger nodes, graph name, etc</p>\n<ul>\n<li><code>orchestration/v1/routing-graphs</code> — Use this endpoint <strong>when fetching routing graphs</strong> from a particular SFDC org.</li>\n</ul>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f2d148ec-e4e1-407b-936a-26b123dd82c0",
+          "name": "orchestration/v1/routing-graphs",
+          "request": {
+            "name": "orchestration/v1/routing-graphs",
+            "description": {
+              "content": "<p>This endpoint retrieves a collection of configured routing graphs, allowing you to filter them by object type, deployment status, and name. This is useful for programmatically inspecting or listing the routing flows defined within your system.</p>\n<p><strong>Endpoint:</strong> <code>GET /orchestration/v1/routing-graphs</code></p>\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>objectType</code> (required) — A string value that specifies the type of object the routing graphs are associated with (e.g., \"lead\", \"contact\", \"account\").</p>\n</li>\n<li><p><code>isLive</code> (optional) — A boolean value that filters graphs by their deployment status. Set to <code>true</code> to retrieve only live (deployed) graphs, or <code>false</code> for non-live graphs. If omitted, all graphs (regardless of deployment status) are returned. Note: For Business Unit deployments, this will include both <code>Ready To Go Live</code> and <code>Live</code> deployments.</p>\n</li>\n<li><p><code>name</code> (optional) — A string value that filters graphs where the graph's name contains this substring (case-insensitive).</p>\n</li>\n<li><p><code>routingQueryLimit</code> (optional) -- A numeric value that controls the batch size for fetching routing graphs from the API key's associated Salesforce organization. All matching graphs will still be returned, but a higher value will result in larger batches and potentially faster overall retrieval, up to the Salesforce API limits. The default value is 20.</p>\n</li>\n</ul>\n<h4 id=\"response-body-parameters\">Response Body Parameters</h4>\n<p>The response will contain a <strong><code>graphs</code></strong> array, which is a collection of <strong>Graph Objects</strong>. Each <strong>Graph Object</strong> provides detailed information about a specific routing graph:</p>\n<ul>\n<li><p><strong><code>id</code></strong> (String) — Unique identifier for the graph.</p>\n</li>\n<li><p><strong><code>name</code></strong> (String) — Display name of the graph.</p>\n</li>\n<li><p><strong><code>isLive</code></strong> (Boolean) — Indicates if the graph is currently active in production.</p>\n</li>\n<li><p><strong><code>date</code></strong> (String) — Creation date in ISO8601 format.</p>\n</li>\n<li><p><strong><code>time</code></strong> (String) — Creation time in ISO8601 format.</p>\n</li>\n<li><p><strong><code>businessUnit</code></strong> (String | null) — Name of the associated business unit, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>businessUnitId</code></strong> (String | null) — Identifier for the associated business unit, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>isBUDeleted</code></strong> (Boolean) — Indicates if the associated business unit has been deleted.</p>\n</li>\n<li><p><strong><code>editedBy</code></strong> (String) — Identifier of the user who last edited the graph.</p>\n</li>\n<li><p><strong><code>editedByName</code></strong> (String) — Display name of the user who last edited the graph.</p>\n</li>\n<li><p><strong><code>isGraphAvailableForEdit</code></strong> (Boolean) — Indicates if the current user has permission to edit this graph.</p>\n</li>\n<li><p><strong><code>triggerNodeEdges</code></strong> (Object) — This object maps trigger node names (keys) to an object containing details about their outgoing connections and node type. For each trigger node name, the associated object will contain:</p>\n<ul>\n<li><p><strong><code>edges</code></strong> (Array) — An array of strings, where each string is the identifier of an outgoing edge or the next node in the flow from this trigger node.</p>\n</li>\n<li><p><strong><code>nodeType</code></strong> (String) — The type of the node, e.g. <code>TRIGGER</code>, <code>UPDATE TRIGGER</code> etc.</p>\n</li>\n</ul>\n</li>\n<li><p><strong><code>canGraphBeOverridden</code></strong> (Boolean) — Indicates if the graph can be overridden by other graphs.</p>\n</li>\n<li><p><strong><code>hasRoutingPriorities</code></strong> (Boolean) — Indicates if the graph has routing priority settings. This would evaluate to <code>true</code> if an edge on a trigger node has a priority setting that is not the default of 5.</p>\n</li>\n<li><p><strong><code>lastModifiedDate</code></strong> (String) — Last modification timestamp in ISO8601 format.</p>\n</li>\n<li><p><strong><code>lastModifiedBy</code></strong> (String) — Identifier of the user who last modified the graph.</p>\n</li>\n<li><p><strong><code>scheduledJobs</code></strong> (Array | null) — An array of scheduled jobs associated with this graph, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>lastDeployedDate</code></strong> (String) — Timestamp of the last deployment in ISO8601 format.</p>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orchestration",
+                "v1",
+                "routing-graphs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "63af4f3d-2fe3-4a83-ba68-79044beb0e63",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orchestration",
+                    "v1",
+                    "routing-graphs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    },
+    {
+      "id": "58b82efc-8822-42f2-a08c-9bc38c948bd5",
+      "name": "One Time Routing",
+      "description": {
+        "content": "<p>This section describes the endpoints used to trigger 1x Routing for creating a custom orchestration experience, as well as to retrieve the status of the resulting job. When invoked, the 1x Routing endpoint returns basic job metadata—including the <code>jobId</code>—which can be used to check the job’s status.</p>\n<ul>\n<li><p><code>orchestration/v1/one-time-routing</code> — Use this endpoint to invoke 1x routing for a particular SFDC org</p>\n</li>\n<li><p><code>orchestration/v1/one-time-routing/:jobId</code> — Use this endpoint to retrieve the job status of a 1x routing for a particular SFDC org</p>\n</li>\n</ul>\n<p>❗️ <strong>Important:</strong> The API does <strong>not</strong> validate FlowBuilder graphs before triggering routing. If you invoke 1x Routing to an invalid or misconfigured graph, the request will still be processed—but routing will fail silently. No error response will be returned from the API.<br />✅ To avoid unexpected behavior, please ensure the graph is valid and functioning as expected within the LeanData application before using it in API-triggered routing.</p>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "6207dc0d-e5da-41a8-82ab-553ae12a5943",
+          "name": "orchestration/v1/one-time-routing",
+          "request": {
+            "name": "orchestration/v1/one-time-routing",
+            "description": {
+              "content": "<p><strong>Endpoint:</strong> <code>POST https://api.leandata.com/orchestration/v1/one-time-routing</code></p>\n<p>❗️ <strong>Important:</strong> The API does <strong>not</strong> validate FlowBuilder graphs before triggering routing. If you invoke 1x Routing to an invalid or misconfigured graph, the request will still be processed—but routing will fail silently. No error response will be returned from the API.<br />✅ To avoid unexpected behavior, please ensure the graph is valid and functioning as expected within the LeanData application before using it in API-triggered routing.</p>\n<h3 id=\"headers\">Headers</h3>\n<ul>\n<li><p><code>x-api-key</code> (required) — Your unique API key for authentication.</p>\n</li>\n<li><p><code>Content-Type</code> (required) — Must be <code>application/json</code>.</p>\n</li>\n</ul>\n<hr />\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>objectType</code> (required) — A string value representing the type of object to route (e.g., \"Lead\", \"Contact\", \"Opportunity\"). This must correspond to an object type configured in your LeanData instance.</p>\n</li>\n<li><p><code>condition</code> (required) — A string value containing a SOQL (Salesforce Object Query Language) WHERE clause to find the object(s) to be routed. For example: <code>Id = '00Q5f000006KnPbEAK'</code> or <code>Status = 'New Lead'</code>.</p>\n</li>\n<li><p><code>graphName</code> <em>(required if</em> <code>graphId</code> <em>is not provided)</em> — A string value that is the exact name of the routing graph (configured in the LeanData Flowbuilder) to use for this one-time routing operation. If <code>graphId</code> is provided, <code>graphName</code> is ignored, even if included in the request.</p>\n</li>\n<li><p><code>graphId</code> <em>(required if</em> <code>graphName</code> <em>is not provided)</em> — string value representing the unique ID of the routing graph to use for this one-time routing operation. If both <code>graphId</code> and <code>graphName</code> are provided, <code>graphId</code> is utilized and <code>graphName</code> is ignored.</p>\n</li>\n<li><p><code>notificationsDisabled</code> (required) — A boolean value. When <code>true</code>, all notifications (e.g., email alerts, Slack messages, MSFT messages, etc) that are configured within the specified routing graph will be suppressed for this one-time routing execution. Set to <code>false</code> to allow notifications.</p>\n</li>\n<li><p><code>nodeType</code> (required) — A string value representing the entry point type for the routing graph. Common values include 'TRIGGER' (for standard trigger-based routing) or 'UPDATE TRIGGER' (for routing based on updates to an object).</p>\n</li>\n<li><p><code>edgeName</code> (required) — A string value that is the name of the specific edge (transition) from the Trigger Node within the specified routing graph that should be followed as the starting point for this one-time routing. For example: 'Lead is MQL'.</p>\n</li>\n<li><p><code>allowDedupe</code> (optional) — A boolean value. If <code>true</code>, LeanData's deduplication logic will be applied to prevent duplicate record processing during routing. Defaults to <code>false</code> if not provided.</p>\n</li>\n<li><p><code>businessUnitId</code> (optional) — A string value or <code>null</code>. This is the unique identifier of a specific business unit graph to route the object(s) through. This is useful for routing within a specific organizational segment. <strong>Defaults to</strong> <strong><code>null</code></strong> <strong>(no specific business unit filter) if not provided.</strong> If Multi-Graph is enabled for <code>objectType</code>, <code>businessUnitId</code> is required.</p>\n</li>\n<li><p><code>orderBy</code> (optional) — A string value containing a SOQL ORDER BY clause to sort the records found by the <code>condition</code>. For example: <code>\"CreatedDate DESC\"</code> to process newer records first.</p>\n</li>\n<li><p><code>queryLimit</code> (optional) — A number value that limits the number of records found by the <code>condition</code> that will be routed. Useful for testing or processing smaller batches. If omitted, all records matching the <code>condition</code> will be considered.</p>\n</li>\n<li><p><code>respectSchedules</code> (optional) — A boolean value. When <code>true</code>, records will only be routed to users who are currently available according to their configured schedules within LeanData. If <code>false</code>, scheduling availability will be ignored. Defaults to <code>false</code> if not provided.</p>\n</li>\n<li><p>sendEmail (optional) - A boolean value. When <code>true</code>, sends an email to the job owner (in this case, the Routing token user) when 1x Routing is completed.</p>\n</li>\n</ul>\n<h4 id=\"response-body-parameters\">Response Body Parameters</h4>\n<p>The response is a JSON string containing a <strong><code>result</code></strong> object, which provides details about the initiated one-time routing job:</p>\n<ul>\n<li><p><strong><code>condition</code></strong> — A string value that is the SOQL condition that was used to select the objects for routing.</p>\n</li>\n<li><p><strong><code>nRecords</code></strong> — A string value representing the number of records that were found by the routing job.</p>\n</li>\n<li><p><strong><code>jobId</code></strong> — A string value that is the unique identifier for the asynchronous one-time routing job. You can use this ID to query for the status of the job if such an endpoint is available.</p>\n</li>\n<li><p><strong><code>objectType</code></strong> — A string value indicating the type of object that was routed.</p>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orchestration",
+                "v1",
+                "one-time-routing"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "bec3ba74-8d5d-46ab-a196-d4d23004f78f",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orchestration",
+                    "v1",
+                    "one-time-routing"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"objectType\": \"Lead\",\n  \"condition\": \"Id = '00Q5f000006KnPbEAK'\",\n  \"graphName\": \"Lead Routing Q2 2025\",\n  \"notificationsDisabled\": false,\n  \"nodeType\": \"Trigger\",\n  \"edgeName\": \"Lead is MQL\",\n  \"allowDedupe\": true,\n  \"respectSchedules\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e300d350-53df-4aba-abd1-82cf5543a2b4",
+          "name": "orchestration/v1/one-time-routing/:jobId",
+          "request": {
+            "name": "orchestration/v1/one-time-routing/:jobId",
+            "description": {
+              "content": "<p><strong>Endpoint:</strong> <code>GET https://api.leandata.com/orchestration/v1/one-time-routing/:jobId</code></p>\n<p>This endpoint is used to obtain the status of a One-Time Routing job.</p>\n<p>💡 The <code>:jobId</code> path parameter should be replaced with the unique ID of the One-Time Routing job you want to read.</p>\n<h4 id=\"headers\">Headers</h4>\n<ul>\n<li><code>x-api-key</code> (required) — Your unique API key for authentication.</li>\n</ul>\n<hr />\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>result</code> — An object that contains metadata about the status of the One-Time Routing job.</p>\n<ul>\n<li><p><code>completedAt</code> — Timestamp of the job's completion.</p>\n</li>\n<li><p><code>successCount</code> — A string value representing the number of records that were successfully processed by the routing job.</p>\n</li>\n<li><p><code>nRecords</code> — A string value representing the number of records that were found by the routing job.</p>\n</li>\n<li><p><code>status</code> — A string value representing the status of the One-Time Routing job. Because the API does not validate FlowBuilder graphs, invalid graphs will be marked as <code>\"Complete\".</code></p>\n<ul>\n<li><p><code>\"Complete\"</code></p>\n</li>\n<li><p><code>\"Complete with Errors\"</code></p>\n</li>\n<li><p><code>\"Canceled\"</code></p>\n</li>\n<li><p><code>\"Failed\"</code></p>\n</li>\n<li><p><code>\"Processing\"</code></p>\n</li>\n</ul>\n</li>\n<li><p><code>jobId</code> — A string value that is the unique identifier for the asynchronous One-Time Routing job. You can use this ID to query for the status of the job if such an endpoint is available.</p>\n</li>\n</ul>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orchestration",
+                "v1",
+                "one-time-routing",
+                ":jobId"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "51693693-29ff-47a0-afe1-7c7512f6a3b8",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orchestration",
+                    "v1",
+                    "one-time-routing",
+                    ":jobId"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.leandata.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "86486c90-2f90-4c8a-ab92-1775fa7b3bf9",
+    "name": "LeanData Graph API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Run LeanData One Time Routing and fetch routing graph metadata to power custom orchestration solutions and integrations.",
+      "type": "text/plain"
+    }
+  }
+}
