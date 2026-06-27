@@ -5,17 +5,24 @@
       "source": "https://www.leandata.com/blog/feed/",
       "feed_url": "https://www.leandata.com/blog/feed/",
       "title": "",
-      "saved": 0,
+      "saved": 1,
+      "method": "feed"
+    },
+    {
+      "source": "https://www.leandata.com/resources/feed/",
+      "feed_url": "https://www.leandata.com/resources/feed/",
+      "title": "",
+      "saved": 2,
       "method": "feed"
     },
     {
       "source": "https://www.leandata.com/resources/",
       "feed_url": "https://www.leandata.com/resources/feed/",
       "title": "",
-      "saved": 5,
+      "saved": 0,
       "method": "discovered"
     }
   ],
-  "post_count": 8,
-  "fetched": "2026-06-14T20:42:17Z"
+  "post_count": 13,
+  "fetched": "2026-06-27T12:03:07Z"
 }

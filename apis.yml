@@ -175,7 +175,7 @@ common:
     url: https://www.leandata.com/resources/
   - type: Blog
     url: https://www.leandata.com/blog/
-  - type: Forum
+  - type: Forums
     url: https://www.opsstars.com/
     name: OpsStars Community
   - type: AppExchange
