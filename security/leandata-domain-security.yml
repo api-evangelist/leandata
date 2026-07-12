@@ -1,0 +1,26 @@
+generated: '2026-07-11'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
+hosts:
+- host: www.leandata.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Sep 14 23:03:12 2026 GMT
+  hsts: false
+- host: docs.leandata.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 15 17:27:27 2026 GMT
+  hsts: null
+- host: api.leandata.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Feb 21 23:59:59 2027 GMT
+  hsts: null
+domains:
+- domain: leandata.com
+  dnssec: false
+  caa: []
+  spf: true
+  dmarc: true
+  dmarc_policy: quarantine
