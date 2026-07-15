@@ -123,6 +123,8 @@ apis:
       - type: OpenAPI
         url: openapi/leandata-graph-openapi.yml
 common:
+  - type: AgenticAccess
+    url: agentic-access/leandata-agentic-access.yml
   - type: DomainSecurity
     url: security/leandata-domain-security.yml
   - type: Website
