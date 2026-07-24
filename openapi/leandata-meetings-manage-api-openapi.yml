@@ -1,0 +1,100 @@
+openapi: 3.0.0
+info:
+  title: LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Manage API
+  description: Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.
+  version: 1.0.0
+servers:
+- url: https://api.leandata.com
+tags:
+- name: 📆 Meetings > Manage
+  description: ''
+paths:
+  /v1/meeting/:meetingId:
+    patch:
+      tags:
+      - 📆 Meetings > Manage
+      summary: v1/meeting/:meetingId
+      description: '<p>This endpoint is used to reschedule an existing meeting by providing a new start and end time.</p>
+
+        <p>💡 The <code>:meetingId</code> path parameter should be replaced with the unique ID of the meeting you want to update.</p>
+
+        <hr />
+
+        <h4 id="request-body-parameters">Request Body Parameters</h4>
+
+        <ul>
+
+        <li><p><code>scheduledTime</code> (required) — An <strong>object</strong> that defines the selected meeting time.</p>
+
+        <ul>
+
+        <li><p><code>start_time</code> (required) — A <strong>number</strong> representing the meeting start time in Unix epoch milliseconds.</p>
+
+        </li>
+
+        <li><p><code>end_time</code> (required) — A <strong>number</strong> representing the meeting end time in Unix epoch milliseconds.</p>
+
+        </li>
+
+        <li><p><code>timezone</code> — A <strong>string</strong> in IANA format (e.g. <code>America/Los_Angeles</code>). This value is used solely for <strong>formatting</strong> the confirmation email sent to the prospect. The actual meeting time is determined using the raw timestamps.</p>
+
+        </li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h4 id="response-body-parameters">Response Body Parameters</h4>
+
+        <ul>
+
+        <li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>
+
+        </li>
+
+        <li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>
+
+        </li>
+
+        </ul>
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scheduledTime:
+                  start_time: 1746547200000
+                  end_time: 1746548100000
+                  timezone: America/Los_Angeles
+      parameters:
+      - name: Content-Type
+        in: header
+        schema:
+          type: string
+        example: application/json
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+      - 📆 Meetings > Manage
+      summary: v1/meeting/:meetingId
+      description: '<p>This endpoint cancels a previously scheduled meeting. It requires only the meeting ID in the URL path—no request body is needed.</p>
+
+        <p>A successful cancellation returns a <code>200 OK</code> status. There is no response body.</p>
+
+        '
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

@@ -1,0 +1,701 @@
+openapi: 3.0.0
+info:
+  title: LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Create API
+  description: Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.
+  version: 1.0.0
+servers:
+- url: https://api.leandata.com
+tags:
+- name: 📆 Meetings > Create
+  description: '<p>Use these endpoints to finalize and book meetings after a timeslot has been selected.</p>
+
+    <p>⚠️ <strong>Important:</strong> You <strong>must</strong> support both <code>POST /v1/meeting</code> and <code>POST /v1/round-robin-meeting</code>.</p>
+
+    <p>The correct endpoint is determined by the availability response:</p>
+
+    <ul>
+
+    <li><p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must book using <code>POST /v1/round-robin-meeting</code>.</p>
+
+    </li>
+
+    <li><p>If <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code>, you must book using <code>POST /v1/meeting</code>.</p>
+
+    </li>
+
+    </ul>
+
+    <p>This behavior is driven by your scheduling graph configuration and cannot be assumed ahead of time.</p>
+
+    '
+paths:
+  /v1/meeting:
+    post:
+      tags:
+      - 📆 Meetings > Create
+      summary: v1/meeting
+      description: '<p>This endpoint is used to <strong>book a meeting with a single rep</strong> who has already been assigned by your routing logic. The routing graph has selected the most appropriate user for the prospect based on your configuration—this endpoint simply finalizes the booking.</p>
+
+        <p>⚠️ Use this endpoint only when <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code> in the availability response.</p>
+
+        <p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must instead call <code>POST /v1/round-robin-meeting</code>.</p>
+
+        <p>The request payload contains the encrypted scheduling context, the selected time window, prefilled user data, and optional links to support canceling or rescheduling the meeting after it''s booked.</p>
+
+        <hr />
+
+        <h2 id="request-body-parameters">Request Body Parameters</h2>
+
+        <p>❗️ If your availability response indicates <code>pageInfo.displayAllPoolAvailability = true</code>, you <strong>must</strong> book using <code>POST /v1/round-robin-meeting</code> instead of this endpoint.</p>
+
+        <p>This endpoint supports three request modes. Your request body must include <strong>exactly one</strong> of:</p>
+
+        <ul>
+
+        <li><p><code>token</code> (recommended)</p>
+
+        </li>
+
+        <li><p><code>linkId</code></p>
+
+        </li>
+
+        <li><p><code>params</code> (legacy)</p>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h4 id="required-fields-for-all-requests">Required fields for all requests</h4>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Type</th>
+
+        <th>Required</th>
+
+        <th>Description</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>scheduledTime</code></td>
+
+        <td>object</td>
+
+        <td>Yes</td>
+
+        <td>The time slot the prospect selected.</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.start_time</code></td>
+
+        <td>number</td>
+
+        <td>Yes</td>
+
+        <td>Start time (Unix timestamp in milliseconds).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.end_time</code></td>
+
+        <td>number</td>
+
+        <td>Yes</td>
+
+        <td>End time (Unix epoch timestamp in milliseconds).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.timezone</code></td>
+
+        <td>string</td>
+
+        <td>Yes</td>
+
+        <td>IANA timezone (e.g., <code>America/Los_Angeles</code>).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>userFields</code></td>
+
+        <td>array</td>
+
+        <td>Yes</td>
+
+        <td>Prospect + form field values. Must include values for all required <code>meeting.formFields</code> returned by the availability endpoint.</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><h4 id="userfields-important-notes"><code>userFields</code> Important Notes:</h4>
+
+        <ul>
+
+        <li><p>You should return one <code>userField</code> object for each <strong>required, defined field</strong> in the <code>formFields</code> array (i.e., any field with a <code>name</code> value, any field with a <code>required: true</code> value).</p>
+
+        </li>
+
+        <li><p>First Name, Last Name, and Email are required by default and <strong>must be included</strong>.</p>
+
+        </li>
+
+        <li><p>If a field in <code>formFields</code> is undefined (e.g., has an empty <code>name</code>), it should be <strong>excluded</strong> from <code>userFields</code>.</p>
+
+        <ul>
+
+        <li><p><code>name</code> — A <strong>string</strong> that represents the field label (e.g. <code>"First Name"</code>).</p>
+
+        </li>
+
+        <li><p><code>type</code> — A <strong>string</strong> indicating the field type (<code>text</code>, <code>textarea</code>, etc.).</p>
+
+        </li>
+
+        <li><p><code>value</code> — A <strong>string</strong> (or <strong>array</strong>, depending on field type) representing the entered value.</p>
+
+        <ul>
+
+        <li>For <code>Additional Guest Emails</code>, this should be <strong>an array of strings</strong>, each representing an email address.</li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h3 id="identification-modes">Identification Modes</h3>
+
+        <h4 id="mode-selector-rules">Mode selector rules</h4>
+
+        <p>❗️<strong>Exactly one</strong> of <code>token</code>, <code>linkId</code>, or <code>params</code> must be provided. Do not send more than one.</p>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Required?</th>
+
+        <th>When to use</th>
+
+        <th>Notes</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>token</code></td>
+
+        <td>Required if using token mode</td>
+
+        <td>Use when booking after calling <code>/v1/scheduling/route-and-fetch-availability</code> or <code>/v1/scheduling/fetch-availability</code> and you have a booking token</td>
+
+        <td>Recommended path. Avoids needing legacy <code>params</code>.</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>linkId</code></td>
+
+        <td>Required if using link mode</td>
+
+        <td>Use when booking directly from a <strong>single-meeting-type BookIt Link</strong></td>
+
+        <td>Must be a supported Link type. (Multi-meeting-type / routing / dynamic links aren’t supported.)</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>params</code></td>
+
+        <td>Required if using legacy mode</td>
+
+        <td>Legacy integrations that already rely on the encrypted <code>params</code> payload</td>
+
+        <td>Requires additional fields below.</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><h4 id="legacy-only-fields-params-mode">Legacy-only Fields (<code>params</code> mode)</h4>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Type</th>
+
+        <th>Required</th>
+
+        <th>Applies when</th>
+
+        <th>Description</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>cancelLink</code></td>
+
+        <td>string</td>
+
+        <td>Optional</td>
+
+        <td><code>params</code> mode</td>
+
+        <td>Base cancel URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>rescheduleLink</code></td>
+
+        <td>string</td>
+
+        <td>Optional</td>
+
+        <td><code>params</code> mode</td>
+
+        <td>Base reschedule URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><h4 id="formatting-cancellink--reschedulelink">Formatting <code>cancelLink</code> / <code>rescheduleLink</code></h4>
+
+        <p>These links will be included in the confirmation email sent to the prospect. The values must be the base URL-- You can include any query parameters you''d like in the base URL. The BookIt system will automatically append the <code>meetingId</code> to the end of the URL.</p>
+
+        <p>❗️ <strong>Note</strong>: Make sure the base URL is formatted to support appending the <code>meetingId</code> correctly, depending on whether you want it as a path or a query parameter.</p>
+
+        <ul>
+
+        <li><p>If you''d like the <code>meetingId</code> added as a path segment, provide a trailing slash (e.g. <code>https://example.com/cancel/</code>). The result will be <code>https://example.com/cancel/123</code>.</p>
+
+        </li>
+
+        <li><p>If you''d like the <code>meetingId</code> added as a query parameter, include the key in the base URL (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=</code>). BookIt will append the value (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=123</code>).</p>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h2 id="response-body-parameters">Response Body Parameters</h2>
+
+        <ul>
+
+        <li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>
+
+        </li>
+
+        <li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>
+
+        </li>
+
+        </ul>
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scheduledTime:
+                  startTime: 1746644400000
+                  endTime: 1746646200000
+                  timezone: America/Los_Angeles
+                params: /SX/uPyXb00nUaCDWL5oMxM1Bx8WpQFn/o/oxd+lUGJtn6LHAxmuXEN0kJFtAIVAKHzgZwyVP1oO7U6//YDFIUnehI4PzKEMg3rXI8WrRN9AukpVuPrvb81WoWG4Z6xuvzeT2o9hYkiVreX4C7SP93JHcLD6A4WCvOclsZZlaS+7PbonkTm2gSOMJ74mAwfK8azheT9s39DZa35VZdkGYRZ8yk0pdctpWdA1LHID1XLbGG8wxQw3Y1GbPCrIh/ML4CDEmO9MhZZHQ9vXjfQqP1Zhb3cTvZUM2WSfW+n1tZxQicgviTX4UQ+VwcnBXvApdmBlJO3UXPpr+0DtprsfECABeIdMfRqR8fkqNQ0cFP5C29VWTq49hEUQrQBhpF0jEFoeExxfUchhBrWMuRJ1YabTy+Mh2+hT66yw8o/vqnZwTrJdmxHKlrX+aNKM6D6h4DR+HkoeGvBJOtzzjdA6izF1GOQCgzVpk55xELGedb7b15yWPMHDP11PQNbSXM+ilmoz3aG0PFqwd4PHg2goOi+E4zwLS6jAU1U9zXo5nVY=
+                cancelLink: https://testdomain.com/cancel?=
+                rescheduleLink: https://testdomain.com/reschedule?=
+                userFields:
+                - name: First Name
+                  type: text
+                  value: LeanData
+                - name: Last Name
+                  type: text
+                  value: Dev
+                - name: Email
+                  type: text
+                  value: test@test.com
+                - name: Additional Guest Emails
+                  type: textarea
+                  value:
+                  - test1@test.com
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/round-robin-meeting:
+    post:
+      tags:
+      - 📆 Meetings > Create
+      summary: v1/round-robin-meeting
+      description: '<p>This endpoint is used to book a meeting with <strong>a user from a round robin pool</strong>. If your routing logic has determined that a pool of users should be considered for this meeting, this endpoint handles the final assignment and booking of the meeting with the most appropriate available user.</p>
+
+        <p>💡 Use this endpoint when the availability response indicates <code>pageInfo.displayAllPoolAvailability</code> is <code>true</code>.</p>
+
+        <p>The request payload includes the encrypted scheduling context, the chosen time window, prefilled prospect data, and optional links for canceling or rescheduling the meeting after booking.</p>
+
+        <hr />
+
+        <h2 id="request-body-parameters">Request Body Parameters</h2>
+
+        <h4 id="required-for-all-requests">Required for all requests</h4>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Type</th>
+
+        <th>Required</th>
+
+        <th>Description</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>scheduledTime</code></td>
+
+        <td>object</td>
+
+        <td>Yes</td>
+
+        <td>Defines the selected meeting time and the eligible host pool for that time.</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.start_time</code></td>
+
+        <td>number</td>
+
+        <td>Yes</td>
+
+        <td>Meeting start time (Unix epoch milliseconds).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.end_time</code></td>
+
+        <td>number</td>
+
+        <td>Yes</td>
+
+        <td>Meeting end time (Unix epoch milliseconds).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.timezone</code></td>
+
+        <td>string</td>
+
+        <td>Yes</td>
+
+        <td>IANA timezone (e.g. <code>America/Los_Angeles</code>). Used for formatting the prospect confirmation email; the actual meeting time is based on the timestamps.</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>scheduledTime.users</code></td>
+
+        <td>string[]</td>
+
+        <td>Yes</td>
+
+        <td>Ordered list of user IDs eligible for the selected timeslot. <strong>Order matters</strong> and must match the order implied by <code>availability.timeSlots[].users</code> via <code>availability.indexToUserIdMap</code> from the availability response (preserves round-robin priority).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>userFields</code></td>
+
+        <td>array</td>
+
+        <td>Yes</td>
+
+        <td>Form field values submitted by the prospect. Must include values for all required <code>meeting.formFields</code> returned by the availability endpoint.</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><hr />
+
+        <h3 id="identification-modes">Identification Modes</h3>
+
+        <h4 id="mode-selector-rules">Mode selector rules</h4>
+
+        <p>❗️<strong>Exactly one</strong> of <code>token</code>, <code>linkId</code>, or <code>params</code> must be provided. Do not send more than one.</p>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Required?</th>
+
+        <th>When to use</th>
+
+        <th>Notes</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>token</code></td>
+
+        <td>Required if using token mode</td>
+
+        <td>Use when booking after calling <code>/v1/scheduling/route-and-fetch-availability</code> or <code>/v1/scheduling/fetch-availability</code> and you have a booking token</td>
+
+        <td>Recommended path. Avoids needing legacy <code>params</code>.</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>linkId</code></td>
+
+        <td>Required if using link mode</td>
+
+        <td>Use when booking directly from a <strong>single-meeting-type BookIt Link</strong></td>
+
+        <td>Must be a supported Link type. (Multi-meeting-type / routing / dynamic links aren’t supported.)</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>params</code></td>
+
+        <td>Required if using legacy mode</td>
+
+        <td>Legacy integrations that already rely on the encrypted <code>params</code> payload</td>
+
+        <td>Requires additional fields below.</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><h4 id="legacy-only-fields-params-mode">Legacy-only Fields (<code>params</code> mode)</h4>
+
+        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+
+        <thead>
+
+        <tr>
+
+        <th>Field</th>
+
+        <th>Type</th>
+
+        <th>Required</th>
+
+        <th>Applies when</th>
+
+        <th>Description</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr>
+
+        <td><code>cancelLink</code></td>
+
+        <td>string</td>
+
+        <td>Optional</td>
+
+        <td><code>params</code> mode</td>
+
+        <td>Base cancel URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>
+
+        </tr>
+
+        <tr>
+
+        <td><code>rescheduleLink</code></td>
+
+        <td>string</td>
+
+        <td>Optional</td>
+
+        <td><code>params</code> mode</td>
+
+        <td>Base reschedule URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>
+
+        </tr>
+
+        </tbody>
+
+        </table>
+
+        </div><h4 id="formatting-cancellink--reschedulelink">Formatting <code>cancelLink</code> / <code>rescheduleLink</code></h4>
+
+        <p>These links will be included in the confirmation email sent to the prospect. The values must be the base URL-- You can include any query parameters you''d like in the base URL. The BookIt system will automatically append the <code>meetingId</code> to the end of the URL.</p>
+
+        <p>❗️ <strong>Note</strong>: Make sure the base URL is formatted to support appending the <code>meetingId</code> correctly, depending on whether you want it as a path or a query parameter.</p>
+
+        <ul>
+
+        <li><p>If you''d like the <code>meetingId</code> added as a path segment, provide a trailing slash (e.g. <code>https://example.com/cancel/</code>). The result will be <code>https://example.com/cancel/123</code>.</p>
+
+        </li>
+
+        <li><p>If you''d like the <code>meetingId</code> added as a query parameter, include the key in the base URL (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=</code>). BookIt will append the value (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=123</code>).</p>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h2 id="response-body-parameters">Response Body Parameters</h2>
+
+        <ul>
+
+        <li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>
+
+        </li>
+
+        <li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>
+
+        </li>
+
+        <li><p><code>selectedUserId</code> — A <strong>string</strong> representing the Salesforce user ID of the rep selected from the round robin pool to host the meeting.</p>
+
+        </li>
+
+        </ul>
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scheduledTime:
+                  start_time: 1746486000000
+                  end_time: 1746486900000
+                  timezone: America/Los_Angeles
+                  users:
+                  - 0058c00000CssZGAAZ
+                  - 0058c00000CtXJhAAN
+                  - 0058c00000AukyPAAR
+                  - 0058c00000CtXKaAAN
+                  - 0058c000009wAEKAA2
+                  - 0058c00000CssZLAAZ
+                cancelLink: https://testdomain.com/cancel?meetingId=
+                rescheduleLink: https://testdomain.com/reschedule?meetingId=
+                params: +aELYG7xzbgpE4sSyByw27/J11+QuSnMHV/Z5UDYfWhTYqOWLqSPG2bqRUBjUncGDhALE5PZ9lTtTK1n9yoQVLnHT58AUVANEe23Dzi1/62oOBZx+lpw7NeB0zqAYnGkVXjbchNC7PtZLcWA4VXjwuZvkIfkFqxZqA5hf9u2NpC6AMUyTo7j+Svyoc/S2Dit9IBrmbWhZcdn3eaNkVTkfqcW6RjX/LA+A9MgomWe9eQbgibpJGgUBN4KwmVQYQxiuwaSe4pMNyckOGg9EymjVPizsLSq9Iwc/tbj11RW6fPTbgquUyymeGYhIeIt0uONE/vAGiHO7Vkdn9gvAsQG5Y5aKvRF84zmd+vePfh7h43VvVoWH1w2lff5/Ks0rSDvAgRgdwXauZwudGoX0YWXHJfZEwEcgAbw16aLJiY6r+eLkgInglI2ZA9DfmE753JSbJ1PrtP7WNZYPI6NUvRORaKTg7xHPQg6ZrLTo1jo4L6qfP0nnn9D3sEmnVVxyfDeE+CVZWbawxjVTZFVTXL9/hVu2djwzEKlI9VxapB9qc1VK7cwBNLgC3qlnaaMr5Js
+                userFields:
+                - name: First Name
+                  type: text
+                  value: Test
+                - name: Last Name
+                  type: text
+                  value: pool
+                - name: Email
+                  type: text
+                  value: test@test.com
+                - name: Additional Guest Emails
+                  type: textarea
+                  value: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}

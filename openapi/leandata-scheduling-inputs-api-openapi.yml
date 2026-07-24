@@ -1,0 +1,115 @@
+openapi: 3.0.0
+info:
+  title: LeanData BookIt 🗓️ Availability 🗓️ Availability 🧠 Scheduling Inputs API
+  description: Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.
+  version: 1.0.0
+servers:
+- url: https://api.leandata.com
+tags:
+- name: 🧠 Scheduling Inputs
+  description: ''
+paths:
+  /v1/scheduling/retrieve-inputs:
+    post:
+      tags:
+      - 🧠 Scheduling Inputs
+      summary: v1/scheduling/retrieve-inputs
+      description: '<p>This endpoint returns the fields defined in your trigger node. Use this endpoint to dynamically determine what prospect data must be collected (including field types and validation rules) prior to calling the routing availability endpoint.</p>
+
+        <p>⚠️ <strong>Note:</strong> Routing Links Trigger Nodes are <strong>not</strong> supported.</p>
+
+        <p><strong>Common use cases:</strong></p>
+
+        <ul>
+
+        <li><p>Agentic scheduling: ask only for missing fields</p>
+
+        </li>
+
+        <li><p>Dynamic UI: render required fields based on trigger configuration</p>
+
+        </li>
+
+        </ul>
+
+        <hr />
+
+        <h2 id="request-body-parameters">Request Body Parameters</h2>
+
+        <ul>
+
+        <li><code>nodeName</code> (required) — A <strong>string</strong> value that contains the name of your Trigger Node (in the BookIt Flowbuilder). For more information, check out the <a href="https://leandatahelp.zendesk.com/hc/en-us/articles/5987002499995-New-Prospect-Trigger-Node">Trigger Node Implementation guide</a>.</li>
+
+        </ul>
+
+        <hr />
+
+        <h2 id="response-body-parameters">Response Body Parameters</h2>
+
+        <ul>
+
+        <li><p><code>name</code> — A <strong>string</strong> name of the requested trigger node.</p>
+
+        </li>
+
+        <li><p><code>inputs</code> — An <strong>array of input field objects</strong> that represent the fields required for routing. Each input field object contains the following properties:</p>
+
+        <ul>
+
+        <li><p>⚠️ <strong>Note:</strong> All input definitions in the <code>inputs</code> array are configured in the LeanData application. If any updates or changes are needed—such as adding, removing, or modifying input fields—they must be made in the corresponding configuration within LeanData. These definitions cannot be modified through the API.</p>
+
+        <ul>
+
+        <li><p><code>name</code> — A <strong>string</strong> that represents the unique API name of the input field. This value should be used as the key when submitting data for booking or routing requests.</p>
+
+        </li>
+
+        <li><p><code>type</code> — A <strong>string</strong> that represents the expected data type of the input field.</p>
+
+        <p>  Supported values include:</p>
+
+        <ul>
+
+        <li><p><code>STRING</code> — A text value</p>
+
+        </li>
+
+        <li><p><code>PHONE</code> — A text value of the phone number (can include country code).</p>
+
+        </li>
+
+        <li><p><code>DOUBLE</code> — A numeric value (supports decimal values)</p>
+
+        </li>
+
+        <li><p><code>BOOLEAN</code> — A true/false value</p>
+
+        </li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        </li>
+
+        </ul>
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                nodeName: New Webform Prospect
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
