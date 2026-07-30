@@ -35,93 +35,216 @@ tags:
   - CRM
   - AppExchange
 type: Index
+accessModel:
+  pricing: paid
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Paid
+  confidence: medium
+  source:
+  - plans
+  generated: '2026-07-22'
+  method: derived
 position: Provider
 access: 3rd-Party
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/leandata.png
 url: https://raw.githubusercontent.com/api-evangelist/leandata/refs/heads/main/apis.yml
 created: '2026-05-25'
 modified: '2026-05-25'
 specificationVersion: '0.20'
 apis:
-  - aid: leandata:leandata-matching-api
-    name: LeanData Matching API
-    description: >-
-      Identify Salesforce Leads, Contacts, or Accounts from external systems in real time using LeanData's industry-best
-      matching engine. Supports matched-lead lookup, duplicate-lead detection, all-duplicate-lead retrieval,
-      related-lead inspection, duplicate-contact detection, and account matching and related-account lookup. Operations
-      are dispatched via the managed package's Apex REST endpoint `/services/apexrest/LeanData/LeanDataAPI` against the
-      customer's Salesforce instance, authenticated using a Salesforce OAuth 2.0 Connected App.
-    humanURL: https://docs.leandata.com
-    tags:
-      - Matching
-      - Lead Matching
-      - Contact Matching
-      - Account Matching
-      - Deduplication
-      - Salesforce
-    properties:
-      - type: Documentation
-        url: https://docs.leandata.com
-      - type: OpenAPI
-        url: openapi/leandata-matching-openapi.yml
-  - aid: leandata:leandata-round-robin-api
-    name: LeanData Round Robin API
-    description: >-
-      Assign Salesforce records using LeanData's advanced round-robin logic, including standard rotation,
-      flexible/weighted distribution, working hours, vacation rules, and pool inspection. Also exposes one-time routing
-      for ad-hoc record assignment. Like the Matching API, all operations are dispatched through the managed package's
-      Apex REST endpoint `/services/apexrest/LeanData/LeanDataAPI` in the customer's Salesforce org.
-    humanURL: https://docs.leandata.com
-    tags:
-      - Round Robin
-      - Routing
-      - Assignment
-      - Salesforce
-      - Lead Routing
-    properties:
-      - type: Documentation
-        url: https://docs.leandata.com
-      - type: OpenAPI
-        url: openapi/leandata-matching-openapi.yml
-  - aid: leandata:leandata-bookit-api
-    name: LeanData BookIt API
-    description: >-
-      Programmatic scheduling, availability lookup, and meeting management for LeanData BookIt. Retrieve scheduling
-      inputs, fetch raw or routed availability, create and round-robin meetings, retrieve meetings by prospect or
-      meeting ID, patch (reschedule) and delete (cancel) meetings. Power custom booking UIs with secure server-to-server
-      access hosted at `https://api.leandata.com/v1`. Legacy `/v1/scheduling/route`, `/v1/scheduling/retrieve-info`, and
-      `/v1/scheduling/retrieve-modification-info` endpoints remain supported for existing integrations.
-    humanURL: https://docs.leandata.com
-    tags:
-      - Scheduling
-      - Meetings
-      - Availability
-      - BookIt
-      - Booking
-    properties:
-      - type: Documentation
-        url: https://docs.leandata.com
-      - type: OpenAPI
-        url: openapi/leandata-bookit-openapi.yml
-  - aid: leandata:leandata-graph-api
-    name: LeanData Graph API
-    description: >-
-      Retrieve routing-graph metadata and trigger LeanData One Time Routing from external systems to power custom
-      orchestration experiences. The Graph API exposes `orchestration/v1/routing-graphs` for graph discovery (trigger
-      nodes, edges, names) and `orchestration/v1/one-time-routing` plus `orchestration/v1/one-time-routing/{jobId}` for
-      invoking and monitoring one-time routing jobs against a Salesforce org. Hosted at
-      `https://api.leandata.com/orchestration/v1`.
-    humanURL: https://docs.leandata.com
-    tags:
-      - Orchestration
-      - Routing
-      - Graph
-      - One Time Routing
-    properties:
-      - type: Documentation
-        url: https://docs.leandata.com
-      - type: OpenAPI
-        url: openapi/leandata-graph-openapi.yml
+- aid: leandata:leandata-availability-api
+  name: LeanData 🗓️ Availability API
+  description: >-
+    <p>The availability endpoints return meeting configuration and open time slots used to render booking
+    pages or refresh availability. Depending on the request context (routing, direct link, or reschedule),
+    the response includes meeting details, eligible hosts, and available time windows.</p>
+
+    <ul>
+
+    <li><p><strong>POST</strong> <code>/v1/scheduling/route-and-fetch-availability</code></p>
+
+    </li>
+
+    <li><p><strong>POST</strong> <code>/v1/scheduling/fetch-availability</code></p>
+
+    </li>
+
+    </ul>
+  humanURL: https://docs.leandata.com
+  tags:
+  - 🗓️ Availability
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-availability-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-legacy-still-supported-api
+  name: LeanData Legacy (still supported) API
+  description: >-
+    <p>This section outlines the endpoints used to retrieve scheduling data for building a custom calendaring
+    experience. Both endpoints return the same structure of <strong>read-only</strong> information—including
+    scheduling metadata, working hours, available time slots, and configured users—that can be used to
+    render the scheduling page.</p>
+
+    <ul>
+
+    <li><p><strong><code>v1/scheduling/retrieve-info</code></strong> — Use this endpoint <strong>when
+    booking a meeting</strong> <strong>for the first time</strong>.</p>
+
+    </li>
+
+    <li><p><strong><code>v1/scheduling/retrieve-modification-info</code></strong> — Use this endpoint
+    <strong>when modifying an existing meeting</strong>, such as rescheduling or canceling.</p>
+
+    </li>
+
+    </ul>
+
+    <p>These endpoints provide all the data needed to power the UI for selecting a meeting time and pre-populating
+    prospect details.</p>
+  humanURL: https://docs.leandata.com
+  tags:
+  - Legacy (still supported)
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-legacy-still-supported-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-matching-api
+  name: LeanData Matching API
+  description: The Matching API from LeanData — 1 operation(s) for matching.
+  humanURL: https://docs.leandata.com
+  tags:
+  - Matching
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-matching-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-meetings-create-api
+  name: LeanData 📆 Meetings > Create API
+  description: >-
+    <p>Use these endpoints to finalize and book meetings after a timeslot has been selected.</p>
+
+    <p>⚠️ <strong>Important:</strong> You <strong>must</strong> support both <code>POST /v1/meeting</code>
+    and <code>POST /v1/round-robin-meeting</code>.</p>
+
+    <p>The correct endpoint is determined by the availability response:</p>
+
+    <ul>
+
+    <li><p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must book using <code>POST
+    /v1/round-robin-meeting</code>.</p>
+
+    </li>
+
+    <li><p>If <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code>, you must
+    book using <code>POST /v1/meeting</code>.</p>
+
+    </li>
+
+    </ul>
+
+    <p>This behavior is driven by your scheduling graph configuration and cannot be assumed ahead of time.</p>
+  humanURL: https://docs.leandata.com
+  tags:
+  - 📆 Meetings > Create
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-meetings-create-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-meetings-manage-api
+  name: LeanData 📆 Meetings > Manage API
+  description: The 📆 Meetings > Manage API from LeanData — 1 operation(s) for 📆 meetings > manage.
+  humanURL: https://docs.leandata.com
+  tags:
+  - 📆 Meetings > Manage
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-meetings-manage-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-meetings-retrieve-api
+  name: LeanData 📆 Meetings > Retrieve API
+  description: The 📆 Meetings > Retrieve API from LeanData — 2 operation(s) for 📆 meetings > retrieve.
+  humanURL: https://docs.leandata.com
+  tags:
+  - 📆 Meetings > Retrieve
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-meetings-retrieve-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-one-time-routing-api
+  name: LeanData One Time Routing API
+  description: >-
+    <p>This section describes the endpoints used to trigger 1x Routing for creating a custom orchestration
+    experience, as well as to retrieve the status of the resulting job. When invoked, the 1x Routing endpoint
+    returns basic job metadata—including the <code>jobId</code>—which can be used to check the job’s status.</p>
+
+    <ul>
+
+    <li><p><code>orchestration/v1/one-time-routing</code> — Use this endpoint to invoke 1x routing for
+    a particular SFDC org</p>
+
+    </li>
+
+    <li><p><code>orchestration/v1/one-time-routing/:jobId</code> — Use this endpoint to retrieve the job
+    status of a 1x routing for a particular SFDC org</p>
+
+    </li>
+
+    </ul>
+
+    <p>❗️ <strong>Important:</strong> The API does <strong>not</strong> validate FlowBuilder graphs before
+    triggering routing. If you invoke 1x Routing to an invalid or misconfigured graph, the request will
+    still be processed—but routing will fail silently. No error response will be returned from the API.<br
+    />✅ To avoid unexpected behavior, please ensure the graph is valid and functioning as expected within
+    the LeanData application before using it in API-triggered routing.</p>
+  humanURL: https://docs.leandata.com
+  tags:
+  - One Time Routing
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-one-time-routing-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-retrieve-routing-graphs-information-api
+  name: LeanData Retrieve Routing Graphs Information API
+  description: >-
+    <p>This section outlines the endpoints used to retrieve Routing Graphs information for building a
+    custom orchestration experience. The endpoint returns information such as trigger node names, the
+    edges in those trigger nodes, graph name, etc</p>
+
+    <ul>
+
+    <li><code>orchestration/v1/routing-graphs</code> — Use this endpoint <strong>when fetching routing
+    graphs</strong> from a particular SFDC org.</li>
+
+    </ul>
+  humanURL: https://docs.leandata.com
+  tags:
+  - Retrieve Routing Graphs Information
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-retrieve-routing-graphs-information-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
+- aid: leandata:leandata-scheduling-inputs-api
+  name: LeanData 🧠 Scheduling Inputs API
+  description: The 🧠 Scheduling Inputs API from LeanData — 1 operation(s) for 🧠 scheduling inputs.
+  humanURL: https://docs.leandata.com
+  tags:
+  - 🧠 Scheduling Inputs
+  properties:
+  - type: OpenAPI
+    url: openapi/leandata-scheduling-inputs-api-openapi.yml
+  - type: Documentation
+    url: https://docs.leandata.com
 common:
   - type: AgenticAccess
     url: agentic-access/leandata-agentic-access.yml
