@@ -1,0 +1,30 @@
+{
+  "provider": "leandata",
+  "sources": [
+    "leandata-availability-api-openapi.yml",
+    "leandata-legacy-still-supported-api-openapi.yml",
+    "leandata-matching-api-openapi.yml",
+    "leandata-meetings-create-api-openapi.yml",
+    "leandata-meetings-manage-api-openapi.yml",
+    "leandata-meetings-retrieve-api-openapi.yml",
+    "leandata-one-time-routing-api-openapi.yml",
+    "leandata-retrieve-routing-graphs-information-api-openapi.yml",
+    "leandata-scheduling-inputs-api-openapi.yml"
+  ],
+  "outputs": [
+    "leandata-availability-api-openapi.yml",
+    "leandata-legacy-still-supported-api-openapi.yml",
+    "leandata-matching-api-openapi.yml",
+    "leandata-meetings-create-api-openapi.yml",
+    "leandata-meetings-manage-api-openapi.yml",
+    "leandata-meetings-retrieve-api-openapi.yml",
+    "leandata-one-time-routing-api-openapi.yml",
+    "leandata-retrieve-routing-graphs-information-api-openapi.yml",
+    "leandata-scheduling-inputs-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
