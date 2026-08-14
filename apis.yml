@@ -12,8 +12,13 @@ description: >-
   distribution, working hours, and vacation-aware assignment), the BookIt API (scheduling inputs, availability, and
   meeting CRUD for custom UIs), and the Graph API (one-time routing and routing-graph metadata for custom
   orchestration). The Matching and Round Robin APIs are Salesforce-native and dispatched through the managed package's
-  Apex REST endpoint at /services/apexrest/LeanData/LeanDataAPI; BookIt and Graph are hosted at api.leandata.com and
-  authenticated via OAuth 2.0 server-to-server flows. Commercial offerings are tiered across Standard, Advanced,
+  Apex REST endpoint at /services/apexrest/LeanData/LeanDataAPI, authenticated with the customer's own Salesforce OAuth
+  2.0 Connected App; BookIt and Graph are hosted at api.leandata.com behind AWS API Gateway and authenticated with a
+  server-side API key in an X-Api-Key header. Since the Q2 2026 release LeanData also runs a hosted BookIt MCP server
+  at https://mcp.leandata.com/mcp — currently labelled beta — which exposes BookIt scheduling and operational data to
+  MCP-compatible AI clients under OAuth 2.1 with PKCE and dynamic client registration, with admin, user and partner
+  scopes and tool visibility filtered by the caller's BookIt permission set. Developer documentation is published as a
+  public Postman collection at docs.leandata.com. Commercial offerings are tiered across Standard, Advanced,
   Premium, and Enterprise editions of Orchestration plus BookIt scheduling products and Buying Groups, with
   implementation services billed separately.
 tags:
@@ -52,7 +57,7 @@ access: 3rd-Party
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/leandata.png
 url: https://raw.githubusercontent.com/api-evangelist/leandata/refs/heads/main/apis.yml
 created: '2026-05-25'
-modified: '2026-05-25'
+modified: '2026-08-13'
 specificationVersion: '0.20'
 apis:
 - aid: leandata:leandata-availability-api
@@ -74,11 +79,14 @@ apis:
 
     </ul>
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - 🗓️ Availability
   properties:
   - type: OpenAPI
     url: openapi/leandata-availability-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-availability-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-legacy-still-supported-api
@@ -106,22 +114,28 @@ apis:
     <p>These endpoints provide all the data needed to power the UI for selecting a meeting time and pre-populating
     prospect details.</p>
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - Legacy (still supported)
   properties:
   - type: OpenAPI
     url: openapi/leandata-legacy-still-supported-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-legacy-still-supported-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-matching-api
   name: LeanData Matching API
   description: The Matching API from LeanData — 1 operation(s) for matching.
   humanURL: https://docs.leandata.com
+  baseURL: https://yourinstance.my.salesforce.com
   tags:
   - Matching
   properties:
   - type: OpenAPI
     url: openapi/leandata-matching-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-matching-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-meetings-create-api
@@ -150,33 +164,42 @@ apis:
 
     <p>This behavior is driven by your scheduling graph configuration and cannot be assumed ahead of time.</p>
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - 📆 Meetings > Create
   properties:
   - type: OpenAPI
     url: openapi/leandata-meetings-create-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-meetings-create-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-meetings-manage-api
   name: LeanData 📆 Meetings > Manage API
   description: The 📆 Meetings > Manage API from LeanData — 1 operation(s) for 📆 meetings > manage.
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - 📆 Meetings > Manage
   properties:
   - type: OpenAPI
     url: openapi/leandata-meetings-manage-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-meetings-manage-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-meetings-retrieve-api
   name: LeanData 📆 Meetings > Retrieve API
   description: The 📆 Meetings > Retrieve API from LeanData — 2 operation(s) for 📆 meetings > retrieve.
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - 📆 Meetings > Retrieve
   properties:
   - type: OpenAPI
     url: openapi/leandata-meetings-retrieve-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-meetings-retrieve-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-one-time-routing-api
@@ -206,11 +229,14 @@ apis:
     />✅ To avoid unexpected behavior, please ensure the graph is valid and functioning as expected within
     the LeanData application before using it in API-triggered routing.</p>
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - One Time Routing
   properties:
   - type: OpenAPI
     url: openapi/leandata-one-time-routing-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-one-time-routing-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-retrieve-routing-graphs-information-api
@@ -227,25 +253,33 @@ apis:
 
     </ul>
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - Retrieve Routing Graphs Information
   properties:
   - type: OpenAPI
     url: openapi/leandata-retrieve-routing-graphs-information-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-routing-graphs-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 - aid: leandata:leandata-scheduling-inputs-api
   name: LeanData 🧠 Scheduling Inputs API
   description: The 🧠 Scheduling Inputs API from LeanData — 1 operation(s) for 🧠 scheduling inputs.
   humanURL: https://docs.leandata.com
+  baseURL: https://api.leandata.com
   tags:
   - 🧠 Scheduling Inputs
   properties:
   - type: OpenAPI
     url: openapi/leandata-scheduling-inputs-api-openapi.yml
+  - type: Overlay
+    url: overlays/leandata-scheduling-inputs-overlay.yaml
   - type: Documentation
     url: https://docs.leandata.com
 common:
+  - type: TrustCenter
+    url: security/leandata-trust-center.yml
   - type: AgenticAccess
     url: agentic-access/leandata-agentic-access.yml
   - type: DomainSecurity
@@ -269,7 +303,7 @@ common:
   - type: ChangeLog
     url: https://leandatahelp.zendesk.com/hc/en-us/sections/360002566353-Release-Notes
   - type: Pricing
-    url: https://www.leandata.com/platform/pricing/
+    url: https://www.leandata.com/pricing/
   - type: Plans
     url: plans/leandata-plans-pricing.yml
   - type: RateLimits
@@ -317,11 +351,15 @@ common:
   - type: Newsroom
     url: https://www.leandata.com/press/
   - type: TrustCenter
-    url: https://www.leandata.com/trust/
+    url: https://trust.leandata.com/
+    name: LeanData Trust Center (SafeBase)
+  - type: TrustCenter
+    url: security/leandata-trust-center.yml
+    name: Trust center profile
   - type: PrivacyPolicy
-    url: https://www.leandata.com/privacy-policy/
+    url: https://www.leandata.com/privacy/
   - type: TermsOfService
-    url: https://www.leandata.com/terms-of-use/
+    url: https://www.leandata.com/terms-of-service/
   - type: LinkedIn
     url: https://www.linkedin.com/company/leandatainc/
   - type: Twitter
@@ -331,8 +369,78 @@ common:
   - type: GitHubOrganization
     url: https://github.com/leandata
   - type: Authentication
+    url: authentication/leandata-authentication.yml
+    name: X-Api-Key (BookIt, Graph); Salesforce OAuth 2.0 Connected App (Matching, Round Robin); OAuth 2.1 (BookIt MCP)
+  - type: DeveloperPortal
     url: https://docs.leandata.com
-    name: Salesforce OAuth 2.0 Connected App (Matching and Round Robin); OAuth 2.0 server-to-server (BookIt and Graph)
+    name: LeanData API Documentation
+  - type: APIReference
+    url: https://docs.leandata.com
+    name: LeanData API reference (Postman documenter)
+  - type: GettingStarted
+    url: https://docs.leandata.com
+    name: Get Started with the LeanData APIs
+  - type: Postman
+    url: https://www.postman.com/leandata/workspace/leandata-s-public-workspace
+    name: LeanData's Public Workspace
+  - type: Support
+    url: https://support.leandata.com
+    name: LeanData Support
+  - type: Login
+    url: https://login.leandata.com
+    name: LeanData application login
+  - type: SignUp
+    url: https://www.leandata.com/demo-request/
+    name: Request a demo (no self-service signup)
+  - type: MCPServer
+    url: mcp/leandata-mcp.yml
+    name: LeanData BookIt MCP (remote, https://mcp.leandata.com/mcp)
+  - type: ToolCrosswalk
+    url: mcp/leandata-tool-crosswalk.yml
+  - type: WellKnown
+    url: well-known/leandata-well-known.yml
+  - type: LLMsTxt
+    url: llms/leandata-llms.txt
+  - type: OAuthScopes
+    url: scopes/leandata-scopes.yml
+  - type: Conventions
+    url: conventions/leandata-conventions.yml
+  - type: ErrorCatalog
+    url: errors/leandata-problem-types.yml
+  - type: DataModel
+    url: data-model/leandata-data-model.yml
+  - type: Lifecycle
+    url: lifecycle/leandata-lifecycle.yml
+  - type: StatusPage
+    url: https://status.leandata.com
+    name: LeanData Status
+  - type: ChangeLog
+    url: changelog/leandata-changelog.yml
+    name: LeanData release history
+  - type: Conformance
+    url: conformance/leandata-conformance.yml
+  - type: Compliance
+    url: https://trust.leandata.com/
+    name: SOC 2 Type 2, GDPR, CCPA
+  - type: VulnerabilityDisclosure
+    url: security/leandata-vulnerability-disclosure.yml
+  - type: Security
+    url: https://trust.leandata.com/?itemUid=64c9680b-ef79-4c92-baa0-13b541954bef
+    name: Responsible Disclosure
+  - type: Packages
+    url: packages/leandata-packages.yml
+  - type: Components
+    url: components/leandata-components.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: Overlay
+    url: overlays/leandata-availability-overlay.yaml
+    name: API Evangelist overlays
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 33
+  pass: local-v1
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
