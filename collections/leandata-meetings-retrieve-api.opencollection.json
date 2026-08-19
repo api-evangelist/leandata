@@ -1,0 +1,40 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Retrieve API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "📆 Meetings > Retrieve",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "v1/meetings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.leandata.com/v1/meetings"
+          },
+          "docs": "<p>Retrieves meetings associated with a prospect’s email address. By default, the endpoint returns scheduled and canceled meetings from the time of the API call through the future. To query historical meetings, pass a <code>start</code> value in the past (optionally paired with <code>end</code>) to expand the time range backward.</p>\n<hr />\n<h2 id=\"query-parameters\">Query Parameters</h2>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Parameter</th>\n<th>Type</th>\n<"
+        },
+        {
+          "info": {
+            "name": "v1/meeting/:meetingId",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.leandata.com/v1/meeting/:meetingId"
+          },
+          "docs": "<p>Retrieves detailed information for a single meeting by its unique identifier.</p>\n<p>Use this endpoint to:</p>\n<ul>\n<li><p>Power confirmation pages</p>\n</li>\n<li><p>Support reschedule or cancellation flows</p>\n</li>\n<li><p>Retrieve full attendee details</p>\n</li>\n</ul>\n<hr />\n<h2 id=\"path-parameters\">Path Parameters</h2>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Parameter</th>\n<th>Type</th>\n<th>Required</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

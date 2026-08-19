@@ -1,0 +1,136 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.leandata.com
+docs:
+  - https://docs.leandata.com
+  - https://mcp.leandata.com/.well-known/oauth-authorization-server
+description: >-
+  LeanData runs three distinct authentication models across three distinct hosts, and a
+  consumer has to know which product they are calling before they can pick one. The BookIt
+  and Graph REST APIs on api.leandata.com use a server-side API key in an X-Api-Key header.
+  The Matching and Round Robin APIs are not LeanData-hosted at all — they are dispatched
+  through the customer's own Salesforce org via the managed package's Apex REST endpoint and
+  authenticate with a Salesforce OAuth 2.0 Connected App session. The BookIt MCP server on
+  mcp.leandata.com is the newest and the only one with machine-readable discovery: OAuth 2.1
+  authorization-code + PKCE with dynamic client registration and a real scope model.
+  None of the harvested OpenAPI files declare a securityScheme, so this profile was built by
+  reading LeanData's published documentation rather than derived from the specs — running
+  derive-authentication.py against openapi/ yields zero schemes.
+
+summary:
+  types: [apiKey, oauth2]
+  api_key_in: [header]
+  api_key_names: [X-Api-Key]
+  oauth2_flows: [authorizationCode, refreshToken]
+  transport: https-only
+  spec_declared: false
+  spec_note: >-
+    Zero securitySchemes across all nine refined OpenAPI files and all three _original files.
+    This is the single largest contract-quality gap in the LeanData surface: an agent reading
+    the spec alone cannot tell how to authenticate.
+
+schemes:
+  - name: BookItApiKey
+    type: apiKey
+    in: header
+    parameter_name: X-Api-Key
+    applies_to:
+      - openapi/leandata-scheduling-inputs-api-openapi.yml
+      - openapi/leandata-availability-api-openapi.yml
+      - openapi/leandata-meetings-retrieve-api-openapi.yml
+      - openapi/leandata-meetings-create-api-openapi.yml
+      - openapi/leandata-meetings-manage-api-openapi.yml
+      - openapi/leandata-legacy-still-supported-api-openapi.yml
+    host: https://api.leandata.com
+    provisioning: >-
+      Obtain a valid API key by contacting your LeanData Solutions Engineering Team. There is
+      no self-service key issuance.
+    failure: HTTP 401 Unauthorized
+    observed_unauthenticated_response: '{"message":"Unauthorized"}'
+    rules:
+      - All requests must be made over HTTPS; requests made over HTTP are rejected.
+      - >-
+        Server-side only. LeanData explicitly warns that API keys must not be exposed in
+        client-side code or browser-based applications.
+      - The API does not support bulk updates; only one object can be modified per request.
+    sources:
+      - https://docs.leandata.com
+
+  - name: GraphApiKey
+    type: apiKey
+    in: header
+    parameter_name: X-Api-Key
+    applies_to:
+      - openapi/leandata-one-time-routing-api-openapi.yml
+      - openapi/leandata-retrieve-routing-graphs-information-api-openapi.yml
+    host: https://api.leandata.com
+    provisioning: >-
+      Obtain a valid API key via the LeanData admin settings page — Settings > Admin >
+      Authorization. Unlike BookIt, Graph API keys are self-service for an org admin.
+    failure: HTTP 401 Unauthorized
+    observed_unauthenticated_response: '{"message":"Unauthorized"}'
+    sources:
+      - https://docs.leandata.com
+
+  - name: SalesforceConnectedApp
+    type: oauth2
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://login.salesforce.com/services/oauth2/authorize
+        tokenUrl: https://login.salesforce.com/services/oauth2/token
+        refresh: supported
+    applies_to:
+      - openapi/leandata-matching-api-openapi.yml
+    host: https://<your-instance>.my.salesforce.com
+    endpoint: /services/apexrest/LeanData/LeanDataAPI
+    provisioning: >-
+      Customer builds their own Salesforce OAuth Connected App (client id, client secret,
+      redirect URL), authorizes the LeanData token from the LeanData tab in Salesforce, and
+      asks their LeanData CSM to provision the Matching API for that Salesforce org id.
+      Partners request access at partners@leandatainc.com.
+    failure: >-
+      Salesforce error envelope, e.g.
+      {"message":"Session expired or invalid","errorCode":"INVALID_SESSION_ID"}
+    note: >-
+      This is Salesforce's auth, not LeanData's. The access token, instance URL and refresh
+      token all come from Salesforce, and the request is executed inside the customer's own org
+      under the managed package's Apex REST service.
+    sources:
+      - https://docs.leandata.com
+
+  - name: BookItMcpOAuth
+    type: oauth2
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://mcp.leandata.com/authorize
+        tokenUrl: https://mcp.leandata.com/token
+        refresh: supported
+        pkce: S256
+    registration_endpoint: https://mcp.leandata.com/register
+    dynamic_client_registration: true
+    token_endpoint_auth_methods: [none]
+    bearer_methods_supported: [header]
+    scopes: [admin, user, partner, offline_access]
+    host: https://mcp.leandata.com
+    resource: https://mcp.leandata.com
+    identity:
+      - Salesforce OAuth for LeanData admins and reps; the caller's BookIt permission set is detected after login
+      - >-
+        One-time code for external partners or AI agents that have no Salesforce credentials
+        in the org; an email address and a permission set are assigned in advance
+    failure: >-
+      HTTP 401 {"error":"Missing or invalid Authorization header"} with
+      WWW-Authenticate: Bearer resource_metadata=".../.well-known/oauth-protected-resource"
+    sources:
+      - https://mcp.leandata.com/.well-known/oauth-authorization-server
+      - https://mcp.leandata.com/.well-known/oauth-protected-resource
+      - https://www.leandata.com/resources/leandatas-bookit-mcp/
+
+recommendations:
+  - >-
+    Declare the X-Api-Key apiKey securityScheme in the published BookIt and Graph OpenAPI and
+    apply it at the document level. Today the specs are silent and every consumer has to read
+    prose to authenticate.
+  - >-
+    Publish the MCP scope semantics (what admin / user / partner each grant) alongside the
+    protected-resource metadata; the scope names are discoverable but their meaning is not.

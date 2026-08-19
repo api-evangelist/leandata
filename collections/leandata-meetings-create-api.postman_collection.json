@@ -1,0 +1,218 @@
+{
+  "item": [
+    {
+      "id": "ef7adbe4-60da-4824-a85e-1fff756f5ce8",
+      "name": "📆 Meetings > Create",
+      "description": {
+        "content": "<p>Use these endpoints to finalize and book meetings after a timeslot has been selected.</p>\n<p>⚠️ <strong>Important:</strong> You <strong>must</strong> support both <code>POST /v1/meeting</code> and <code>POST /v1/round-robin-meeting</code>.</p>\n<p>The correct endpoint is determined by the availability response:</p>\n<ul>\n<li><p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must book using <code>POST /v1/round-robin-meeting</code>.</p>\n</li>\n<li><p>If <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code>, you must book using <code>POST /v1/meeting</code>.</p>\n</li>\n</ul>\n<p>This behavior is driven by your scheduling graph configuration and cannot be assumed ahead of time.</p>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d9e2ed59-94c4-4899-b81e-d655f193b0c8",
+          "name": "v1/meeting",
+          "request": {
+            "name": "v1/meeting",
+            "description": {
+              "content": "<p>This endpoint is used to <strong>book a meeting with a single rep</strong> who has already been assigned by your routing logic. The routing graph has selected the most appropriate user for the prospect based on your configuration—this endpoint simply finalizes the booking.</p>\n<p>⚠️ Use this endpoint only when <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code> in the availability response.</p>\n<p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must instead call <code>POST /v1/round-robin-meeting</code>.</p>\n<p>The request payload contains the encrypted scheduling context, the selected time window, prefilled user data, and optional links to support canceling or rescheduling the meeting after it's booked.</p>\n<hr />\n<h2 id=\"request-body-parameters\">Request Body Parameters</h2>\n<p>❗️ If your availability response indicates <code>pageInfo.displayAllPoolAvailability = true</code>, you <strong>must</strong> book using <code>POST /v1/round-robin-meeting</code> instead of this endpoint.</p>\n<p>This endpoint supports three request modes. Your request body must include <strong>exactly one</strong> of:</p>\n<ul>\n<li><p><code>token</code> (recommended)</p>\n</li>\n<li><p><code>linkId</code></p>\n</li>\n<li><p><code>params</code> (legacy)</p>\n</li>\n</ul>\n<hr />\n<h4 id=\"required-fields-for-all-requests\">Required fields for all requests</h4>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Type</th>\n<th>Required</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>scheduledTime</code></td>\n<td>object</td>\n<td>Yes</td>\n<td>The time slot the prospect selected.</td>\n</tr>\n<tr>\n<td><code>scheduledTime.start_time</code></td>\n<td>number</td>\n<td>Yes</td>\n<td>Start time (Unix timestamp in milliseconds).</td>\n</tr>\n<tr>\n<td><code>scheduledTime.end_time</code></td>\n<td>number</td>\n<td>Yes</td>\n<td>End time (Unix epoch timestamp in milliseconds).</td>\n</tr>\n<tr>\n<td><code>scheduledTime.timezone</code></td>\n<td>string</td>\n<td>Yes</td>\n<td>IANA timezone (e.g., <code>America/Los_Angeles</code>).</td>\n</tr>\n<tr>\n<td><code>userFields</code></td>\n<td>array</td>\n<td>Yes</td>\n<td>Prospect + form field values. Must include values for all required <code>meeting.formFields</code> returned by the availability endpoint.</td>\n</tr>\n</tbody>\n</table>\n</div><h4 id=\"userfields-important-notes\"><code>userFields</code> Important Notes:</h4>\n<ul>\n<li><p>You should return one <code>userField</code> object for each <strong>required, defined field</strong> in the <code>formFields</code> array (i.e., any field with a <code>name</code> value, any field with a <code>required: true</code> value).</p>\n</li>\n<li><p>First Name, Last Name, and Email are required by default and <strong>must be included</strong>.</p>\n</li>\n<li><p>If a field in <code>formFields</code> is undefined (e.g., has an empty <code>name</code>), it should be <strong>excluded</strong> from <code>userFields</code>.</p>\n<ul>\n<li><p><code>name</code> — A <strong>string</strong> that represents the field label (e.g. <code>\"First Name\"</code>).</p>\n</li>\n<li><p><code>type</code> — A <strong>string</strong> indicating the field type (<code>text</code>, <code>textarea</code>, etc.).</p>\n</li>\n<li><p><code>value</code> — A <strong>string</strong> (or <strong>array</strong>, depending on field type) representing the entered value.</p>\n<ul>\n<li>For <code>Additional Guest Emails</code>, this should be <strong>an array of strings</strong>, each representing an email address.</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n<hr />\n<h3 id=\"identification-modes\">Identification Modes</h3>\n<h4 id=\"mode-selector-rules\">Mode selector rules</h4>\n<p>❗️<strong>Exactly one</strong> of <code>token</code>, <code>linkId</code>, or <code>params</code> must be provided. Do not send more than one.</p>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Required?</th>\n<th>When to use</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>token</code></td>\n<td>Required if using token mode</td>\n<td>Use when booking after calling <code>/v1/scheduling/route-and-fetch-availability</code> or <code>/v1/scheduling/fetch-availability</code> and you have a booking token</td>\n<td>Recommended path. Avoids needing legacy <code>params</code>.</td>\n</tr>\n<tr>\n<td><code>linkId</code></td>\n<td>Required if using link mode</td>\n<td>Use when booking directly from a <strong>single-meeting-type BookIt Link</strong></td>\n<td>Must be a supported Link type. (Multi-meeting-type / routing / dynamic links aren’t supported.)</td>\n</tr>\n<tr>\n<td><code>params</code></td>\n<td>Required if using legacy mode</td>\n<td>Legacy integrations that already rely on the encrypted <code>params</code> payload</td>\n<td>Requires additional fields below.</td>\n</tr>\n</tbody>\n</table>\n</div><h4 id=\"legacy-only-fields-params-mode\">Legacy-only Fields (<code>params</code> mode)</h4>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Type</th>\n<th>Required</th>\n<th>Applies when</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>cancelLink</code></td>\n<td>string</td>\n<td>Optional</td>\n<td><code>params</code> mode</td>\n<td>Base cancel URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>\n</tr>\n<tr>\n<td><code>rescheduleLink</code></td>\n<td>string</td>\n<td>Optional</td>\n<td><code>params</code> mode</td>\n<td>Base reschedule URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>\n</tr>\n</tbody>\n</table>\n</div><h4 id=\"formatting-cancellink--reschedulelink\">Formatting <code>cancelLink</code> / <code>rescheduleLink</code></h4>\n<p>These links will be included in the confirmation email sent to the prospect. The values must be the base URL-- You can include any query parameters you'd like in the base URL. The BookIt system will automatically append the <code>meetingId</code> to the end of the URL.</p>\n<p>❗️ <strong>Note</strong>: Make sure the base URL is formatted to support appending the <code>meetingId</code> correctly, depending on whether you want it as a path or a query parameter.</p>\n<ul>\n<li><p>If you'd like the <code>meetingId</code> added as a path segment, provide a trailing slash (e.g. <code>https://example.com/cancel/</code>). The result will be <code>https://example.com/cancel/123</code>.</p>\n</li>\n<li><p>If you'd like the <code>meetingId</code> added as a query parameter, include the key in the base URL (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=</code>). BookIt will append the value (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=123</code>).</p>\n</li>\n</ul>\n<hr />\n<h2 id=\"response-body-parameters\">Response Body Parameters</h2>\n<ul>\n<li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>\n</li>\n<li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "meeting"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8cf795bb-080b-4dda-be35-80a89e6f4f5a",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "meeting"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"scheduledTime\": {\n    \"startTime\": 1746644400000,\n    \"endTime\": 1746646200000,\n    \"timezone\": \"America/Los_Angeles\"\n  },\n  \"params\": \"/SX/uPyXb00nUaCDWL5oMxM1Bx8WpQFn/o/oxd+lUGJtn6LHAxmuXEN0kJFtAIVAKHzgZwyVP1oO7U6//YDFIUnehI4PzKEMg3rXI8WrRN9AukpVuPrvb81WoWG4Z6xuvzeT2o9hYkiVreX4C7SP93JHcLD6A4WCvOclsZZlaS+7PbonkTm2gSOMJ74mAwfK8azheT9s39DZa35VZdkGYRZ8yk0pdctpWdA1LHID1XLbGG8wxQw3Y1GbPCrIh/ML4CDEmO9MhZZHQ9vXjfQqP1Zhb3cTvZUM2WSfW+n1tZxQicgviTX4UQ+VwcnBXvApdmBlJO3UXPpr+0DtprsfECABeIdMfRqR8fkqNQ0cFP5C29VWTq49hEUQrQBhpF0jEFoeExxfUchhBrWMuRJ1YabTy+Mh2+hT66yw8o/vqnZwTrJdmxHKlrX+aNKM6D6h4DR+HkoeGvBJOtzzjdA6izF1GOQCgzVpk55xELGedb7b15yWPMHDP11PQNbSXM+ilmoz3aG0PFqwd4PHg2goOi+E4zwLS6jAU1U9zXo5nVY=\",\n  \"cancelLink\": \"https://testdomain.com/cancel?=\",\n  \"rescheduleLink\": \"https://testdomain.com/reschedule?=\",\n  \"userFields\": [\n    {\n      \"name\": \"First Name\",\n      \"type\": \"text\",\n      \"value\": \"LeanData\"\n    },\n    {\n      \"name\": \"Last Name\",\n      \"type\": \"text\",\n      \"value\": \"Dev\"\n    },\n    {\n      \"name\": \"Email\",\n      \"type\": \"text\",\n      \"value\": \"test@test.com\"\n    },\n    {\n      \"name\": \"Additional Guest Emails\",\n      \"type\": \"textarea\",\n      \"value\": [\n        \"test1@test.com\"\n      ]\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "42ccf0ad-02a5-44ea-b6b9-31bbafbc6f2e",
+          "name": "v1/round-robin-meeting",
+          "request": {
+            "name": "v1/round-robin-meeting",
+            "description": {
+              "content": "<p>This endpoint is used to book a meeting with <strong>a user from a round robin pool</strong>. If your routing logic has determined that a pool of users should be considered for this meeting, this endpoint handles the final assignment and booking of the meeting with the most appropriate available user.</p>\n<p>💡 Use this endpoint when the availability response indicates <code>pageInfo.displayAllPoolAvailability</code> is <code>true</code>.</p>\n<p>The request payload includes the encrypted scheduling context, the chosen time window, prefilled prospect data, and optional links for canceling or rescheduling the meeting after booking.</p>\n<hr />\n<h2 id=\"request-body-parameters\">Request Body Parameters</h2>\n<h4 id=\"required-for-all-requests\">Required for all requests</h4>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Type</th>\n<th>Required</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>scheduledTime</code></td>\n<td>object</td>\n<td>Yes</td>\n<td>Defines the selected meeting time and the eligible host pool for that time.</td>\n</tr>\n<tr>\n<td><code>scheduledTime.start_time</code></td>\n<td>number</td>\n<td>Yes</td>\n<td>Meeting start time (Unix epoch milliseconds).</td>\n</tr>\n<tr>\n<td><code>scheduledTime.end_time</code></td>\n<td>number</td>\n<td>Yes</td>\n<td>Meeting end time (Unix epoch milliseconds).</td>\n</tr>\n<tr>\n<td><code>scheduledTime.timezone</code></td>\n<td>string</td>\n<td>Yes</td>\n<td>IANA timezone (e.g. <code>America/Los_Angeles</code>). Used for formatting the prospect confirmation email; the actual meeting time is based on the timestamps.</td>\n</tr>\n<tr>\n<td><code>scheduledTime.users</code></td>\n<td>string[]</td>\n<td>Yes</td>\n<td>Ordered list of user IDs eligible for the selected timeslot. <strong>Order matters</strong> and must match the order implied by <code>availability.timeSlots[].users</code> via <code>availability.indexToUserIdMap</code> from the availability response (preserves round-robin priority).</td>\n</tr>\n<tr>\n<td><code>userFields</code></td>\n<td>array</td>\n<td>Yes</td>\n<td>Form field values submitted by the prospect. Must include values for all required <code>meeting.formFields</code> returned by the availability endpoint.</td>\n</tr>\n</tbody>\n</table>\n</div><hr />\n<h3 id=\"identification-modes\">Identification Modes</h3>\n<h4 id=\"mode-selector-rules\">Mode selector rules</h4>\n<p>❗️<strong>Exactly one</strong> of <code>token</code>, <code>linkId</code>, or <code>params</code> must be provided. Do not send more than one.</p>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Required?</th>\n<th>When to use</th>\n<th>Notes</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>token</code></td>\n<td>Required if using token mode</td>\n<td>Use when booking after calling <code>/v1/scheduling/route-and-fetch-availability</code> or <code>/v1/scheduling/fetch-availability</code> and you have a booking token</td>\n<td>Recommended path. Avoids needing legacy <code>params</code>.</td>\n</tr>\n<tr>\n<td><code>linkId</code></td>\n<td>Required if using link mode</td>\n<td>Use when booking directly from a <strong>single-meeting-type BookIt Link</strong></td>\n<td>Must be a supported Link type. (Multi-meeting-type / routing / dynamic links aren’t supported.)</td>\n</tr>\n<tr>\n<td><code>params</code></td>\n<td>Required if using legacy mode</td>\n<td>Legacy integrations that already rely on the encrypted <code>params</code> payload</td>\n<td>Requires additional fields below.</td>\n</tr>\n</tbody>\n</table>\n</div><h4 id=\"legacy-only-fields-params-mode\">Legacy-only Fields (<code>params</code> mode)</h4>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Field</th>\n<th>Type</th>\n<th>Required</th>\n<th>Applies when</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>cancelLink</code></td>\n<td>string</td>\n<td>Optional</td>\n<td><code>params</code> mode</td>\n<td>Base cancel URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>\n</tr>\n<tr>\n<td><code>rescheduleLink</code></td>\n<td>string</td>\n<td>Optional</td>\n<td><code>params</code> mode</td>\n<td>Base reschedule URL prefix used by legacy flows (often includes <code>?meetingId=</code>).</td>\n</tr>\n</tbody>\n</table>\n</div><h4 id=\"formatting-cancellink--reschedulelink\">Formatting <code>cancelLink</code> / <code>rescheduleLink</code></h4>\n<p>These links will be included in the confirmation email sent to the prospect. The values must be the base URL-- You can include any query parameters you'd like in the base URL. The BookIt system will automatically append the <code>meetingId</code> to the end of the URL.</p>\n<p>❗️ <strong>Note</strong>: Make sure the base URL is formatted to support appending the <code>meetingId</code> correctly, depending on whether you want it as a path or a query parameter.</p>\n<ul>\n<li><p>If you'd like the <code>meetingId</code> added as a path segment, provide a trailing slash (e.g. <code>https://example.com/cancel/</code>). The result will be <code>https://example.com/cancel/123</code>.</p>\n</li>\n<li><p>If you'd like the <code>meetingId</code> added as a query parameter, include the key in the base URL (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=</code>). BookIt will append the value (e.g. <code>https://example.com/cancel?utm_source=email&amp;meetingId=123</code>).</p>\n</li>\n</ul>\n<hr />\n<h2 id=\"response-body-parameters\">Response Body Parameters</h2>\n<ul>\n<li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>\n</li>\n<li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>\n</li>\n<li><p><code>selectedUserId</code> — A <strong>string</strong> representing the Salesforce user ID of the rep selected from the round robin pool to host the meeting.</p>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "round-robin-meeting"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d5096aff-8cbc-4ecd-9e52-6cb15be98101",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "round-robin-meeting"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"scheduledTime\": {\n    \"start_time\": 1746486000000,\n    \"end_time\": 1746486900000,\n    \"timezone\": \"America/Los_Angeles\",\n    \"users\": [\n      \"0058c00000CssZGAAZ\",\n      \"0058c00000CtXJhAAN\",\n      \"0058c00000AukyPAAR\",\n      \"0058c00000CtXKaAAN\",\n      \"0058c000009wAEKAA2\",\n      \"0058c00000CssZLAAZ\"\n    ]\n  },\n  \"cancelLink\": \"https://testdomain.com/cancel?meetingId=\",\n  \"rescheduleLink\": \"https://testdomain.com/reschedule?meetingId=\",\n  \"params\": \"+aELYG7xzbgpE4sSyByw27/J11+QuSnMHV/Z5UDYfWhTYqOWLqSPG2bqRUBjUncGDhALE5PZ9lTtTK1n9yoQVLnHT58AUVANEe23Dzi1/62oOBZx+lpw7NeB0zqAYnGkVXjbchNC7PtZLcWA4VXjwuZvkIfkFqxZqA5hf9u2NpC6AMUyTo7j+Svyoc/S2Dit9IBrmbWhZcdn3eaNkVTkfqcW6RjX/LA+A9MgomWe9eQbgibpJGgUBN4KwmVQYQxiuwaSe4pMNyckOGg9EymjVPizsLSq9Iwc/tbj11RW6fPTbgquUyymeGYhIeIt0uONE/vAGiHO7Vkdn9gvAsQG5Y5aKvRF84zmd+vePfh7h43VvVoWH1w2lff5/Ks0rSDvAgRgdwXauZwudGoX0YWXHJfZEwEcgAbw16aLJiY6r+eLkgInglI2ZA9DfmE753JSbJ1PrtP7WNZYPI6NUvRORaKTg7xHPQg6ZrLTo1jo4L6qfP0nnn9D3sEmnVVxyfDeE+CVZWbawxjVTZFVTXL9/hVu2djwzEKlI9VxapB9qc1VK7cwBNLgC3qlnaaMr5Js\",\n  \"userFields\": [\n    {\n      \"name\": \"First Name\",\n      \"type\": \"text\",\n      \"value\": \"Test\"\n    },\n    {\n      \"name\": \"Last Name\",\n      \"type\": \"text\",\n      \"value\": \"pool\"\n    },\n    {\n      \"name\": \"Email\",\n      \"type\": \"text\",\n      \"value\": \"test@test.com\"\n    },\n    {\n      \"name\": \"Additional Guest Emails\",\n      \"type\": \"textarea\",\n      \"value\": []\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.leandata.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "57e5a068-815d-48fa-95a3-89a8aa4ba8a1",
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Create API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.",
+      "type": "text/plain"
+    }
+  }
+}

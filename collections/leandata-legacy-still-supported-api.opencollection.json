@@ -1,0 +1,75 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability Legacy (still supported) API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Legacy (still supported)",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "/v1/scheduling/route (legacy)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/route",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p><strong>Legacy routing-only endpoint</strong>. Runs routing and returns routing results as encrypted token, but does not return availability. Existing integrations may continue using this endpoint. For new builds, prefer <code>POST /v1/scheduling/route-and-fetch-availability</code>.</p>\n<p>Depending on the concluding routing decision, this endpoint will either return data needed to query for the next endpoint, a redirect link, or an indication to render your fallback experience.</p>\n<p><stron"
+        },
+        {
+          "info": {
+            "name": "/v1/scheduling/retrieve-info (legacy)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/retrieve-info",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p><strong>Use this endpoint when booking a meeting for the first time.</strong> This endpoint returns comprehensive scheduling data needed to build a booking experience, including meeting configuration, host availability, and user information. This data enables the construction of a scheduling page with available time slots, host details, working hours, and meeting parameters.</p>\n<hr />\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><code>params</code> (required) — A <s"
+        },
+        {
+          "info": {
+            "name": "v1/scheduling/retrieve-modification-info (legacy)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/retrieve-modification-info",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>This endpoint returns the same scheduling payload as <code>v1/scheduling/retrieve-info</code>, but is specifically <strong>used when rescheduling or canceling an existing meeting</strong>. Use this endpoint to retrieve all necessary data to re-render the scheduling UI in a modification flow.</p>\n<hr />\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>eventId</code> (required) — A <strong>string</strong> representing the unique identifier of the booked meeting. T"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

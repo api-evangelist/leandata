@@ -4,32 +4,84 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: LeanData
 providerId: leandata
 created: '2026-05-25'
-modified: '2026-05-25'
+modified: '2026-08-13'
+generated: '2026-08-13'
+method: searched
+source: https://docs.leandata.com
 reconciled: false
 tags:
   - Rate Limits
   - Salesforce
   - BookIt
   - Orchestration
+  - MCP
 description: >-
-  LeanData does not publish a public rate-limit table for its developer
-  APIs. The Matching and Round Robin APIs are dispatched through the
-  customer's Salesforce org via the managed package's Apex REST endpoint and
-  therefore inherit Salesforce platform governor limits (daily API request
-  limits per org edition, per-transaction CPU and heap limits, and
-  concurrent long-running Apex caps). The BookIt and Graph APIs hosted at
-  `api.leandata.com` are subject to internal throttling that is documented
-  privately to enterprise customers; specifics are not published.
+  LeanData publishes exactly one numeric rate limit, in prose, on the Graph API: "The Routing
+  API acts at a rate limit of 10,000 requests per second per api key usage." Nothing else is
+  documented. The BookIt API publishes no limit at all. The Matching and Round Robin APIs run
+  inside the customer's own Salesforce org through the managed package's Apex REST endpoint and
+  therefore inherit Salesforce platform governor limits rather than any LeanData quota. Most
+  consequentially for an integrator: no LeanData endpoint returns a rate-limit response header
+  of any kind, so a client cannot see remaining budget, cannot learn a reset time, and has no
+  Retry-After to back off against. Verified live on 2026-08-13 — an unauthenticated call to
+  api.leandata.com returns only AWS API Gateway headers (x-amzn-requestid, x-amz-apigw-id) with
+  no RateLimit-*, X-RateLimit-* or Retry-After.
 sources:
   - https://docs.leandata.com
-  - https://api.leandatainc.com
   - https://developer.salesforce.com/docs/atlas.en-us.salesforce_app_limits_cheatsheet.meta/salesforce_app_limits_cheatsheet/salesforce_app_limits_overview.htm
-algorithm: governor-limits
+algorithm: unspecified
+limit_count: 1
+limits:
+  - id: graph-routing-api
+    api: Graph API
+    scope: per-api-key
+    limit: 10000
+    unit: requests
+    window: 1s
+    burst: null
+    status_on_exhaustion: undocumented
+    documented: true
+    source: https://docs.leandata.com
+    quote: The Routing API acts at a rate limit of 10,000 requests per second per api key usage.
+    applies_to:
+      - POST /orchestration/v1/one-time-routing
+      - GET /orchestration/v1/one-time-routing/:jobId
+      - GET /orchestration/v1/routing-graphs
+response_headers:
+  ratelimit: none
+  x_ratelimit: none
+  retry_after: none
+  observed:
+    - header: x-amzn-requestid
+      set_by: AWS API Gateway
+    - header: x-amz-apigw-id
+      set_by: AWS API Gateway
+  method: probed
+  probed:
+    - url: https://api.leandata.com/v1/scheduling/retrieve-inputs
+      request: POST without X-Api-Key
+      http_status: 401
+      fetched: '2026-08-13'
+    - url: https://api.leandata.com/orchestration/v1/routing-graphs
+      request: GET without X-Api-Key
+      http_status: 401
+      fetched: '2026-08-13'
+undocumented_surfaces:
+  - api: BookIt API
+    host: https://api.leandata.com
+    note: No published limit. Internal throttling is not disclosed; ask your LeanData Account Manager for production planning numbers.
+  - api: BookIt MCP
+    host: https://mcp.leandata.com
+    note: No published limit and no rate-limit headers observed on the anonymous 401 response.
+  - api: Matching and Round Robin API
+    host: 'https://<your-instance>.my.salesforce.com'
+    note: >-
+      Inherits Salesforce platform governor limits — daily API request quotas per org edition
+      (Enterprise 1,000 + 100 per license up to 1M; Unlimited/Performance 5,000 + 100 per license
+      up to 1M), per-transaction CPU and heap limits, and concurrent long-running Apex caps.
+      These are Salesforce's limits, not LeanData's, and they are consumed by everything else in
+      the customer's org too.
 notes: >-
-  Matching and Round Robin API consumers should plan against Salesforce
-  daily-API-request quotas (Enterprise: 1,000 + 100 * licenses, max 1M;
-  Unlimited and Performance: 5,000 + 100 * licenses, max 1M) and Apex
-  governor limits documented by Salesforce. BookIt and Graph rate limits
-  are not publicly disclosed by LeanData; request a copy from your LeanData
-  Account Manager for production planning.
-limits: []
+  The single largest runtime gap in this API is the absence of rate-limit signalling. An agent
+  calling BookIt has no published limit to respect and no header to read, which leaves polite
+  back-off impossible to implement correctly.

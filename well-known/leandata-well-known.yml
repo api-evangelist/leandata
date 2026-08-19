@@ -1,0 +1,101 @@
+generated: '2026-08-13'
+method: probed
+source: live HTTP probes of every LeanData host in apis.yml + OpenAPI servers[] + the discovered MCP host
+description: >-
+  Well-known discovery probe across every LeanData host. Four of the five hosts serve
+  nothing at /.well-known/ — the marketing site (WordPress), the Postman-hosted docs
+  documenter, the AWS API Gateway API host, and the legacy matching docs host all 404
+  every path. The one real discovery surface is the BookIt MCP server at
+  mcp.leandata.com, which publishes both RFC 9728 OAuth protected-resource metadata and
+  RFC 8414 authorization-server metadata. Those two documents are the only machine-readable
+  discovery documents LeanData serves anywhere, and they are what lets an MCP client
+  negotiate access to the BookIt MCP server without a human reading a help-center article.
+hosts:
+  - host: https://mcp.leandata.com
+    documents:
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        content_type: application/json
+        file: leandata-oauth-protected-resource.json
+        spec: RFC 9728 OAuth 2.0 Protected Resource Metadata
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        content_type: application/json
+        file: leandata-oauth-authorization-server.json
+        spec: RFC 8414 OAuth 2.0 Authorization Server Metadata
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+  - host: https://api.leandata.com
+    note: AWS API Gateway; every path returns {"message":"Route Not Found"}
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://www.leandata.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+      - path: /llms.txt
+        status: 200
+        content_type: text/plain
+        file: ../llms/leandata-llms.txt
+        note: not a /.well-known/ path, recorded here because it is the site's other machine-readable discovery document
+  - host: https://docs.leandata.com
+    note: Postman public documenter; returns the documenter HTML shell (404 status) for every well-known path
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://api.leandatainc.com
+    note: legacy matching-API documentation host, also a Postman documenter
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+security_txt:
+  served: false
+  note: >-
+    No RFC 9116 security.txt on any LeanData host. LeanData does publish a Responsible
+    Disclosure item on its SafeBase trust center — see security/leandata-vulnerability-disclosure.yml —
+    but it is not reachable at the well-known path an automated scanner checks.

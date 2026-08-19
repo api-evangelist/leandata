@@ -1,0 +1,51 @@
+generated: '2026-08-13'
+method: generated
+source: openapi/*.yml + mcp/leandata-mcp.yml + https://docs.leandata.com
+description: >-
+  Packaged Agent Skills for the LeanData developer surface — one per marquee flow across the
+  three products with an API (BookIt scheduling, Graph orchestration, Salesforce-native
+  matching) plus one for connecting an agent to the BookIt MCP server. Every step is grounded in
+  an operation that exists verbatim in the referenced spec. LeanData's OpenAPI declares no
+  operationId on any operation, so operations are identified by METHOD and PATH, which is what
+  the specs actually publish.
+provider_published_skills: none-found
+provider_published_note: >-
+  No AGENTS.md, skills/ directory or provider-authored agent instructions were found on
+  leandata.com, docs.leandata.com or the LeanData GitHub organization.
+skills:
+  - file: leandata-book-a-meeting.md
+    name: Book a meeting with LeanData BookIt
+    api: openapi/leandata-scheduling-inputs-api-openapi.yml
+    operations:
+      - POST /v1/scheduling/retrieve-inputs
+      - POST /v1/scheduling/route-and-fetch-availability
+      - POST /v1/meeting
+      - POST /v1/round-robin-meeting
+  - file: leandata-manage-a-meeting.md
+    name: Retrieve, reschedule and cancel a LeanData BookIt meeting
+    api: openapi/leandata-meetings-retrieve-api-openapi.yml
+    operations:
+      - GET /v1/meetings
+      - GET /v1/meeting/:meetingId
+      - POST /v1/scheduling/fetch-availability
+      - PATCH /v1/meeting/:meetingId
+      - DELETE /v1/meeting/:meetingId
+  - file: leandata-run-one-time-routing.md
+    name: Run LeanData one-time routing against a Salesforce object set
+    api: openapi/leandata-one-time-routing-api-openapi.yml
+    operations:
+      - GET /orchestration/v1/routing-graphs
+      - POST /orchestration/v1/one-time-routing
+      - GET /orchestration/v1/one-time-routing/:jobId
+  - file: leandata-match-lead-to-account.md
+    name: Match a lead, contact or account with the LeanData Matching API
+    api: openapi/leandata-matching-api-openapi.yml
+    operations:
+      - POST /services/apexrest/LeanData/LeanDataAPI
+  - file: leandata-connect-bookit-mcp.md
+    name: Connect an AI client to the LeanData BookIt MCP server
+    api: mcp/leandata-mcp.yml
+    operations:
+      - POST https://mcp.leandata.com/mcp
+      - GET https://mcp.leandata.com/.well-known/oauth-protected-resource
+      - GET https://mcp.leandata.com/.well-known/oauth-authorization-server

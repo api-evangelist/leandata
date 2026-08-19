@@ -1,0 +1,74 @@
+generated: '2026-08-13'
+method: probed
+source: https://mcp.leandata.com/.well-known/oauth-protected-resource
+docs: https://www.leandata.com/resources/leandatas-bookit-mcp/
+description: >-
+  LeanData's only OAuth scope surface belongs to the BookIt MCP server. The REST APIs on
+  api.leandata.com use an unscoped X-Api-Key, and the Matching / Round Robin API borrows the
+  customer's Salesforce Connected App session, so neither has scopes of its own. The four
+  scopes below were read from the RFC 9728 protected-resource metadata LeanData serves at
+  mcp.leandata.com — they are published values, not inferred ones. LeanData does not publish
+  a scopes reference page, so the descriptions are the documented role model from the BookIt
+  MCP release material mapped onto the scope names, and are marked as such.
+
+resource: https://mcp.leandata.com
+authorization_server: https://mcp.leandata.com
+schemes:
+  - name: BookItMcpOAuth
+    source: https://mcp.leandata.com/.well-known/oauth-authorization-server
+    flows:
+      - flow: authorizationCode
+        authorizationUrl: https://mcp.leandata.com/authorize
+        tokenUrl: https://mcp.leandata.com/token
+        code_challenge_methods: [S256]
+    registration_endpoint: https://mcp.leandata.com/register
+
+scopes:
+  - scope: admin
+    description: >-
+      Administrator-level access to the BookIt MCP tool set. LeanData documents the admin role
+      as able to view cancelled meetings by pool / reason / date range, check real-time
+      availability across users and pools by meeting type, identify reps who have not connected
+      their calendars, and manage cancellations, rescheduling and host swaps.
+    description_source: role-model-mapping
+    flows: [authorizationCode]
+    sources: [https://mcp.leandata.com/.well-known/oauth-protected-resource]
+  - scope: user
+    description: >-
+      Rep-level access. LeanData documents the rep role as able to look up their upcoming
+      meetings and conference details, view their own meetings and pipeline, check their own
+      availability, access their own profile and conferencing setup, and mark no-shows to
+      trigger the credit-back process.
+    description_source: role-model-mapping
+    flows: [authorizationCode]
+    sources: [https://mcp.leandata.com/.well-known/oauth-protected-resource]
+  - scope: partner
+    description: >-
+      External partner / agent access. Corresponds to the one-time-code onboarding path for
+      partners and AI agents that have no Salesforce credentials in the customer's org; an
+      email address and a permission set are assigned in advance.
+    description_source: role-model-mapping
+    flows: [authorizationCode]
+    sources: [https://mcp.leandata.com/.well-known/oauth-protected-resource]
+  - scope: offline_access
+    description: >-
+      Standard OAuth offline access — issues a refresh token so an agent can keep a long-lived
+      session. refresh_token is one of the two grant types the authorization-server metadata
+      advertises.
+    description_source: oauth-standard
+    flows: [authorizationCode]
+    sources: [https://mcp.leandata.com/.well-known/oauth-authorization-server]
+
+enforcement:
+  note: >-
+    LeanData states that once a client is connected, the tools available to each caller are
+    automatically filtered by their BookIt permission set, and every action taken through the
+    MCP server respects the org's routing rules, pool fairness settings and SLA logic. Scope is
+    therefore an outer bound; the effective permission comes from Salesforce.
+
+gaps:
+  - >-
+    No public scopes reference page. The scope NAMES are machine-discoverable but their exact
+    grants are not published, so a client cannot request least privilege with confidence.
+  - >-
+    No scope surface on the REST APIs; a BookIt X-Api-Key is all-or-nothing.

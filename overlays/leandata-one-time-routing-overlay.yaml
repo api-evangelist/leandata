@@ -1,0 +1,41 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for LeanData Graph One Time Routing
+  version: 1.0.0
+extends: openapi/leandata-one-time-routing-api-openapi.yml
+x-generated: '2026-08-13'
+x-method: generated
+x-source: openapi/leandata-one-time-routing-api-openapi.yml + https://docs.leandata.com
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: leandata
+    x-apievangelist-product: Graph One Time Routing
+    x-apievangelist-enriched: '2026-08-13'
+    x-apievangelist-conventions: conventions/leandata-conventions.yml
+    x-apievangelist-errors: errors/leandata-problem-types.yml
+    x-apievangelist-authentication: authentication/leandata-authentication.yml
+    x-apievangelist-data-model: data-model/leandata-data-model.yml
+    x-apievangelist-lifecycle: lifecycle/leandata-lifecycle.yml
+- target: $
+  update:
+    components:
+      securitySchemes:
+        LeanDataApiKey:
+          type: apiKey
+          in: header
+          name: X-Api-Key
+          description: LeanData API key sent in the X-Api-Key header. Graph API keys are issued self-service
+            by an org admin at Settings > Admin > Authorization. Server-side only; HTTPS required; missing
+            or invalid keys return HTTP 401.
+    security:
+    - LeanDataApiKey: []
+- target: $.info
+  update:
+    x-apievangelist-note: The published LeanData OpenAPI declares no securityScheme. This overlay adds
+      the X-Api-Key apiKey scheme LeanData documents in prose at https://docs.leandata.com so the contract
+      is self-describing. It does not change how the API behaves.
+- target: $.info
+  update:
+    x-apievangelist-operationid-gap: No operation in this document declares an operationId. Downstream
+      artifacts in this repo therefore identify operations by METHOD + PATH.

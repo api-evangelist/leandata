@@ -1,0 +1,105 @@
+generated: '2026-08-13'
+method: searched
+source: https://status.leandata.com
+description: >-
+  Lifecycle posture for the LeanData developer surface. LeanData runs a real public status
+  page with per-product components and it ships a quarterly release cadence with dated release
+  notes, but it publishes no API versioning policy, no deprecation policy, no Sunset/Deprecation
+  header support and no public SLA. The one visible deprecation signal is a documentation
+  folder literally named "Legacy (still supported)" holding three BookIt scheduling operations —
+  a label, not a policy: no sunset date, no replacement mapping, no removal commitment.
+
+versioning:
+  scheme: uri-path
+  current:
+    bookit: v1
+    graph: v1
+    matching: '2'
+  managed_package_gate: >-
+    Matching and Round Robin capabilities are additionally gated on the installed LeanData
+    managed-package version; every documented operation is marked "1.500+".
+  policy_url: null
+  policy_published: false
+
+deprecation:
+  policy_url: null
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  note: >-
+    No RFC 8594 Sunset or Deprecation header support is documented or observed. No deprecation
+    policy page exists. LeanData signals legacy status only through documentation grouping.
+  legacy_operations:
+    - operation: POST /v1/scheduling/route
+      spec: openapi/leandata-legacy-still-supported-api-openapi.yml
+      status: legacy-still-supported
+      successor: POST /v1/scheduling/route-and-fetch-availability
+      successor_confidence: medium
+      successor_note: >-
+        Inferred from the current Availability folder superseding the legacy routing call;
+        LeanData does not publish a migration mapping.
+    - operation: POST /v1/scheduling/retrieve-info
+      spec: openapi/leandata-legacy-still-supported-api-openapi.yml
+      status: legacy-still-supported
+      successor: POST /v1/scheduling/retrieve-inputs
+      successor_confidence: medium
+    - operation: POST /v1/scheduling/retrieve-modification-info
+      spec: openapi/leandata-legacy-still-supported-api-openapi.yml
+      status: legacy-still-supported
+      successor: POST /v1/scheduling/fetch-availability
+      successor_confidence: low
+  legacy_field_signals:
+    - >-
+      "eventId (legacy)" is named in a published BookIt error message as the older identifier
+      alongside meetingId, indicating a field-level rename that is still accepted.
+  deprecated_operations_in_spec: []
+  spec_note: >-
+    No operation in any harvested OpenAPI carries deprecated: true, including the three in the
+    Legacy folder. The legacy signal exists in the documentation grouping only and does not
+    reach the machine-readable contract.
+
+status_page:
+  url: https://status.leandata.com
+  platform: statuspage-compatible
+  api: https://status.leandata.com/api/v2/summary.json
+  machine_readable: true
+  components_observed:
+    - BookIt Handoff
+    - BookIt Chrome Extension
+    - BookIt for Forms
+    - BookIt Links
+  observed: '2026-08-13'
+  observed_status: All Systems Operational
+  note: >-
+    Components cover the BookIt product family. The Matching / Round Robin API is not listed as
+    a component, which is consistent with it executing inside the customer's own Salesforce org
+    rather than on LeanData infrastructure.
+
+sla:
+  url: null
+  uptime_target: null
+  published: false
+  note: >-
+    No public SLA. Uptime and support commitments are contractual; the Orchestration Enterprise
+    edition adds a dedicated Account Manager and CSM, solution consulting, and sandbox plus
+    production support.
+
+release_cadence:
+  scheme: quarterly
+  recent: Q2 2026
+  notes_url: https://leandatahelp.zendesk.com/hc/en-us/sections/360002566353-Release-Notes
+  notes_public: false
+  notes_note: >-
+    The Zendesk release-notes section returns HTTP 403 to an anonymous client; dated release
+    coverage that IS public lives on the LeanData blog. See changelog/leandata-changelog.yml.
+
+support:
+  portal: https://support.leandata.com
+  email: support@leandata.com
+
+gaps:
+  - No published API versioning or deprecation policy.
+  - No Sunset / Deprecation header support.
+  - Legacy operations are labelled in docs but not marked deprecated in the OpenAPI.
+  - Release notes are gated behind an authenticated help center.
+  - No public SLA or uptime target.

@@ -1,0 +1,127 @@
+{
+  "item": [
+    {
+      "id": "c7b7d712-57f2-4894-a1f9-7f2cdc256c64",
+      "name": "🧠 Scheduling Inputs",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "b6d8375e-6384-4ac7-b64c-0634fb0bef33",
+          "name": "v1/scheduling/retrieve-inputs",
+          "request": {
+            "name": "v1/scheduling/retrieve-inputs",
+            "description": {
+              "content": "<p>This endpoint returns the fields defined in your trigger node. Use this endpoint to dynamically determine what prospect data must be collected (including field types and validation rules) prior to calling the routing availability endpoint.</p>\n<p>⚠️ <strong>Note:</strong> Routing Links Trigger Nodes are <strong>not</strong> supported.</p>\n<p><strong>Common use cases:</strong></p>\n<ul>\n<li><p>Agentic scheduling: ask only for missing fields</p>\n</li>\n<li><p>Dynamic UI: render required fields based on trigger configuration</p>\n</li>\n</ul>\n<hr />\n<h2 id=\"request-body-parameters\">Request Body Parameters</h2>\n<ul>\n<li><code>nodeName</code> (required) — A <strong>string</strong> value that contains the name of your Trigger Node (in the BookIt Flowbuilder). For more information, check out the <a href=\"https://leandatahelp.zendesk.com/hc/en-us/articles/5987002499995-New-Prospect-Trigger-Node\">Trigger Node Implementation guide</a>.</li>\n</ul>\n<hr />\n<h2 id=\"response-body-parameters\">Response Body Parameters</h2>\n<ul>\n<li><p><code>name</code> — A <strong>string</strong> name of the requested trigger node.</p>\n</li>\n<li><p><code>inputs</code> — An <strong>array of input field objects</strong> that represent the fields required for routing. Each input field object contains the following properties:</p>\n<ul>\n<li><p>⚠️ <strong>Note:</strong> All input definitions in the <code>inputs</code> array are configured in the LeanData application. If any updates or changes are needed—such as adding, removing, or modifying input fields—they must be made in the corresponding configuration within LeanData. These definitions cannot be modified through the API.</p>\n<ul>\n<li><p><code>name</code> — A <strong>string</strong> that represents the unique API name of the input field. This value should be used as the key when submitting data for booking or routing requests.</p>\n</li>\n<li><p><code>type</code> — A <strong>string</strong> that represents the expected data type of the input field.</p>\n<p>  Supported values include:</p>\n<ul>\n<li><p><code>STRING</code> — A text value</p>\n</li>\n<li><p><code>PHONE</code> — A text value of the phone number (can include country code).</p>\n</li>\n<li><p><code>DOUBLE</code> — A numeric value (supports decimal values)</p>\n</li>\n<li><p><code>BOOLEAN</code> — A true/false value</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "scheduling",
+                "retrieve-inputs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "7ed118bb-4ba6-4141-b080-d34d9b76822f",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "scheduling",
+                    "retrieve-inputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nodeName\": \"New Webform Prospect\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.leandata.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "cff2b596-1c99-45ce-b8fa-17199aee3056",
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 🧠 Scheduling Inputs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.",
+      "type": "text/plain"
+    }
+  }
+}

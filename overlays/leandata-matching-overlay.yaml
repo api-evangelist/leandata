@@ -1,0 +1,59 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for LeanData Matching and Round Robin
+  version: 1.0.0
+extends: openapi/leandata-matching-api-openapi.yml
+x-generated: '2026-08-13'
+x-method: generated
+x-source: openapi/leandata-matching-api-openapi.yml + https://docs.leandata.com
+actions:
+- target: $.info
+  update:
+    x-apievangelist-provider: leandata
+    x-apievangelist-product: Matching and Round Robin
+    x-apievangelist-enriched: '2026-08-13'
+    x-apievangelist-conventions: conventions/leandata-conventions.yml
+    x-apievangelist-errors: errors/leandata-problem-types.yml
+    x-apievangelist-authentication: authentication/leandata-authentication.yml
+    x-apievangelist-data-model: data-model/leandata-data-model.yml
+    x-apievangelist-lifecycle: lifecycle/leandata-lifecycle.yml
+- target: $
+  update:
+    components:
+      securitySchemes:
+        SalesforceConnectedApp:
+          type: oauth2
+          description: Salesforce OAuth 2.0 Connected App session. The Matching and Round Robin API is
+            dispatched through the customer's own Salesforce org via the LeanData managed package Apex
+            REST endpoint, so the token is issued by Salesforce, not LeanData.
+          flows:
+            authorizationCode:
+              authorizationUrl: https://login.salesforce.com/services/oauth2/authorize
+              tokenUrl: https://login.salesforce.com/services/oauth2/token
+              refreshUrl: https://login.salesforce.com/services/oauth2/token
+              scopes: {}
+    security:
+    - SalesforceConnectedApp: []
+- target: $.info
+  update:
+    x-apievangelist-note: servers[] in this refined document reads https://api.leandata.com, but the harvested
+      original (openapi/_original/leandata-matching-openapi.yml) and LeanData's own documentation both
+      place this operation on the customer's Salesforce instance at https://<your-instance>.my.salesforce.com/services/apexrest/LeanData/LeanDataAPI.
+      The original is authoritative; recorded here rather than mutating the harvested spec.
+    x-apievangelist-actual-host: https://<your-instance>.my.salesforce.com
+    x-apievangelist-operation-modes:
+    - matchedLead
+    - duplicateLead
+    - allDuplicateLeads
+    - allRelatedLeads
+    - duplicateContact
+    - allDuplicateContacts
+    - matchedAccount
+    - allRelatedAccounts
+    - roundRobin (standard assignment)
+    - roundRobin (flexible)
+    - roundRobin (pool information)
+- target: $.info
+  update:
+    x-apievangelist-operationid-gap: No operation in this document declares an operationId. Downstream
+      artifacts in this repo therefore identify operations by METHOD + PATH.

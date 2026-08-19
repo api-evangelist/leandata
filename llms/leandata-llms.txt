@@ -1,0 +1,66 @@
+# LeanData: Intelligent Go-To-Market Orchestration
+
+> LeanData is the leading platform for AI Go-to-Market Orchestration, sitting at the 
+intersection of AI agents, human sellers, and the systems they share. LeanData 
+orchestrates the entire revenue lifecycle, from leads to opportunities to account 
+retention and expansion, so every buyer signal triggers the right action 
+that drives revenue. Trusted by 1,000+ world-class B2B companies including 
+Anthropic, OpenAI, NVIDIA, Uber for Business, Snowflake, Adobe, and Palo Alto 
+Networks.
+
+## Platform
+- [Platform Overview](https://www.leandata.com/platform/)
+- [Orchestration](https://www.leandata.com/platform/orchestration/)
+- [Scheduling](https://www.leandata.com/platform/scheduling/)
+- [Buying Groups](https://www.leandata.com/platform/buying-groups/)
+- [Integrations](https://www.leandata.com/integrations/)
+- [Pricing](https://www.leandata.com/pricing/)
+
+## Use Cases
+- [Speed to Lead](https://www.leandata.com/platform/speed-to-lead/)
+- [Account-Based Marketing](https://www.leandata.com/platform/account-based-marketing/)
+- [B2B Buying Groups](https://www.leandata.com/platform/buying-groups/)
+- [AI SDR Routing](https://www.leandata.com/platform/ai-sdr-routing/) 
+
+## Solutions by Team
+- [Marketing](https://www.leandata.com/platform/marketing/)
+- [Sales](https://www.leandata.com/platform/sales/)
+- [Operations](https://www.leandata.com/platform/operations/)
+- [Customer Success](https://www.leandata.com/platform/customer-success/)
+- [IT](https://www.leandata.com/platform/it-professional/)
+
+## Customer Stories
+- [Featured Customers](https://www.leandata.com/featured-customers/)
+- [Customer Stories](https://www.leandata.com/resources/?content_type=customer-story#listing)
+- [How Uber Increased Deal Velocity by 68% with LeanData](https://www.leandata.com/resources/how-uber-increased-deal-velocity-by-68-with-leandata/)
+- [Palo Alto Networks Sees Revenue Increases with Buying Groups Strategy](https://www.leandata.com/resources/palo-alto-networks-sees-revenue-increases-with-buying-group-strategy/)
+
+## Blog
+- [Blog](https://www.leandata.com/blog/)
+- [AI GTM Tools That Actually Improve Lead Routing](https://www.leandata.com/blog/ai-gtm-lead-routing-use-cases/)
+- [Deterministic vs. Probabilistic Systems: Why AI Alone Won’t Fix Your GTM Motion](https://www.leandata.com/blog/deterministic-vs-probabilistic-systems-ai-gtm/)
+- [Salesforce Data Quality
+From Dirty Data to a Foundation your AI Strategy Can Trust](https://www.leandata.com/blog/salesforce-data-quality/)
+- [Round Robin Lead Distribution Best Practices](https://www.leandata.com/blog/round-robin-lead-distribution-best-practices/)
+- [Account-Based Routing in Salesforce How It Works](https://www.leandata.com/blog/account-based-routing-salesforce/)
+- [Account Hierarchies for B2B Teams](https://www.leandata.com/blog/account-hierarchies-for-b2b-teams/)
+
+## Resources
+- [Resource Center](https://www.leandata.com/resources/)
+- [The 2026 B2B State of Martech and Revenue Operations Report](https://www.leandata.com/state-of-martech-revops-report-2026/)
+- [A New Model for GTM Execution in the Age of AI and Buying Networks](https://www.leandata.com/resources/new-model-gtm-execution-ai-buying-networks/)
+- [The Complete Guide to Scheduling & Orchestration for Ops Pros](https://www.leandata.com/resources/scheduling-and-orchestration-for-gtm-teams/)
+- [The Future of GTM: Connecting AI SDRs to LeanData](https://www.leandata.com/resources/the-future-of-gtm-connecting-ai-sdrs-to-leandata/)
+- [Harvard Business Review Research Report Aligning Go-to-Market Execution with Strategy ](https://www.leandata.com/harvard-business-review-aligning-go-to-market-execution-with-strategy/)
+
+## Newsroom
+- [Newsroom](https://www.leandata.com/newsroom/)
+- [LeanData Launches OpsStars 2026 as a Standalone Conference](https://www.leandata.com/newsroom/leandata-launches-opsstars-2026-as-standalone-conference//)
+- [HBR Research Reveals Execution Gap in B2B Go-to-Market Strategy](https://www.leandata.com/newsroom/hbr-research-reveals-execution-gap-in-b2b-go-to-market-strategy/)
+- [LeanData Wins 2026 G2 Best Sales Product Award](https://www.leandata.com/newsroom/leandata-wins-2026-g2-best-software-award/)
+
+## Company
+- [About LeanData](https://www.leandata.com/company/)
+- [Careers](https://www.leandata.com/company/careers/)
+- [Contact](https://www.leandata.com/contact-us/)
+- [Learning Center](https://www.leandata.com/learning-center/)

@@ -1,0 +1,98 @@
+generated: '2026-08-13'
+method: searched
+source: registry searches across npm, PyPI, RubyGems, plus the LeanData GitHub organization and docs
+description: >-
+  LeanData publishes no first-party client library in any public package registry. Searches of
+  npm, PyPI and RubyGems return zero LeanData-authored packages, and the LeanData GitHub
+  organization holds two repositories, neither of which is an SDK. The published integration
+  path is a Postman collection plus raw HTTP with an X-Api-Key header — which is workable, but
+  it means there is no versioned, dated artifact anywhere that tracks the API, and therefore no
+  decay signal a consumer can read.
+packages: []
+official_sdk_count: 0
+registries_searched:
+  - registry: npm
+    query: leandata
+    endpoint: https://registry.npmjs.org/-/v1/search?text=leandata
+    results: 0
+    http_status: 200
+    checked: '2026-08-13'
+  - registry: pypi
+    query: leandata
+    endpoint: https://pypi.org/pypi/leandata/json
+    results: 0
+    http_status: 404
+    checked: '2026-08-13'
+  - registry: rubygems
+    query: leandata
+    endpoint: https://rubygems.org/api/v1/search.json?query=leandata
+    results: 0
+    http_status: 200
+    checked: '2026-08-13'
+  - registry: maven-central
+    results: 0
+    checked: '2026-08-13'
+    note: No LeanData groupId found.
+  - registry: nuget
+    results: 0
+    checked: '2026-08-13'
+  - registry: pkg.go.dev
+    results: 0
+    checked: '2026-08-13'
+  - registry: packagist
+    results: 0
+    checked: '2026-08-13'
+  - registry: crates.io
+    results: 0
+    checked: '2026-08-13'
+source_repositories:
+  - name: leandata/agent-service-assets
+    url: https://github.com/leandata/agent-service-assets
+    description: Repository for managing and tracking prompt changes for the agent service
+    official: true
+    sdk: false
+    version: null
+    published: '2026-05-08'
+    published_note: last push date, not a release; the repository publishes no tags or releases
+    checked: '2026-08-13'
+  - name: leandata/LeanDataFlows
+    url: https://github.com/leandata/LeanDataFlows
+    official: true
+    sdk: false
+    archived: true
+    version: null
+    published: '2023-12-18'
+    published_note: last push date before archival; no releases
+    checked: '2026-08-13'
+distribution:
+  managed_package:
+    name: LeanData managed package
+    channel: Salesforce AppExchange
+    url: https://appexchange.salesforce.com/listingDetail?listingId=a0N3000000B4HCREA3
+    version: null
+    version_note: >-
+      AppExchange does not expose a machine-readable version endpoint. LeanData's own
+      documentation gates Matching / Round Robin capabilities on package version "1.500+", and
+      the platform release train is at 8.x, but the two numbering schemes are not reconciled
+      anywhere public.
+    checked: '2026-08-13'
+  postman:
+    name: LeanData API
+    channel: Postman public collection
+    url: https://docs.leandata.com
+    published_id: RztfwXJq
+    collection_id: a27fbcc8-b861-41bf-b9f6-8a60aeaafc43
+    schema: https://schema.getpostman.com/json/collection/v2.0.0/collection.json
+    published: '2025-05-20'
+    checked: '2026-08-13'
+    note: >-
+      The closest thing LeanData ships to a distributed client artifact. Machine-readable at
+      https://docs.leandata.com/api/collections/5903739/RztfwXJq — this repo's collections/ and
+      openapi/ are derived from it.
+gaps:
+  - >-
+    No SDK in any language. Every consumer writes their own HTTP client against three different
+    hosts with three different auth models.
+  - >-
+    No dated, versioned client artifact at all, so there is no abandonment or currency signal to
+    measure.

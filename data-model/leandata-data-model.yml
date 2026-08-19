@@ -1,0 +1,261 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/*.yml + the published example request/response payloads in https://docs.leandata.com
+description: >-
+  Entity-relationship graph for the LeanData developer surface, derived from the example
+  payloads LeanData publishes for every operation. The harvested OpenAPI files declare no
+  components.schemas at all, so there is no $ref graph to walk — every entity below was read
+  from a real published example body and its shape is described exactly as LeanData returns it.
+  The model has two halves that never touch: a BookIt scheduling domain rooted on Meeting, and
+  a Salesforce orchestration domain rooted on RoutingGraph, joined only by the fact that both
+  route against the same Salesforce records.
+schema_source: example-payloads
+schema_note: >-
+  No components.schemas in any of the nine refined specs or the three originals. Field types
+  below are inferred from example values and are marked where the inference is not certain.
+
+domains:
+  - id: scheduling
+    label: BookIt scheduling
+    host: https://api.leandata.com
+    root: Meeting
+  - id: orchestration
+    label: Graph API orchestration
+    host: https://api.leandata.com
+    root: RoutingGraph
+  - id: matching
+    label: Salesforce-native matching and round robin
+    host: 'https://<your-instance>.my.salesforce.com'
+    root: SalesforceRecord
+
+entities:
+  - name: Meeting
+    domain: scheduling
+    id_field: id
+    id_format: >-
+      Opaque 52-character lowercase base36-looking string, e.g.
+      a0ojiiqp8ht68tpgd8pmcdq27573gorpa8r76d2k9hp5km2qb8og. Not a Salesforce id.
+    fields:
+      - {name: id, type: string}
+      - {name: title, type: string}
+      - {name: status, type: string, enum_observed: [confirmed, canceled]}
+      - {name: scheduledTime, type: object}
+      - {name: organizer_email, type: string}
+      - {name: attendees, type: array}
+    operations:
+      - GET /v1/meetings
+      - GET /v1/meeting/:meetingId
+      - POST /v1/meeting
+      - POST /v1/round-robin-meeting
+      - PATCH /v1/meeting/:meetingId
+      - DELETE /v1/meeting/:meetingId
+    note: >-
+      Field naming is inconsistent within the same object — organizer_email and
+      start_time/end_time are snake_case while id, title, status, scheduledTime and
+      responseStatus are camelCase.
+
+  - name: ScheduledTime
+    domain: scheduling
+    embedded_in: Meeting
+    fields:
+      - {name: start_time, type: integer, format: epoch-milliseconds}
+      - {name: end_time, type: integer, format: epoch-milliseconds}
+    note: >-
+      Epoch milliseconds, not ISO 8601 — unlike the orchestration domain, which uses ISO 8601
+      throughout. Two time formats in one API.
+
+  - name: Attendee
+    domain: scheduling
+    embedded_in: Meeting
+    id_field: email
+    fields:
+      - {name: email, type: string}
+      - {name: responseStatus, type: string, enum_observed: [accepted, needsAction]}
+      - {name: organizer, type: boolean, optional: true}
+      - {name: self, type: boolean, optional: true}
+    note: >-
+      responseStatus values mirror the Google Calendar API vocabulary.
+
+  - name: MeetingType
+    domain: scheduling
+    fields:
+      - {name: name, type: string}
+      - {name: duration, type: object, shape: '{unit, value}'}
+      - {name: description, type: string}
+      - {name: formFields, type: array}
+      - {name: pageStyle, type: object, shape: '{styleColor}'}
+      - {name: logo, type: string}
+    operations:
+      - POST /v1/scheduling/fetch-availability
+      - POST /v1/scheduling/route-and-fetch-availability
+    note: Returned under the `meeting` key of an availability response; the booking template, not a booked meeting.
+
+  - name: FormField
+    domain: scheduling
+    embedded_in: MeetingType
+    fields:
+      - {name: name, type: string}
+      - {name: type, type: string, enum_observed: [text, textarea]}
+      - {name: required, type: boolean}
+
+  - name: PageInfo
+    domain: scheduling
+    fields:
+      - {name: prefillFields, type: object}
+      - {name: displayAllPoolAvailability, type: boolean, nullable: true}
+    note: >-
+      displayAllPoolAvailability is load-bearing control flow, not decoration: LeanData
+      documents that when it is true the caller MUST book with POST /v1/round-robin-meeting, and
+      when it is false or null the caller MUST book with POST /v1/meeting. It is driven by the
+      scheduling graph configuration and cannot be assumed ahead of time.
+
+  - name: SchedulingToken
+    domain: scheduling
+    fields:
+      - {name: token, type: string, format: opaque-base64}
+      - {name: calendarLink, type: string, format: url}
+    note: >-
+      A routing response returns either a calendar token or a redirect. The token is one-shot —
+      once a meeting is booked against it, re-fetching availability with the token returns 400
+      and the caller must switch to meetingId (or the legacy eventId).
+
+  - name: RoutingResponse
+    domain: scheduling
+    fields:
+      - {name: responseType, type: string, enum_observed: [calendar]}
+      - {name: calendarLink, type: string}
+      - {name: token, type: string}
+    operations:
+      - POST /v1/scheduling/route-and-fetch-availability
+
+  - name: SchedulingInput
+    domain: scheduling
+    fields:
+      - {name: name, type: string}
+      - {name: type, type: string, enum_observed: [STRING, PHONE, DOUBLE, BOOLEAN]}
+    operations:
+      - POST /v1/scheduling/retrieve-inputs
+    note: >-
+      Returned as `inputs[]` under a trigger node `name`. This is the schema-discovery operation
+      of the BookIt API — it tells a caller which fields the customer's routing graph expects
+      before the caller attempts to route.
+
+  - name: RoutingGraph
+    domain: orchestration
+    id_field: id
+    id_format: Salesforce 18-character id, e.g. a0o8c000009BjqBAAS
+    fields:
+      - {name: id, type: string}
+      - {name: name, type: string}
+      - {name: isLive, type: boolean}
+      - {name: triggerNodeEdges, type: object}
+      - {name: lastDeployedDate, type: string, format: iso8601}
+      - {name: lastModifiedDate, type: string, format: iso8601}
+      - {name: lastModifiedBy, type: string}
+      - {name: editedBy, type: string, format: salesforce-user-id}
+      - {name: editedByName, type: string}
+      - {name: hasRoutingPriorities, type: boolean}
+      - {name: canGraphBeOveridden, type: boolean}
+      - {name: isGraphAvailableForEdit, type: boolean}
+      - {name: businessUnitId, type: string, nullable: true}
+      - {name: businessUnit, type: string, nullable: true}
+      - {name: isBUDeleted, type: boolean}
+      - {name: scheduledJobs, type: array, nullable: true}
+    operations:
+      - GET /orchestration/v1/routing-graphs
+    note: >-
+      `canGraphBeOveridden` is spelled with one r in the published payload; consumers must match
+      the typo.
+
+  - name: TriggerNode
+    domain: orchestration
+    embedded_in: RoutingGraph
+    id_field: name
+    fields:
+      - {name: nodeType, type: string, enum_observed: ['TRIGGER', 'UPDATE TRIGGER']}
+      - {name: edges, type: array}
+    note: >-
+      Keyed by node name inside triggerNodeEdges. nodeType values are uppercase with a space in
+      the read model, while the one-time-routing request takes 'Trigger' / 'Update Trigger' in
+      title case — the same concept in two casings on the same API.
+
+  - name: RoutingJob
+    domain: orchestration
+    id_field: jobId
+    id_format: Salesforce id, e.g. 7073m0000CVisNgAQJ / a0qKa00000MRZWVIA5
+    fields:
+      - {name: jobId, type: string}
+      - {name: status, type: string, enum_observed: [Complete]}
+      - {name: objectType, type: string}
+      - {name: condition, type: string, format: soql-where-clause}
+      - {name: nRecords, type: string}
+      - {name: nRecordsProcessed, type: integer}
+      - {name: successCount, type: integer}
+      - {name: completedAt, type: string, format: iso8601}
+    operations:
+      - POST /orchestration/v1/one-time-routing
+      - GET /orchestration/v1/one-time-routing/:jobId
+    note: >-
+      nRecords is returned as a STRING on create and nRecordsProcessed as an INTEGER on status —
+      the same quantity typed two ways across two operations. Polling this job is the only way to
+      learn that routing ran, because an invalid graph fails silently with no error response.
+
+  - name: SalesforceRecord
+    domain: matching
+    id_format: Salesforce 15/18-character id
+    object_types: [Lead, Contact, Account, Opportunity, Case]
+    operations:
+      - POST /services/apexrest/LeanData/LeanDataAPI
+    note: >-
+      Matching and Round Robin operate on the customer's own Salesforce objects. Twelve documented
+      operation modes are discriminated by `category` and `apiType` in the request body:
+      matchedLead, duplicateLead, allDuplicateLeads, allRelatedLeads, duplicateContact,
+      allDuplicateContacts, matchedAccount, allRelatedAccounts, and three roundRobin modes
+      (standard assignment, flexible, pool information).
+
+  - name: RoundRobinPool
+    domain: matching
+    fields:
+      - {name: poolName, type: string}
+    operations:
+      - POST /services/apexrest/LeanData/LeanDataAPI
+    note: >-
+      Retrieved through the roundRobin apiType in "Pool Information" mode. Pools are also the
+      grouping the BookIt MCP server reports availability and cancellations against, which makes
+      RoundRobinPool the one entity that spans the scheduling and matching domains — but the
+      BookIt REST API exposes no pool resource of its own.
+
+relationships:
+  - {from: Meeting, to: Attendee, kind: has_many, via: attendees}
+  - {from: Meeting, to: ScheduledTime, kind: has_one, via: scheduledTime}
+  - {from: Meeting, to: MeetingType, kind: belongs_to, via: meeting type configuration, confidence: medium}
+  - {from: MeetingType, to: FormField, kind: has_many, via: formFields}
+  - {from: RoutingResponse, to: SchedulingToken, kind: has_one, via: token}
+  - {from: SchedulingToken, to: Meeting, kind: has_one, via: 'one-shot booking; superseded by meetingId once booked'}
+  - {from: RoutingGraph, to: TriggerNode, kind: has_many, via: triggerNodeEdges}
+  - {from: RoutingJob, to: RoutingGraph, kind: belongs_to, via: graphName, confidence: high}
+  - {from: RoutingJob, to: SalesforceRecord, kind: has_many, via: 'condition (SOQL) + objectType'}
+  - {from: SalesforceRecord, to: RoundRobinPool, kind: belongs_to, via: 'round robin assignment', confidence: medium}
+  - {from: RoutingGraph, to: SchedulingInput, kind: has_many, via: 'trigger node inputs', confidence: high}
+
+id_formats:
+  - domain: scheduling
+    style: opaque 52-char string
+    example_shape: a0ojiiqp8ht68tpgd8pmcdq27573gorpa8r76d2k9hp5km2qb8og
+    prefixed: false
+  - domain: orchestration
+    style: Salesforce 15/18-character id
+    prefixed: true
+    note: 'Salesforce key prefixes observed: a0o (routing graph), 005 (User), 00Q (Lead), 707/a0q (job).'
+
+time_formats:
+  - domain: scheduling
+    format: epoch-milliseconds
+  - domain: orchestration
+    format: iso8601-utc
+
+gaps:
+  - No components.schemas anywhere; the entity model exists only in example payloads.
+  - Two time formats and two id formats across one product surface.
+  - camelCase and snake_case field naming mixed inside the same object.
+  - No pool, link, or user resource in the REST surface despite all three being first-class in the product.

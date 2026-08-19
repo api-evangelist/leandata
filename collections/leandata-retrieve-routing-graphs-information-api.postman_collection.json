@@ -1,0 +1,106 @@
+{
+  "item": [
+    {
+      "id": "c42fd5ae-9f97-4754-8c7f-621b0226228e",
+      "name": "Retrieve Routing Graphs Information",
+      "description": {
+        "content": "<p>This section outlines the endpoints used to retrieve Routing Graphs information for building a custom orchestration experience. The endpoint returns information such as trigger node names, the edges in those trigger nodes, graph name, etc</p>\n<ul>\n<li><code>orchestration/v1/routing-graphs</code> — Use this endpoint <strong>when fetching routing graphs</strong> from a particular SFDC org.</li>\n</ul>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "29123dda-f216-48f2-8bd6-6d106f08d943",
+          "name": "orchestration/v1/routing-graphs",
+          "request": {
+            "name": "orchestration/v1/routing-graphs",
+            "description": {
+              "content": "<p>This endpoint retrieves a collection of configured routing graphs, allowing you to filter them by object type, deployment status, and name. This is useful for programmatically inspecting or listing the routing flows defined within your system.</p>\n<p><strong>Endpoint:</strong> <code>GET /orchestration/v1/routing-graphs</code></p>\n<h4 id=\"request-body-parameters\">Request Body Parameters</h4>\n<ul>\n<li><p><code>objectType</code> (required) — A string value that specifies the type of object the routing graphs are associated with (e.g., \"lead\", \"contact\", \"account\").</p>\n</li>\n<li><p><code>isLive</code> (optional) — A boolean value that filters graphs by their deployment status. Set to <code>true</code> to retrieve only live (deployed) graphs, or <code>false</code> for non-live graphs. If omitted, all graphs (regardless of deployment status) are returned. Note: For Business Unit deployments, this will include both <code>Ready To Go Live</code> and <code>Live</code> deployments.</p>\n</li>\n<li><p><code>name</code> (optional) — A string value that filters graphs where the graph's name contains this substring (case-insensitive).</p>\n</li>\n<li><p><code>routingQueryLimit</code> (optional) -- A numeric value that controls the batch size for fetching routing graphs from the API key's associated Salesforce organization. All matching graphs will still be returned, but a higher value will result in larger batches and potentially faster overall retrieval, up to the Salesforce API limits. The default value is 20.</p>\n</li>\n</ul>\n<h4 id=\"response-body-parameters\">Response Body Parameters</h4>\n<p>The response will contain a <strong><code>graphs</code></strong> array, which is a collection of <strong>Graph Objects</strong>. Each <strong>Graph Object</strong> provides detailed information about a specific routing graph:</p>\n<ul>\n<li><p><strong><code>id</code></strong> (String) — Unique identifier for the graph.</p>\n</li>\n<li><p><strong><code>name</code></strong> (String) — Display name of the graph.</p>\n</li>\n<li><p><strong><code>isLive</code></strong> (Boolean) — Indicates if the graph is currently active in production.</p>\n</li>\n<li><p><strong><code>date</code></strong> (String) — Creation date in ISO8601 format.</p>\n</li>\n<li><p><strong><code>time</code></strong> (String) — Creation time in ISO8601 format.</p>\n</li>\n<li><p><strong><code>businessUnit</code></strong> (String | null) — Name of the associated business unit, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>businessUnitId</code></strong> (String | null) — Identifier for the associated business unit, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>isBUDeleted</code></strong> (Boolean) — Indicates if the associated business unit has been deleted.</p>\n</li>\n<li><p><strong><code>editedBy</code></strong> (String) — Identifier of the user who last edited the graph.</p>\n</li>\n<li><p><strong><code>editedByName</code></strong> (String) — Display name of the user who last edited the graph.</p>\n</li>\n<li><p><strong><code>isGraphAvailableForEdit</code></strong> (Boolean) — Indicates if the current user has permission to edit this graph.</p>\n</li>\n<li><p><strong><code>triggerNodeEdges</code></strong> (Object) — This object maps trigger node names (keys) to an object containing details about their outgoing connections and node type. For each trigger node name, the associated object will contain:</p>\n<ul>\n<li><p><strong><code>edges</code></strong> (Array) — An array of strings, where each string is the identifier of an outgoing edge or the next node in the flow from this trigger node.</p>\n</li>\n<li><p><strong><code>nodeType</code></strong> (String) — The type of the node, e.g. <code>TRIGGER</code>, <code>UPDATE TRIGGER</code> etc.</p>\n</li>\n</ul>\n</li>\n<li><p><strong><code>canGraphBeOverridden</code></strong> (Boolean) — Indicates if the graph can be overridden by other graphs.</p>\n</li>\n<li><p><strong><code>hasRoutingPriorities</code></strong> (Boolean) — Indicates if the graph has routing priority settings. This would evaluate to <code>true</code> if an edge on a trigger node has a priority setting that is not the default of 5.</p>\n</li>\n<li><p><strong><code>lastModifiedDate</code></strong> (String) — Last modification timestamp in ISO8601 format.</p>\n</li>\n<li><p><strong><code>lastModifiedBy</code></strong> (String) — Identifier of the user who last modified the graph.</p>\n</li>\n<li><p><strong><code>scheduledJobs</code></strong> (Array | null) — An array of scheduled jobs associated with this graph, <code>null</code> if none.</p>\n</li>\n<li><p><strong><code>lastDeployedDate</code></strong> (String) — Timestamp of the last deployment in ISO8601 format.</p>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "orchestration",
+                "v1",
+                "routing-graphs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f8fab35b-9ea3-4a3b-a7a3-7b7380436713",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "orchestration",
+                    "v1",
+                    "routing-graphs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.leandata.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a3a46944-aa70-4204-ba64-3d431ddfeda1",
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability Retrieve Routing Graphs Information API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.",
+      "type": "text/plain"
+    }
+  }
+}

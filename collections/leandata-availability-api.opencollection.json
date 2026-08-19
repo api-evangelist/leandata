@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 🗓️ Availability API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "🗓️ Availability",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "v1/scheduling/route-and-fetch-availability",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/route-and-fetch-availability",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>Use this endpoint when you want LeanData BookIt to determine the correct routing outcome (who/what should be booked) and return the current availability of determined host.</p>\n<p><strong>Common use cases:</strong></p>\n<ul>\n<li><p>First-time booking when routing is required</p>\n</li>\n<li><p>Agentic flows that need to decide <em>who</em> to book and <em>when</em></p>\n</li>\n<li><p>Generating a <code>token</code> that can be reused to refresh availability without re-running routing</p>\n</li>\n</u"
+        },
+        {
+          "info": {
+            "name": "v1/scheduling/fetch-availability",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/fetch-availability",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>Use this endpoint to:</p>\n<ul>\n<li><p><strong>refresh times after routing</strong>, using the <code>token</code> returned by <code>v1/scheduling/route-and-fetch-availability</code> to refetch availability without re-running routing</p>\n</li>\n<li><p>fetch availability for <strong>single-meeting-type BookIt Links only</strong> by passing the <code>linkId</code></p>\n<ul>\n<li>⚠️ Multi-Meeting Type Links, Routing Links, Dynamic Links, and BookIt Invites/Embedded Meeting Invites Links <strong>are n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

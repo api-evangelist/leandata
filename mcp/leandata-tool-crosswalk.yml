@@ -1,0 +1,156 @@
+generated: '2026-08-13'
+method: derived
+source: mcp/leandata-mcp.yml + openapi/*.yml
+description: >-
+  Crosswalk between the BookIt MCP server's published capability set and the BookIt /
+  Graph REST operations that back it. Two honest caveats govern every row. First, the live
+  MCP tools/list is OAuth-gated (HTTP 401), so LeanData's actual tool NAMES and inputSchemas
+  are not known — the left column holds published capabilities from LeanData's Q2 2026 release
+  notes, not tool identifiers, and confidence is set accordingly. Second, LeanData's harvested
+  OpenAPI carries no operationId on any operation, so REST operations are identified here by
+  METHOD + PATH, which is what the specs actually publish. Nothing in this file is invented:
+  every capability is quoted from LeanData's pages and every REST operation exists verbatim in
+  openapi/.
+
+surfaces:
+  openapi:
+    files:
+      - openapi/leandata-scheduling-inputs-api-openapi.yml
+      - openapi/leandata-availability-api-openapi.yml
+      - openapi/leandata-meetings-retrieve-api-openapi.yml
+      - openapi/leandata-meetings-create-api-openapi.yml
+      - openapi/leandata-meetings-manage-api-openapi.yml
+      - openapi/leandata-legacy-still-supported-api-openapi.yml
+      - openapi/leandata-one-time-routing-api-openapi.yml
+      - openapi/leandata-retrieve-routing-graphs-information-api-openapi.yml
+      - openapi/leandata-matching-api-openapi.yml
+    host: https://api.leandata.com
+    auth: X-Api-Key header
+    operation_ids: absent
+  mcp:
+    url: https://mcp.leandata.com/mcp
+    gated: true
+    reason: tools/list returns 401 without an OAuth bearer token
+  graphql:
+    present: false
+
+crosswalk:
+  - tool: Check real-time availability across users and pools by meeting type
+    category: availability
+    rest:
+      - POST /v1/scheduling/fetch-availability
+      - POST /v1/scheduling/route-and-fetch-availability
+    binding: rest
+    confidence: medium
+    note: >-
+      The two availability operations are the only published surface that returns open time
+      windows for a pool or meeting type; the MCP capability is described in the same terms.
+      Tool name unknown.
+  - tool: Look up upcoming meetings and check conference details
+    category: meetings-read
+    rest:
+      - GET /v1/meetings
+      - GET /v1/meeting/:meetingId
+    binding: rest
+    confidence: medium
+    note: >-
+      GET /v1/meetings retrieves a prospect's meetings by email; GET /v1/meeting/{meetingId}
+      returns one meeting including conference details. Tool name unknown.
+  - tool: View own meetings and pipeline, and check own availability
+    category: meetings-read
+    rest:
+      - GET /v1/meetings
+      - POST /v1/scheduling/fetch-availability
+    binding: rest
+    confidence: low
+    note: >-
+      "Own meetings" implies caller-scoped filtering that the public REST surface does not
+      expose — the REST meeting lookup is keyed on prospectEmail, not on the authenticated
+      identity. The MCP server almost certainly applies identity scoping server-side.
+  - tool: View cancelled meetings by pool, cancellation reason, or date range
+    category: meetings-read
+    rest: []
+    binding: none
+    confidence: low
+    note: >-
+      No public REST operation filters meetings by pool, cancellation reason, or date range.
+      Listed here rather than in mcp_only because the underlying meeting records are the same
+      objects GET /v1/meetings returns; only the query surface is MCP-side.
+  - tool: Manage cancellations, rescheduling, and host swaps
+    category: meetings-write
+    rest:
+      - PATCH /v1/meeting/:meetingId
+      - DELETE /v1/meeting/:meetingId
+    binding: rest
+    confidence: medium
+    note: >-
+      PATCH covers reschedule/update, DELETE covers cancellation. Host swap is not separately
+      documented in the REST surface and may be a PATCH field.
+  - tool: Retrieve booking links
+    category: links
+    rest: []
+    binding: none
+    confidence: low
+    note: >-
+      BookIt Links are consumed by linkId in POST /v1/scheduling/fetch-availability, but no
+      public REST operation LISTS or retrieves links. Link retrieval appears to be MCP-only.
+
+mcp_only:
+  - tool: Identify reps who have not connected their calendars
+    reason: >-
+      Calendar-connection status per rep is an operational/admin datum with no public REST
+      operation. It is surfaced in the LeanData app and, per the release notes, in MCP.
+  - tool: Mark no-shows and trigger the credit-back process
+    reason: >-
+      The no-show credit-back workflow has no counterpart in the published BookIt REST API.
+  - tool: Access own profile and conferencing setup
+    reason: >-
+      There is no public REST operation for user profile or conferencing configuration.
+  - tool: Review pool configuration and pool fairness settings
+    reason: >-
+      Round Robin pool configuration is exposed through the Salesforce-native Matching and
+      Round Robin API (roundRobin apiType, Pool Information mode), not through the
+      api.leandata.com REST surface the MCP server sits beside.
+
+rest_only:
+  - capability: Booking a meeting
+    operations:
+      - POST /v1/meeting
+      - POST /v1/round-robin-meeting
+    note: >-
+      Creating a meeting is the core BookIt write path and is NOT named in the published MCP
+      capability list. It may exist as a gated tool; it is recorded as rest_only because
+      LeanData does not publish it as an MCP capability.
+  - capability: Scheduling inputs discovery
+    operations:
+      - POST /v1/scheduling/retrieve-inputs
+  - capability: Legacy scheduling
+    operations:
+      - POST /v1/scheduling/route
+      - POST /v1/scheduling/retrieve-info
+      - POST /v1/scheduling/retrieve-modification-info
+  - capability: Orchestration — one-time routing and routing graphs
+    operations:
+      - POST /orchestration/v1/one-time-routing
+      - GET /orchestration/v1/one-time-routing/:jobId
+      - GET /orchestration/v1/routing-graphs
+    note: Graph API; the MCP server covers BookIt only, not orchestration.
+  - capability: Salesforce-native matching and round robin
+    operations:
+      - POST /services/apexrest/LeanData/LeanDataAPI
+    note: >-
+      Dispatched through the customer's own Salesforce org via the LeanData managed package;
+      a different host and a different auth model (Salesforce OAuth session) than either the
+      REST or MCP surface.
+
+coverage:
+  mcp_capabilities_published: 10
+  mcp_tool_names_known: 0
+  capabilities_bound_to_rest: 5
+  mcp_only: 4
+  rest_operations_total: 15
+  rest_operations_with_a_capability: 6
+  note: >-
+    rest_operations_total counts every operation across the nine refined OpenAPI files,
+    including the single Salesforce-native Apex REST operation whose 12 documented apiType
+    modes the spec collapses into one POST.

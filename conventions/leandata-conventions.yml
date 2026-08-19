@@ -1,0 +1,140 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.leandata.com
+description: >-
+  Cross-cutting request/response semantics for the LeanData developer surface, read from
+  LeanData's published Postman documentation and confirmed against the harvested OpenAPI and
+  live probes. The headline finding is a negative one: LeanData documents no idempotency
+  contract, no pagination, no rate-limit response headers and no versioning policy, on a
+  surface whose central write operation (booking a meeting) is exactly the kind of call an
+  agent will retry. What LeanData does document unusually well is character encoding for
+  query parameters and the security posture of its API keys.
+
+authentication:
+  style: >-
+    X-Api-Key header on api.leandata.com (BookIt, Graph); Salesforce OAuth 2.0 Connected App
+    session on the Salesforce-native Matching / Round Robin API; OAuth 2.1 + PKCE + dynamic
+    client registration on the BookIt MCP server.
+  server_side_only: true
+  https_required: true
+  detail: authentication/leandata-authentication.yml
+
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    LeanData publishes no idempotency key, no request-deduplication window and no safe-retry
+    guidance. POST /v1/meeting and POST /v1/round-robin-meeting are non-idempotent creates, and
+    the documented failure mode for a retry is a 400 "The selected time is no longer available."
+    or "This link only allows one booking and has already been used." — meaning a retry after a
+    timeout can neither succeed nor be distinguished from a genuine conflict. POST
+    /orchestration/v1/one-time-routing is worse: it returns a jobId, does not validate the
+    graph, and can fail silently, so a duplicate submission may run routing twice against live
+    Salesforce records with no error surfaced.
+  recommendation: >-
+    An Idempotency-Key header on the two meeting-create operations and on one-time-routing
+    would be the single highest-value addition to this API.
+
+pagination:
+  supported: false
+  note: >-
+    No documented pagination on any operation. GET /v1/meetings filters by prospectEmail and
+    returns the full result set; GET /orchestration/v1/routing-graphs returns all graphs for the
+    org. Neither declares a limit, cursor, offset or page parameter.
+
+bulk:
+  supported: false
+  note: >-
+    LeanData states explicitly that the BookIt API "does not support bulk updates — only one
+    object can be modified per request."
+
+field_expansion:
+  supported: partial
+  note: >-
+    Not present on the BookIt / Graph REST surface. The Salesforce-native Matching API does have
+    a form of it: the request names the desired return field values of the matched record(s), and
+    "any fields on the matched object record can be included as return values upon request."
+
+metadata:
+  supported: false
+  note: No customer-defined metadata bag documented on any resource.
+
+request_tracing:
+  request_id_header: null
+  observed:
+    - header: x-amzn-requestid
+      set_by: AWS API Gateway
+      example_observed: '2026-08-13'
+      note: >-
+        Present on responses from api.leandata.com because the API sits behind AWS API Gateway.
+        LeanData does not document it, does not promise it, and does not tell support callers to
+        quote it — but it is the only per-request correlation id a consumer can capture today.
+    - header: x-amz-apigw-id
+      set_by: AWS API Gateway
+
+versioning:
+  scheme: uri-path
+  current:
+    bookit: v1
+    graph: v1
+    matching: '2'
+  note: >-
+    BookIt and Graph carry /v1/ in the path. The Salesforce-native Matching API versions in the
+    request BODY instead — a required `version` parameter documented as "should be 2" — and
+    additionally gates capabilities on the installed managed-package version (features are
+    marked "1.500+"). There are therefore three unrelated version axes and no published policy
+    tying them together.
+  policy_published: false
+  detail: lifecycle/leandata-lifecycle.yml
+
+error_envelope:
+  shape: '{"error": "<message>"}'
+  rfc9457: false
+  note: >-
+    Three envelopes across three hosts. See errors/leandata-problem-types.yml for the full
+    catalog, the Salesforce errorCode variant, and the documented silent-failure path on
+    one-time routing.
+  detail: errors/leandata-problem-types.yml
+
+rate_limit_signaling:
+  response_headers: none
+  documented_limit: 10000 requests per second per API key (Routing API)
+  note: >-
+    LeanData publishes one numeric limit in prose and returns no RateLimit-*, X-RateLimit-* or
+    Retry-After header, so a client cannot see how much budget it has left or how long to back
+    off. No 429 example response is published.
+  detail: rate-limits/leandata-rate-limits.yml
+
+content_type:
+  request: application/json
+  response: application/json
+  note: JSON-encoded bodies and JSON-encoded responses on every operation.
+
+url_encoding:
+  documented: true
+  note: >-
+    LeanData publishes an unusually thorough URL-encoding guide on the Graph API — a
+    character-by-character table covering space, +, ", #, %, &, ', parentheses, *, comma, /, :,
+    ;, <, =, >, ?, @, square brackets, backslash, caret, backtick, pipe and braces, with the
+    reason each must be percent-encoded in a query parameter. Tilde is called out as safe.
+  source: https://docs.leandata.com
+
+http_methods:
+  used: [GET, POST, PATCH, DELETE]
+  note: >-
+    Resource-oriented URLs with standard verbs on BookIt and Graph. The Matching / Round Robin
+    API is the exception — every one of its twelve documented operations is a POST to the same
+    Apex REST path, discriminated by `category` and `apiType` fields in the request body.
+
+support:
+  contact: support@leandata.com
+  partners: partners@leandatainc.com
+  portal: https://support.leandata.com
+
+cross_links:
+  authentication: authentication/leandata-authentication.yml
+  scopes: scopes/leandata-scopes.yml
+  errors: errors/leandata-problem-types.yml
+  lifecycle: lifecycle/leandata-lifecycle.yml
+  rate_limits: rate-limits/leandata-rate-limits.yml
+  data_model: data-model/leandata-data-model.yml

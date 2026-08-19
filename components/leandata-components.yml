@@ -1,0 +1,73 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.leandata.com/platform/scheduling/
+description: >-
+  LeanData's client-side surface is the BookIt product family: embeddable and hosted
+  scheduling experiences that a customer drops into a web form, a link, or a browser, rather
+  than a component library a developer imports. There is no published npm element package and
+  no documented loader script URL — embedding is configured inside the LeanData app and the
+  resulting snippet is issued per customer, so the distribution is not something a third party
+  can pin or version. The one genuinely developer-facing client-side contract is the BookIt for
+  Forms Events API, a set of browser CustomEvents fired during the booking experience that a
+  page can listen for.
+families:
+  - name: BookIt for Forms
+    kind: embedded-scheduler
+    description: >-
+      Web-form booking. Ingests a prospect from a form on the customer's site, matches and
+      routes them with LeanData's routing graph, and presents available times to book on the
+      spot.
+    product_url: https://www.leandata.com/platform/scheduling/
+    status_component: BookIt for Forms
+    distribution: per-customer snippet configured in the LeanData app
+    loader_url: null
+    version: null
+    version_note: >-
+      No public, pinnable loader URL and no registry package. A consumer cannot determine which
+      build they are running.
+  - name: BookIt Links
+    kind: hosted-booking-page
+    description: >-
+      Personalized scheduling links for outreach and follow-up. Consumed programmatically by
+      linkId in POST /v1/scheduling/fetch-availability.
+    product_url: https://www.leandata.com/platform/scheduling/
+    status_component: BookIt Links
+    api_binding: openapi/leandata-availability-api-openapi.yml
+  - name: BookIt Handoff
+    kind: hosted-booking-flow
+    description: >-
+      Automatic scheduling for team handoffs — SDR to AE, AE to CSM, and similar transitions.
+    product_url: https://www.leandata.com/platform/scheduling/
+    status_component: BookIt Handoff
+  - name: BookIt Chrome Extension
+    kind: browser-extension
+    description: >-
+      Browser extension surfacing BookIt scheduling in the rep's inbox and browser. Carried as
+      its own component on the LeanData status page since 2026-01-02.
+    status_component: BookIt Chrome Extension
+    distribution: Chrome Web Store
+    version: null
+    version_note: >-
+      Listing not resolved to a stable extension id in this pass; version and last-update date
+      not recorded rather than guessed.
+events_api:
+  name: BookIt for Forms - Events API
+  kind: browser-custom-events
+  description: >-
+    LeanData fires custom events on the host page during the BookIt calendaring experience so a
+    customer's own code can react — the documented example is an event fired as soon as the
+    routing-graph API request resolves, carrying the graph's decision (show a calendar, redirect,
+    or fall back).
+  docs: https://leandatahelp.zendesk.com/hc/en-us/articles/24466862228123-BookIt-for-Forms-Events-API
+  docs_public: false
+  docs_http_status: 403
+  fetched: '2026-08-13'
+  note: >-
+    These are browser-side DOM events, NOT server-to-server webhooks. No event names or payload
+    schemas are recorded here because the reference article is behind the authenticated help
+    center and nothing verifiable was available. Deliberately not emitted as a Webhooks or
+    AsyncAPI surface — see conformance/leandata-conformance.yml.
+gaps:
+  - No versioned, pinnable loader script for the embedded scheduler.
+  - No npm or CDN distribution for any client-side component.
+  - The only client-side event contract is documented behind an authenticated help center.

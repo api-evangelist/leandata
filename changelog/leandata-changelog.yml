@@ -1,0 +1,81 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.leandata.com/blog/
+description: >-
+  LeanData ships on a quarterly release train with a numbered platform version (8.x as of
+  mid-2026). The canonical release notes live in the LeanData Help Center, which returns HTTP
+  403 to an anonymous client — so the only publicly readable change record is the dated
+  "Release" and "What's New: Product Edition" posts on leandata.com. There is no
+  API-specific changelog: none of these entries records an endpoint, field or breaking-change
+  event on the BookIt, Graph or Matching APIs, and the OpenAPI documents carry no version
+  history. A consumer cannot tell from any public source when an API contract last changed.
+scheme: quarterly-release-train
+current_version: '8.x'
+canonical_notes:
+  url: https://leandatahelp.zendesk.com/hc/en-us/sections/360002566353-Release-Notes
+  public: false
+  http_status: 403
+  fetched: '2026-08-13'
+public_sources:
+  - https://www.leandata.com/blog/
+  - https://www.leandata.com/resources/
+api_changelog:
+  exists: false
+  note: >-
+    No per-API changelog, no versioned spec history, no breaking-change policy. See
+    lifecycle/leandata-lifecycle.yml.
+entries:
+  - date: '2026-06-11'
+    title: 'What''s New with LeanData: Product Edition | June 2026'
+    url: https://www.leandata.com/resources/whats-new-leandata-june-2026/
+    version: '8.x'
+    breaking: []
+    additions:
+      - AI assistant
+      - BookIt MCP
+      - Best-Fit Assignment
+      - Unified audit logs
+    api_impact: none-documented
+  - date: '2026-05-21'
+    title: 'LeanData''s Q2 2026 Release: Smarter Routing, Unified Audit Logs, and BookIt MCP'
+    url: https://www.leandata.com/blog/leandata-q2-2026-release-audit-logs-best-fit-assignment-bookit-mcp/
+    version: Q2 2026
+    breaking:
+      - >-
+        Track SLA node replaces the Hold Until node in FlowBuilder graphs. Documented as a
+        replacement rather than an addition, so existing graphs using Hold Until are affected.
+    additions:
+      - >-
+        BookIt MCP — a hosted MCP server exposing BookIt scheduling and operational data to
+        MCP-compatible AI clients (Claude, ChatGPT, Agentforce, Cursor), authorized with
+        Salesforce OAuth or a one-time code for external partners and agents.
+      - >-
+        Unified audit logs — a single searchable view across all objects and products, 24 months
+        of retention, syncing on a 15-minute schedule.
+      - LeanData AI Assistant embedded in Audit Logs to explain routing decisions in plain language.
+      - >-
+        Best-Fit Assignment — a Round Robin enhancement that assigns on rep attributes such as
+        language, expertise, tenure and certifications.
+      - Track SLA node supporting multiple simultaneous SLAs with built-in notifications.
+      - Multi-hierarchy support — up to 10 distinct account hierarchies per org from multiple enrichment sources.
+    api_impact: >-
+      BookIt MCP is a new agent-facing surface at https://mcp.leandata.com/mcp. No changes to the
+      BookIt, Graph or Matching REST contracts were announced.
+  - date: '2025-05-20'
+    title: LeanData API documentation collection published
+    url: https://docs.leandata.com
+    version: null
+    breaking: []
+    additions:
+      - >-
+        Public Postman collection "LeanData API" published (publishedId RztfwXJq), covering the
+        Matching & Round Robin, BookIt and Graph APIs.
+    api_impact: >-
+      This publish date is read from the Postman collection metadata (publishDate
+      2025-05-20T17:10:44Z), not from a LeanData announcement. It is the earliest firm date
+      available for the current developer documentation.
+    method: probed
+recommendation: >-
+  Publish the release notes outside the authenticated help center, and add an API-specific
+  changelog that records endpoint, field and error-contract changes with dates. Today an
+  integrator has no way to learn that a contract moved.

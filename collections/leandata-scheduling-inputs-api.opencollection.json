@@ -1,0 +1,33 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 🧠 Scheduling Inputs API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "🧠 Scheduling Inputs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "v1/scheduling/retrieve-inputs",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/scheduling/retrieve-inputs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>This endpoint returns the fields defined in your trigger node. Use this endpoint to dynamically determine what prospect data must be collected (including field types and validation rules) prior to calling the routing availability endpoint.</p>\n<p>⚠️ <strong>Note:</strong> Routing Links Trigger Nodes are <strong>not</strong> supported.</p>\n<p><strong>Common use cases:</strong></p>\n<ul>\n<li><p>Agentic scheduling: ask only for missing fields</p>\n</li>\n<li><p>Dynamic UI: render required fields ba"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

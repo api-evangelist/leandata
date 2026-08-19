@@ -4,7 +4,13 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: LeanData
 providerId: leandata
 created: '2026-05-25'
-modified: '2026-05-25'
+modified: '2026-08-13'
+generated: '2026-08-13'
+method: searched
+source: https://www.leandata.com/pricing/
+plan_count: 8
+public_pricing: false
+pricing_model: contact-sales
 reconciled: false
 tags:
   - RevOps

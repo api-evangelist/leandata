@@ -1,0 +1,100 @@
+generated: '2026-08-13'
+method: probed
+status: published
+maturity: beta
+maturity_source: >-
+  https://www.leandata.com/platform/scheduling/ labels the surface "BookIt API & BookIt MCP [BETA]"
+source: https://mcp.leandata.com/.well-known/oauth-protected-resource
+docs:
+  - https://www.leandata.com/resources/leandatas-bookit-mcp/
+  - https://www.leandata.com/blog/leandata-q2-2026-release-audit-logs-best-fit-assignment-bookit-mcp/
+description: >-
+  LeanData ships a hosted, remote BookIt MCP server, announced in the Q2 2026 release.
+  It exposes BookIt scheduling and operational data to any MCP client (Claude, ChatGPT,
+  Agentforce, Cursor) and is authorized with OAuth 2.1 — Salesforce OAuth for admins and
+  reps, and a one-time-code path for external partners or agents without Salesforce
+  credentials in the org. Tool visibility is filtered by the caller's BookIt permission
+  set, and every action respects the org's routing rules, pool fairness settings and SLA
+  logic. This is LeanData's most agent-ready surface: it is the only LeanData endpoint that
+  publishes machine-readable discovery metadata, and the only one with a scope model.
+
+deployment:
+  mode: remote
+  endpoint: https://mcp.leandata.com/mcp
+  auth: oauth
+  verified: probed
+
+server:
+  name: LeanData BookIt MCP
+  transport: http
+  url: https://mcp.leandata.com/mcp
+  product: BookIt
+  released: '2026-05-21'
+
+authorization:
+  model: OAuth 2.1 with PKCE and dynamic client registration
+  protected_resource_metadata: https://mcp.leandata.com/.well-known/oauth-protected-resource
+  authorization_server_metadata: https://mcp.leandata.com/.well-known/oauth-authorization-server
+  issuer: https://mcp.leandata.com
+  authorization_endpoint: https://mcp.leandata.com/authorize
+  token_endpoint: https://mcp.leandata.com/token
+  registration_endpoint: https://mcp.leandata.com/register
+  grant_types: [authorization_code, refresh_token]
+  code_challenge_methods: [S256]
+  token_endpoint_auth_methods: [none]
+  bearer_methods_supported: [header]
+  scopes: [admin, user, partner, offline_access]
+  identity_providers:
+    - name: Salesforce OAuth
+      audience: LeanData admins and reps; the caller's BookIt permission set is detected after login
+    - name: One-time code
+      audience: external partners or AI agents with no Salesforce credentials in the org; an email address and a permission set are assigned in advance
+
+tools:
+  introspection: gated
+  note: >-
+    POST tools/list to https://mcp.leandata.com/mcp returns HTTP 401
+    {"error":"Missing or invalid Authorization header"} with
+    WWW-Authenticate: Bearer resource_metadata="https://mcp.leandata.com/.well-known/oauth-protected-resource".
+    The live tool names and inputSchemas therefore require an authenticated OAuth session and
+    are NOT recorded here. The capability list below is what LeanData publishes in the Q2 2026
+    release notes and the BookIt MCP resource page — capabilities by role, not tool identifiers.
+    Do not treat these as tool names.
+  published_capabilities:
+    admin:
+      - View cancelled meetings by pool, cancellation reason, or date range
+      - Check real-time availability across users and pools by meeting type
+      - Identify reps who have not connected their calendars
+      - Manage cancellations, rescheduling, and host swaps
+      - Review pool configuration and pool fairness settings
+    user:
+      - Look up upcoming meetings and check conference details
+      - View own meetings and pipeline, and check own availability
+      - Access own profile and conferencing setup
+      - Mark no-shows and trigger the credit-back process
+      - Retrieve booking links
+
+x-evidence:
+  fetched: '2026-08-13'
+  probes:
+    - url: https://mcp.leandata.com/mcp
+      method: POST
+      body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+      http_status: 401
+      response: '{"error":"Missing or invalid Authorization header"}'
+      www_authenticate: Bearer resource_metadata="https://mcp.leandata.com/.well-known/oauth-protected-resource"
+    - url: https://mcp.leandata.com/.well-known/oauth-protected-resource
+      http_status: 200
+      content_type: application/json
+    - url: https://mcp.leandata.com/.well-known/oauth-authorization-server
+      http_status: 200
+      content_type: application/json
+    - url: https://mcp.leandata.com/health
+      http_status: 200
+      response: '{"ok":true}'
+  ownership: >-
+    mcp.leandata.com is a LeanData-controlled subdomain of leandata.com. The RFC 9728
+    protected-resource document names issuer https://mcp.leandata.com and advertises scopes
+    admin / user / partner — exactly the three-role permission model LeanData documents for
+    BookIt MCP (admins, reps, and external partners onboarded by one-time code). Endpoint and
+    role model were confirmed against LeanData's own published pages before recording.

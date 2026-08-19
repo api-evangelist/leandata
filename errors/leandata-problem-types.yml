@@ -1,0 +1,209 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.leandata.com
+description: >-
+  LeanData's error surface splits along the same three-host line as its authentication. The
+  BookIt and Graph REST APIs on api.leandata.com return a flat JSON envelope with a single
+  `error` string; there is no error code, no type URI, no field pointer and no
+  application/problem+json. The Salesforce-native Matching and Round Robin API returns the
+  Salesforce envelope instead, with `message` and a machine-readable `errorCode`. The AWS API
+  Gateway in front of api.leandata.com returns its own shape, `{"message":"Unauthorized"}`, on
+  an unauthenticated call — a third envelope a consumer has to handle. Every problem below was
+  read from a published example response in LeanData's own documentation or observed live.
+
+format: none
+rfc9457: false
+envelopes:
+  - id: bookit-graph
+    hosts: [https://api.leandata.com]
+    shape: '{"error": "<human-readable message>"}'
+    content_type: application/json
+    machine_readable_code: false
+    note: >-
+      The single `error` string is the entire contract. Validation failures are distinguishable
+      only by prefix — messages that begin "Validation Error:" name the offending input in prose.
+  - id: salesforce-apex
+    hosts: ['https://<your-instance>.my.salesforce.com']
+    shape: '{"message": "<message>", "errorCode": "<CODE>"}'
+    content_type: application/json
+    machine_readable_code: true
+    note: Salesforce's standard REST error envelope, surfaced through the LeanData managed package.
+  - id: aws-api-gateway
+    hosts: [https://api.leandata.com]
+    shape: '{"message": "Unauthorized"}'
+    content_type: application/json
+    machine_readable_code: false
+    note: >-
+      Returned by the AWS API Gateway edge before the request reaches LeanData, with
+      x-amzn-errortype: UnauthorizedException. Observed live 2026-08-13 on an unauthenticated
+      POST to /v1/scheduling/retrieve-inputs and an unauthenticated GET to
+      /orchestration/v1/routing-graphs.
+
+problems:
+  - status: 401
+    envelope: aws-api-gateway
+    title: Unauthorized
+    detail: Missing or invalid X-Api-Key header.
+    body: '{"message":"Unauthorized"}'
+    remediation: >-
+      Send a valid API key in the X-Api-Key header. BookIt keys come from the LeanData
+      Solutions Engineering Team; Graph keys from Settings > Admin > Authorization.
+    method: probed
+    observed: '2026-08-13'
+    source_operation: POST /v1/scheduling/retrieve-inputs
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: no prospect trigger node found'
+    body: '{"error": "Validation Error: No prospect trigger node found with name: Invalid Node"}'
+    remediation: Use a trigger node name that exists on the referenced BookIt routing graph.
+    source_operation: POST /v1/scheduling/retrieve-inputs
+
+  - status: 400
+    envelope: bookit-graph
+    title: Invalid node name provided
+    body: '{"error": "Invalid Node name provided"}'
+    source_operation: POST /v1/scheduling/route-and-fetch-availability
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: missing required input'
+    body: '{"error": "Validation Error: Missing required input: uid"}'
+    remediation: Supply every input the graph's trigger node declares; see POST /v1/scheduling/retrieve-inputs.
+    source_operation: POST /v1/scheduling/route-and-fetch-availability
+
+  - status: 400
+    envelope: bookit-graph
+    title: Host calendar token invalid or product access missing
+    body: >-
+      {"error": "Please check the following users have the correct product access and their
+      calendar tokens are valid: 005Kd0000056DucIAE"}
+    remediation: >-
+      The named Salesforce user ids must have BookIt product access and a valid connected
+      calendar. This is a configuration failure, not a request failure — retrying will not help.
+    source_operation: POST /v1/scheduling/route-and-fetch-availability
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: missing required parameter'
+    body: '{"error": "Validation Error: Missing required parameter: linkId, meetingId or token"}'
+    remediation: Exactly one of linkId, meetingId or token must identify the scheduling context.
+    source_operation: POST /v1/scheduling/fetch-availability
+
+  - status: 400
+    envelope: bookit-graph
+    title: Meeting already booked for this token
+    body: >-
+      {"error": "Meeting has already been booked. Please use meetingId or eventId (legacy) to
+      refetch availability."}
+    remediation: Re-fetch availability with meetingId instead of the one-shot booking token.
+    source_operation: POST /v1/scheduling/fetch-availability
+
+  - status: 404
+    envelope: bookit-graph
+    title: Link not found
+    body: '{"error": "link not found"}'
+    source_operation: POST /v1/scheduling/fetch-availability
+
+  - status: 404
+    envelope: bookit-graph
+    title: Unsupported link type
+    body: >-
+      {"error": "Validation Error: Unsupported link type. Please provide the linkId of a single
+      meeting type BookIt Link."}
+    remediation: Only single-meeting-type BookIt Links are accepted on this operation.
+    note: >-
+      Returned as 404 although the message is a validation error — status and semantics
+      disagree here.
+    source_operation: POST /v1/scheduling/fetch-availability
+
+  - status: 404
+    envelope: bookit-graph
+    title: Meeting not found
+    body: '{"error": "Meeting not found"}'
+    source_operation: GET /v1/meeting/:meetingId
+
+  - status: 400
+    envelope: bookit-graph
+    title: Link already used
+    body: '{"error": "This link only allows one booking and has already been used."}'
+    source_operation: POST /v1/meeting
+
+  - status: 400
+    envelope: bookit-graph
+    title: Selected time no longer available
+    body: '{"error": "The selected time is no longer available."}'
+    remediation: >-
+      Race between availability fetch and booking. Re-fetch availability and present fresh
+      slots; do not blind-retry the same start time.
+    source_operation: POST /v1/meeting
+
+  - status: 400
+    envelope: bookit-graph
+    title: Scheduled time is before the minimum booking notice
+    body: '{"error": "Validation Error: Scheduled time is before the minimum booking notice"}'
+    source_operation: POST /v1/meeting
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: missing required input (legacy route)'
+    body: '{"error": "Validation Error: Missing required input: _ld_nodeName"}'
+    source_operation: POST /v1/scheduling/route
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: missing required input (legacy retrieve-info)'
+    body: '{"error": "Validation Error: Missing required input: params"}'
+    source_operation: POST /v1/scheduling/retrieve-info
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: objectType is required'
+    body: '{"error": "Validation Error: objectType is required."}'
+    source_operation: GET /orchestration/v1/routing-graphs
+
+  - status: 400
+    envelope: bookit-graph
+    title: 'Validation Error: condition is required'
+    body: '{"error": "Validation Error: condition is required"}'
+    source_operation: POST /orchestration/v1/one-time-routing
+
+  - status: 401
+    envelope: salesforce-apex
+    title: Session expired or invalid
+    body: '{"message": "Session expired or invalid", "errorCode": "INVALID_SESSION_ID"}'
+    remediation: >-
+      The Salesforce session id used to authenticate the Matching / Round Robin call has
+      expired. Refresh via the Connected App refresh-token flow, or ask the Salesforce
+      administrator for a valid session.
+    source_operation: POST /services/apexrest/LeanData/LeanDataAPI
+
+  - status: 400
+    envelope: salesforce-apex
+    title: Unknown field on the queried object
+    body: '"No such column ''Favorite Food'' on sobject of type Lead"'
+    remediation: >-
+      A field named in the request or in the requested return values does not exist on the
+      Salesforce object being queried. Verify the API name of the field.
+    source_operation: POST /services/apexrest/LeanData/LeanDataAPI
+
+silent_failures:
+  - operation: POST /orchestration/v1/one-time-routing
+    description: >-
+      LeanData documents explicitly that the API does NOT validate FlowBuilder graphs before
+      triggering routing. Invoking 1x Routing against an invalid or misconfigured graph is
+      accepted and processed, routing then fails silently, and no error response is returned.
+      This is the most important error-handling fact in the LeanData surface and it is not
+      expressible in any status code — callers must verify the graph in the LeanData app first
+      and poll GET /orchestration/v1/one-time-routing/{jobId} for job status.
+    source: https://docs.leandata.com
+
+gaps:
+  - No error code registry. Every BookIt / Graph failure is a prose string.
+  - No application/problem+json (RFC 9457) anywhere.
+  - >-
+    Three different error envelopes across three hosts of the same product, with no documented
+    mapping between them.
+  - >-
+    5xx behaviour is undocumented; no example server-error response is published for any
+    operation.

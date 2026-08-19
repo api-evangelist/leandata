@@ -1,0 +1,130 @@
+generated: '2026-08-13'
+method: searched
+probe: true
+source: https://trust.leandata.com/
+url: https://trust.leandata.com/
+platform: SafeBase
+description: >-
+  LeanData runs a full SafeBase trust center at trust.leandata.com covering compliance,
+  product security, corporate security, data privacy, legal documents, policies, third-party
+  security grades and subprocessors. Certifications are SOC 2 Type 2 plus GDPR and CCPA
+  alignment; the SOC 2 report, pentest report, SIG Lite, DPA and data-flow diagrams are
+  available behind an NDA request rather than as open downloads. This is the most complete
+  public assurance surface LeanData publishes — noticeably more complete than its developer
+  documentation.
+certifications:
+  - SOC 2 Type 2
+  - GDPR
+  - CCPA
+documents_offered:
+  - SOC 2 Report
+  - Pentest Report
+  - SIG Lite - LeanData Orchestration
+  - Data Processing Agreement
+  - Data Protection Impact Assessment (DPIA)
+  - Data Flow Diagram (DFD)
+  - Orchestration Data Flow Diagram
+  - Technical and Organizational Measures (TOMs)
+  - Master Services Agreement
+  - Terms of Service
+  - Privacy Policy
+  - Information Security Policy
+  - Access Control Policy
+  - Data Classification Policy
+  - Data Protection Policy
+  - Vulnerability Management Policy
+  - Business Continuity/Disaster Recovery (BC/DR) Policy
+  - Software Development Lifecycle Policy
+  - Change Management Policy
+  - Risk Assessment/Management Policy
+  - Acceptable Use Policy
+  - Code of Conduct Policy
+  - Bring Your Own Device (BYOD) Policy
+  - Asset Management Policy
+  - Awareness and Training Policy
+  - Password Policy
+  - Security Awareness and Miscellaneous Training Policy
+documents_access: NDA / request-gated through SafeBase
+control_domains:
+  - Compliance
+  - Product Security
+  - App Security
+  - Data Security
+  - Corporate Security
+  - Endpoint Security
+  - Network Security
+  - Infrastructure
+  - Access Control
+  - Data Privacy
+  - Incident Response
+  - Risk Management
+  - Legal
+  - Policies
+  - AI Governance
+  - AI Security
+  - ESG
+notable_controls:
+  - Encryption-at-rest
+  - Encryption-in-transit
+  - Multi-Factor Authentication
+  - Role-Based Access Control
+  - SSO Support
+  - Disk Encryption
+  - Endpoint Detection & Response
+  - Anti-Malware
+  - Audit Logging
+  - Access Monitoring
+  - Continuous Monitoring
+  - Threat Detection
+  - Data Backups
+  - Mobile Device Management
+  - Cyber Insurance
+  - Whistleblowing Program
+  - Data Privacy Officer
+  - Employee Privacy Training
+ai_posture:
+  published: true
+  items:
+    - AI Overview
+    - AI Governance
+    - AI Security
+    - AI Feature
+  note: >-
+    LeanData publishes a dedicated AI section on the trust center. Given that the BookIt MCP
+    server hands AI clients read and write access to scheduling data, this is the assurance
+    surface a buyer evaluating that server will be pointed at.
+security_grades_published:
+  - BitSight
+  - Black Kite
+  - CyberVadis
+  - SecurityScorecard
+  - UpGuard
+  - RiskRecon
+  - ImmuniWeb
+  - Qualys SSL Labs
+  - MDN Observatory
+  - CryptCheck
+  - CIS Score
+  - HSTS Preload List
+subprocessors:
+  url: https://trust.leandata.com/subprocessors
+  http_status: 200
+  named:
+    - Amazon Web Services
+    - Salesforce
+    - Heroku
+    - New Relic
+evidence:
+  - source: https://trust.leandata.com/
+    http_status: 200
+    fetched: '2026-08-13'
+    keywords: [soc 2 type 2, gdpr, ccpa, trust center, responsible disclosure, subprocessors]
+  - source: https://trust.leandata.com/subprocessors
+    http_status: 200
+    fetched: '2026-08-13'
+  - source: https://www.leandata.com/trust/
+    http_status: 404
+    fetched: '2026-08-13'
+    note: >-
+      The URL previously recorded in apis.yml as the trust center is dead; the live trust center
+      is the trust.leandata.com subdomain. Corrected in this pass.

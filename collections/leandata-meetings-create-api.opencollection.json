@@ -1,0 +1,48 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Create API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "📆 Meetings > Create",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "v1/meeting",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/meeting",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>This endpoint is used to <strong>book a meeting with a single rep</strong> who has already been assigned by your routing logic. The routing graph has selected the most appropriate user for the prospect based on your configuration—this endpoint simply finalizes the booking.</p>\n<p>⚠️ Use this endpoint only when <code>pageInfo.displayAllPoolAvailability = null</code> or <code>false</code> in the availability response.</p>\n<p>If <code>pageInfo.displayAllPoolAvailability = true</code>, you must i"
+        },
+        {
+          "info": {
+            "name": "v1/round-robin-meeting",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.leandata.com/v1/round-robin-meeting",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "<p>This endpoint is used to book a meeting with <strong>a user from a round robin pool</strong>. If your routing logic has determined that a pool of users should be considered for this meeting, this endpoint handles the final assignment and booking of the meeting with the most appropriate available user.</p>\n<p>💡 Use this endpoint when the availability response indicates <code>pageInfo.displayAllPoolAvailability</code> is <code>true</code>.</p>\n<p>The request payload includes the encrypted sche"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

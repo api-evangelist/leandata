@@ -1,0 +1,222 @@
+{
+  "item": [
+    {
+      "id": "3d658381-7cdd-4a53-983c-f4324594beb2",
+      "name": "🗓️ Availability",
+      "description": {
+        "content": "<p>The availability endpoints return meeting configuration and open time slots used to render booking pages or refresh availability. Depending on the request context (routing, direct link, or reschedule), the response includes meeting details, eligible hosts, and available time windows.</p>\n<ul>\n<li><p><strong>POST</strong> <code>/v1/scheduling/route-and-fetch-availability</code></p>\n</li>\n<li><p><strong>POST</strong> <code>/v1/scheduling/fetch-availability</code></p>\n</li>\n</ul>\n",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "75d423ad-8df0-491b-a2f8-be4209500830",
+          "name": "v1/scheduling/route-and-fetch-availability",
+          "request": {
+            "name": "v1/scheduling/route-and-fetch-availability",
+            "description": {
+              "content": "<p>Use this endpoint when you want LeanData BookIt to determine the correct routing outcome (who/what should be booked) and return the current availability of determined host.</p>\n<p><strong>Common use cases:</strong></p>\n<ul>\n<li><p>First-time booking when routing is required</p>\n</li>\n<li><p>Agentic flows that need to decide <em>who</em> to book and <em>when</em></p>\n</li>\n<li><p>Generating a <code>token</code> that can be reused to refresh availability without re-running routing</p>\n</li>\n</ul>\n<p><strong>Notes:</strong></p>\n<ul>\n<li>The response may include a <code>token</code> that can be passed to <strong>POST</strong> <code>/v1/scheduling/fetch-availability</code> to refetch availability without triggering routing again.</li>\n</ul>\n<hr />\n<h2 id=\"📋-pre-routing-requirements\">📋 Pre-Routing Requirements</h2>\n<p>Before sending form data to the BookIt API, ensure the following requirements are met:</p>\n<h3 id=\"unique-bookit-log-id\">Unique BookIt Log ID</h3>\n<ul>\n<li><p><strong>Requirement:</strong></p>\n<ul>\n<li>Each submission must have a unique BookIt Log ID. This Log ID must also be populated on the prospect's Salesforce record.</li>\n</ul>\n</li>\n<li><p><strong>Specifications</strong>:</p>\n<ul>\n<li><p><strong>Format</strong>: Universally Unique Identifier (UUID)</p>\n</li>\n<li><p><strong>Example</strong>: <code>c149cd78-377c-4549-ae62-3910ebe3b6ed</code></p>\n</li>\n<li><p><strong>Generation</strong>: Can be arbitrarily created by your system</p>\n</li>\n<li><p><strong>Integration</strong>: Must be populated on the prospect's Salesforce record through your marketing automation platform, preferably simultaenously as your first BookIt API callout.</p>\n<ul>\n<li><p>❗️ <strong>Note:</strong> if a prospect submits multiple times, each subsequent Log ID must replace the previous ID in Salesforce.</p>\n</li>\n<li><p>❗️<strong>If you are using Marketo as your Marketing Automation, please reach out to your LeanData team.</strong></p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li><p><strong>Best Practices</strong>:</p>\n<ul>\n<li><p>Use a reliable UUID generation method to ensure uniqueness</p>\n</li>\n<li><p>Validate the ID format before submission</p>\n</li>\n</ul>\n</li>\n</ul>\n<hr />\n<h2 id=\"request-body-parameters\">Request Body Parameters</h2>\n<ul>\n<li><p><code>triggerNode</code> (required) — A <strong>string</strong> value that contains the name of your Trigger Node in the BookIt Flowbuilder. This value must exactly match the configured Trigger Node name in the LeanData application.</p>\n<ul>\n<li>⚠️ <strong>Note:</strong> Routing Links Trigger Nodes are <strong>not</strong> supported.</li>\n</ul>\n</li>\n<li><p><code>uid</code> (required) — A <strong>string</strong> value that contains your <a href=\"https://bookit-api.leandata.com/#37d94fab-525c-42e3-bdb2-6cf656f8d7f0\">BookIt Unique Log ID</a>.</p>\n</li>\n<li><p><code>prospect</code> (required) — An <strong>object</strong> that contains all prospect data required for routing and availability retrieval.</p>\n<ul>\n<li><p>⚠️ <strong>Important:</strong> The fields included inside the <code>prospect</code> object must <strong>exactly match</strong> the input field definitions returned by the <code>/v1/scheduling/retrieve-inputs</code> endpoint.</p>\n</li>\n<li><p>Field names are <strong>case-sensitive</strong> and must be passed exactly as returned in the <code>inputs[].name</code> response.</p>\n</li>\n<li><p>Field values must match the corresponding <code>inputs[].type</code> response.</p>\n</li>\n<li><p>Missing required fields may result in routing failure or incomplete availability results.</p>\n</li>\n</ul>\n</li>\n</ul>\n<hr />\n<h2 id=\"response-body-parameters\">Response Body Parameters</h2>\n<p>❗️<strong>Availability</strong> <strong>data is returned only when</strong> <strong><code>routing.responseType = \"calendar\"</code>****.</strong><br />If <code>responseType</code> is <code>\"redirect\"</code> or <code>\"none\"</code>, the <code>scheduling</code> object will be <code>null</code>, and no availability data will be returned. Always check <code>routing.responseType</code> before accessing scheduling data.</p>\n<ul>\n<li><p><code>routing</code> — An <strong>object</strong> that contains the routing outcome determined by the BookIt routing graph.</p>\n<ul>\n<li><p><code>responseType</code> — A <strong>string</strong> that indicates the routing outcome determined by the BookIt routing graph. Possible values are:</p>\n<ul>\n<li><p><code>\"calendar\"</code> — The routing graph reached a <strong>\"Schedule\"</strong> node. Encrypted scheduling parameters are returned in the <code>token</code> field.</p>\n</li>\n<li><p><code>\"redirect\"</code> — The routing graph reached a <strong>\"Redirect to URL\"</strong> node. A redirect URL is returned in the <code>redirect</code> field.</p>\n</li>\n<li><p><code>\"none\"</code> — The routing graph reached an <strong>\"End of Flow\"</strong> node. No scheduling or redirect data is returned. This can be used to trigger a fallback experience in your UI.</p>\n</li>\n</ul>\n</li>\n<li><p><code>token</code> <em>(optional)</em> — A <strong>string</strong> value that is used to refresh availability without re-running routing.</p>\n<ul>\n<li>Only present when <code>routing.responseType</code> is <code>\"calendar\"</code>.</li>\n</ul>\n</li>\n<li><p><code>calendarLink</code> (<em>optional</em>) — A <strong>string</strong> containing the URL that renders the hosted LeanData BookIt scheduling page. Use this link if you prefer to leverage LeanData’s native scheduling UI instead of building a custom booking experience using the <code>scheduling</code> object. Redirecting a user to this URL will load the full BookIt calendar experience.</p>\n<ul>\n<li>Only present when <code>routing.responseType</code> is <code>\"calendar\"</code>.</li>\n</ul>\n</li>\n<li><p><code>redirect</code> <em>(optional)</em> — A <strong>string</strong> containing the URL configured in the <strong>\"Redirect to URL\"</strong> node of the BookIt routing graph.</p>\n<ul>\n<li><p>Only present when <code>responseType</code> is <code>\"redirect\"</code>.</p>\n</li>\n<li><p>Redirect users to this URL to continue the scheduling process as defined by your routing configuration.</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li><p><code>scheduling</code> (<em>optional</em>) — An <strong>object</strong> (or <strong>null</strong>) that contains the full scheduling page configuration and availability data required to render a booking experience.</p>\n<ul>\n<li><p>Present only when <code>routing.responseType = \"calendar\"</code>.</p>\n</li>\n<li><p>Returns <code>null</code> when <code>responseType</code> is <code>\"redirect\"</code> or <code>\"none\"</code>.</p>\n</li>\n<li><p>⚠️ <strong>Note:</strong> All data in the <code>scheduling</code> object is sourced directly from the <strong>Meeting Type configuration</strong> in the LeanData application (and related LeanData configuration). Any updates or changes to this information must be made in LeanData. This data cannot be modified through the API.</p>\n</li>\n<li><p><code>meeting</code> — An <strong>object</strong> that contains metadata about the meeting type.</p>\n<ul>\n<li><p><code>name</code> — A <strong>string</strong> that contains the name of the meeting type.</p>\n</li>\n<li><p><code>duration</code> — An <strong>object</strong> that describes the meeting duration.</p>\n<ul>\n<li><p><code>unit</code> — A <strong>string</strong> that represents the time unit (e.g., <code>min</code>).</p>\n</li>\n<li><p><code>value</code> — A <strong>number</strong> that represents the duration value.</p>\n</li>\n</ul>\n</li>\n<li><p><code>formFields</code> — An <strong>array</strong> of form field objects that represent the input fields required to finalize the booking of the meeting. These form fields should appear on the final confirmation screen before the meeting is booked.</p>\n<ul>\n<li><p>⚠️ <strong>Important:</strong> You must send back values for <strong>all defined fields</strong> when booking a meeting.</p>\n</li>\n<li><p><code>name</code> — A <strong>string</strong> of the Field label.</p>\n</li>\n<li><p><code>type</code> — A <strong>string</strong> that represents the input type (e.g., <code>text</code>)</p>\n</li>\n<li><p><code>required</code> — A <strong>boolean</strong> that signifies whether a field is mandatory. This value is based on the settings defined in the Meeting Type configuration.</p>\n</li>\n</ul>\n</li>\n<li><p><code>description</code> — A <strong>string</strong> that contains the calendar event description</p>\n</li>\n<li><p><code>pageStyle</code> — An <strong>object</strong> that defines branding settings for the scheduling page. This is set in the LeanData application.</p>\n<ul>\n<li><p><code>styleColor</code> — A <strong>string</strong> representing the primary hex color code used to theme UI elements (e.g. buttons, highlights) on the scheduling page.</p>\n</li>\n<li><p><code>logo</code> — A <strong>string</strong> representing the URL of the company logo (uploaded in the LeanData application) to be displayed on the scheduling page. If empty, no logo was uploaded to the application.</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li><p><code>pageInfo</code> — An <strong>object</strong> that contains general page metadata.</p>\n<ul>\n<li><p><code>displayAllPoolAvailability</code> — A <strong>boolean/null</strong> that indicates to show all availability for all pool members. If this value is <code>true</code>, then you will need to use the <code>/v1/round-robin-meeting</code> endpoint to book the meeting.</p>\n</li>\n<li><p><code>userIds</code> — An <strong>array</strong> that contains user IDs involved in the meeting (hosts or pool members). This array can be used to display representative names on the scheduling calendar.</p>\n<ul>\n<li><strong>Note:</strong> If the array is <strong>empty</strong>, it indicates that the meeting is being scheduled with a round robin pool, and the final rep has not yet been selected. The actual rep will be determined later based on the selected time slot, availability, and pool assignment logic.</li>\n</ul>\n</li>\n<li><p><code>prefillFields</code> — An <strong>object</strong> that contains form submission data for the prospect, specifically their <code>\"First Name\"</code>, <code>\"Last Name\"</code>, and <code>\"Email\"</code>. These values can be used to pre-populate the prospect's information before finalizing the meeting booking.</p>\n<ul>\n<li><strong>Note</strong>: to receive these pre-populated values, your Trigger Node form fields must be mapped to our default First Name, Last Name, Email variables.</li>\n</ul>\n</li>\n</ul>\n</li>\n<li><p><code>availability</code> — An <strong>object</strong> that contains available time slots and a mapping of user indices to user IDs.</p>\n<ul>\n<li><p>❗️<strong>Note:</strong> If this object is empty, then this is an indicator that either the meeting type expired or there are no availability in the pool (e.g. all members are on vacations). In this scenario, please revert to your fallback experience.</p>\n</li>\n<li><p><code>indexToUserIdMap</code> — An <strong>object</strong> that maps numeric indices (used in <code>timeSlots.users</code>) to user IDs from the <code>userIdToInfoMap</code> object.</p>\n</li>\n<li><p><code>timeSlots</code> — An <strong>array</strong> of time slot objects that represent available meeting windows. You can use this data to render available times on your scheduling UI.</p>\n<ul>\n<li><p><code>start_time</code> — A <strong>number</strong> that represents the start time in Unix epoch milliseconds.</p>\n</li>\n<li><p><code>end_time</code> — A <strong>number</strong> that represents the end time in Unix epoch milliseconds.</p>\n</li>\n<li><p><code>users</code> — An <strong>array</strong> of <strong>numbers</strong> that reference user indices from <code>indexToUserIdMap</code>. These represent the users who are available during this time slot.</p>\n<ul>\n<li>❗️<strong>Note:</strong> You'll need to use the corresponding user IDs (from <code>indexToUserIdMap</code>) as part of the request payload when booking the meeting.</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n<li><p><code>userIdToInfoMap</code> — An <strong>object</strong> that maps user IDs to user-specific details used for scheduling.</p>\n<ul>\n<li><p>❗️<strong>Note:</strong> The information in <code>userIdToInfoMap</code> is <em><strong>not required</strong></em> to build the core calendar UI. It is provided as supplementary context.</p>\n</li>\n<li><p><code>[userId]</code> — An <strong>object</strong> where each key is a user ID and each value is a user object.</p>\n<ul>\n<li><p><code>FirstName</code> — A <strong>string</strong> that represents the user's first name.</p>\n</li>\n<li><p><code>LastName</code> — A <strong>string</strong> that represents the user's last name.</p>\n</li>\n<li><p><code>Email</code> — A <strong>string</strong> that represents the user's email address.</p>\n</li>\n<li><p><code>TimeZoneSidKey</code> — A <strong>string</strong> that represents the user's primary time zone, using the <a href=\"https://en.wikipedia.org/wiki/List_of_tz_database_time_zones#List\">IANA Time Zone Database</a> format. (e.g. <code>America/Los_Angeles</code>)</p>\n</li>\n<li><p><code>ConferenceLink</code> — A <strong>string</strong> that represents the user's conferencing URL</p>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n</li>\n</ul>\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "scheduling",
+                "route-and-fetch-availability"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "28caa148-9817-4d4d-af05-e4af04d205e2",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "scheduling",
+                    "route-and-fetch-availability"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"triggerNode\": \"New Webform Prospect\",\n  \"uid\": \"3ac6f6f3-2bbd-4401-ab12-0ee9a654b6d1\",\n  \"prospect\": {\n    \"Company\": \"LeanData\",\n    \"NumEmployees\": \"500\",\n    \"PhoneNumber\": \"+1(669) 600-5676\",\n    \"ld_bookit_log_id\": \"3ac6f6f3-2bbd-4401-ab12-0ee9a654b6d1\",\n    \"FirstName\": \"John\",\n    \"LastName\": \"Doe\",\n    \"Email\": \"johndoe@test.com\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "79196e9b-f2f7-4f7c-ae9a-915c246e01d2",
+          "name": "v1/scheduling/fetch-availability",
+          "request": {
+            "name": "v1/scheduling/fetch-availability",
+            "description": {
+              "content": "<p>Use this endpoint to:</p>\n<ul>\n<li><p><strong>refresh times after routing</strong>, using the <code>token</code> returned by <code>v1/scheduling/route-and-fetch-availability</code> to refetch availability without re-running routing</p>\n</li>\n<li><p>fetch availability for <strong>single-meeting-type BookIt Links only</strong> by passing the <code>linkId</code></p>\n<ul>\n<li>⚠️ Multi-Meeting Type Links, Routing Links, Dynamic Links, and BookIt Invites/Embedded Meeting Invites Links <strong>are not supported</strong> by this endpoint.</li>\n</ul>\n</li>\n<li><p><strong>reschedule flow:</strong> pass <code>meetingId</code> to fetch availability for rescheduling an existing meeting</p>\n</li>\n</ul>\n<hr />\n<h2 id=\"request-body-parameters\">Request Body Parameters</h2>\n<p>❗️ <strong>Important:</strong> The request body must include <strong>exactly one</strong> of the following parameters:</p>\n<ul>\n<li><p><code>token</code> — A <strong>string</strong> value returned by the <code>/v1/scheduling/route-and-fetch-availability</code> endpoint.</p>\n<ul>\n<li><p>Use this parameter to <strong>refresh availability after routing</strong> <em><strong>and</strong></em> <strong>before a meeting has been booked.</strong> This token represents the previously computed routing + scheduling context.</p>\n</li>\n<li><p>⚠️ The <code>token</code> is valid <strong>only until a meeting is successfully booked</strong> for that routed outcome.</p>\n<ul>\n<li><p>If a meeting has already been created, the token can no longer be used.</p>\n</li>\n<li><p>For rescheduling a booked meeting, use <code>meetingId</code> instead.</p>\n</li>\n</ul>\n</li>\n<li><p>When <code>token</code> is provided, <code>linkId</code> and <code>meetingId</code> must not be included.</p>\n</li>\n</ul>\n</li>\n<li><p><code>linkId</code> — A <strong>string</strong> that represents the ID of a <strong>single-meeting-type BookIt Link</strong>.</p>\n<ul>\n<li><p>Use this parameter to fetch availability for standalone BookIt Links.</p>\n<ul>\n<li>⚠️ Multi-Meeting Type Links, Routing Links, Dynamic Links, and BookIt Invites/Embedded Meeting Invites are <strong>not supported</strong> by this endpoint.</li>\n</ul>\n</li>\n<li><p>This value is derived from the BookIt Link URL and corresponds to the path segment immediately following <code>/l/</code>. For example, given the BookIt Link <code>https://leandata.my.leandata.com/l/Lw5mjKK</code>, the linkId is <code>Lw5mjKK</code>.</p>\n</li>\n<li><p>When <code>linkId</code> is provided, <code>token</code> and <code>meetingId</code> must not be included.</p>\n</li>\n</ul>\n</li>\n<li><p><code>meetingId</code> — A <strong>string</strong> that represents the ID of an existing scheduled meeting.</p>\n<ul>\n<li><p>Use this parameter to fetch updated availability <strong>after a meeting has already been booked</strong>, for use in a reschedule flow.</p>\n</li>\n<li><p>This returns updated availability for the meeting’s associated meeting type and host(s).</p>\n</li>\n<li><p>When <code>meetingId</code> is provided, <code>token</code> and <code>linkId</code> must not be included.</p>\n</li>\n</ul>\n</li>\n</ul>\n<hr />\n<h2 id=\"response-body-parameters\">Response Body Parameters</h2>\n<p>The response structure varies depending on whether the request used <code>token</code>, <code>linkId</code>, or <code>meetingId</code>.</p>\n<h3 id=\"top-level-properties\">Top-Level Properties</h3>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Type</th>\n<th>Description</th>\n<th>When Returned</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>calendarEvent</code></td>\n<td>object</td>\n<td>Details of the existing scheduled event (id, title, scheduledTime, attendees, status, organizer).</td>\n<td><strong>Reschedule flow only</strong> (<code>meetingId</code>)</td>\n</tr>\n<tr>\n<td><code>meeting</code></td>\n<td>object</td>\n<td>Meeting metadata (name, duration, required form fields, styling, etc.).</td>\n<td>All flows</td>\n</tr>\n<tr>\n<td><code>pageInfo</code></td>\n<td>object</td>\n<td>Page-level metadata including hosts and booking behavior flags.</td>\n<td>All flows</td>\n</tr>\n<tr>\n<td><code>userIdToInfoMap</code></td>\n<td>object</td>\n<td>Map of user ID → user scheduling metadata (name, email, timezone, phone, conference link).</td>\n<td>All flows</td>\n</tr>\n<tr>\n<td><code>availability</code></td>\n<td>object</td>\n<td>Available time slots and host index mapping.</td>\n<td>All flows</td>\n</tr>\n</tbody>\n</table>\n</div><h3 id=\"pageinfo-properties\"><code>pageInfo</code> Properties</h3>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Type</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>displayAllPoolAvailability</code></td>\n<td>boolean or <code>null</code></td>\n<td>⚠️ Always check <code>displayAllPoolAvailability</code> before booking.  <br />If <code>true</code>, use <strong>POST</strong> <code>/v1/round-robin-meeting</code> booking endpoint.  <br />If <code>false</code>, use <strong>POST</strong> <code>/v1/meeting</code> booking endpoint</td>\n</tr>\n<tr>\n<td><code>userIds</code></td>\n<td>string[]</td>\n<td>Represents <strong>defined hosts</strong> for the meeting. If <code>userIds</code> is empty, this indicates a pooled availability where the host has not been selected. In this case, the selected time slot determines the host assignment.</td>\n</tr>\n<tr>\n<td><code>nonSFDCUserIds</code></td>\n<td>string[]</td>\n<td>IDs for non-SFDC users included in scheduling (group links only).</td>\n</tr>\n<tr>\n<td><code>prefillFields</code></td>\n<td>object</td>\n<td>Prospect values used to pre-populate the booking form (First Name, Email, etc.).</td>\n</tr>\n</tbody>\n</table>\n</div><h3 id=\"meeting-object\"><code>meeting</code> Object</h3>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Type</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>name</code></td>\n<td>string</td>\n<td>Display name of the meeting type.</td>\n</tr>\n<tr>\n<td><code>duration</code></td>\n<td>object</td>\n<td>Duration metadata (<code>unit</code>, <code>value</code>).</td>\n</tr>\n<tr>\n<td><code>formFields</code></td>\n<td>object[]</td>\n<td>Fields required to book the meeting.</td>\n</tr>\n<tr>\n<td><code>description</code></td>\n<td>string</td>\n<td>Meeting description shown to the prospect.</td>\n</tr>\n<tr>\n<td><code>redirectURL</code></td>\n<td>string</td>\n<td>Post-booking redirect URL (may be empty).</td>\n</tr>\n<tr>\n<td><code>internalName</code></td>\n<td>string</td>\n<td>Internal meeting type identifier.</td>\n</tr>\n<tr>\n<td><code>pageStyle</code></td>\n<td>object</td>\n<td>Styling metadata (e.g., <code>styleColor</code>).</td>\n</tr>\n<tr>\n<td><code>logo</code></td>\n<td>string</td>\n<td>URL or base64 logo string</td>\n</tr>\n</tbody>\n</table>\n</div><h3 id=\"availability-object\"><code>availability</code> Object</h3>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Type</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>indexToUserIdMap</code></td>\n<td>object</td>\n<td>Maps numeric index → user ID.</td>\n</tr>\n<tr>\n<td><code>timeSlots</code></td>\n<td>object[]</td>\n<td>List of available time windows.</td>\n</tr>\n</tbody>\n</table>\n</div><h3 id=\"timeslots-structure\"><code>timeSlots</code> Structure</h3>\n<div class=\"click-to-expand-wrapper is-table-wrapper\"><table>\n<thead>\n<tr>\n<th>Property</th>\n<th>Type</th>\n<th>Description</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td><code>start_time</code></td>\n<td>number</td>\n<td>Start time (Unix timestamp in milliseconds).</td>\n</tr>\n<tr>\n<td><code>end_time</code></td>\n<td>number</td>\n<td>End time (Unix timestamp in milliseconds).</td>\n</tr>\n<tr>\n<td><code>users</code></td>\n<td>number[]</td>\n<td>Array of indices referencing <code>indexToUserIdMap</code>.</td>\n</tr>\n</tbody>\n</table>\n</div>",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "v1",
+                "scheduling",
+                "fetch-availability"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<object>",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e772b18c-b31a-4831-8bd1-beff4ecdced1",
+              "name": "Successful response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "v1",
+                    "scheduling",
+                    "fetch-availability"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"token\": \"/31AvS7OmROG0U3f1iR1cg/ouvG3T57T0674o0FfVNEDe1oTP0eMWylkgnOmZ7erwPy5Llz+7tYkxuJbyff9PUYdVgKrPk8hkkWlyj6vqa1/Hi3b/ISC9VT2CbG0/vShqEBzU+4MuQv5+0+xCMdnR6i3MK4uwlMK9p7lST6y1FZydHE+VsFj9eZPOxWTKB0lZ5IbFZNJbuvAiA+EJKCPdXw24Z1myG/371ckdjrgwDhFYjGdfXqRRbOQbnyWmXqgjKndHhcwuM4Zn0Qq45+BUnnjKZjyG32qEJaJWLlGQozGQQukcUqupMCzSIyuUgrqpWqFALGbwjf+sYWarqrw/+zKf2n9Jt14/anXkxw1mDWjTVAfnX3PH+XJwIbb/A6mWHe1AjTBtol1M+/6qCWZQwSLrBOiQuO7ySw+Y+F+Y1cfceorE1S6NajM/i7483q5RyMJFsugpiX//KCwBPUIBcP0zola1Uk2KgKc7K03Cq787j5Rlf9yBLs8Z5o2BgT1bY/DqUrTmgOpbIbExnZRX+vltzDQEmIqxsB1kAoC9BbXlWyRsgefyL2Z7nKPeKDxu0FCPO69vMt9AIcmK4TOZQ==\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "\"\"",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.leandata.com",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "62c2195f-3cc8-4244-816d-c889a0f4913c",
+    "name": "LeanData BookIt 🗓️ Availability 🗓️ Availability 🗓️ Availability API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.",
+      "type": "text/plain"
+    }
+  }
+}
