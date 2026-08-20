@@ -34,6 +34,22 @@ tags:
   - Account Based Marketing
   - Buying Groups
   - Signal Orchestration
+  - Go-To-Market
+  - CRM
+  - AppExchange
+tags_raw:
+  - Revenue Operations
+  - Lead Routing
+  - Lead to Account Matching
+  - Salesforce
+  - Sales Engagement
+  - Sales Productivity
+  - Marketing Operations
+  - Scheduling
+  - Meeting Booking
+  - Account Based Marketing
+  - Buying Groups
+  - Signal Orchestration
   - Go to Market
   - RevOps
   - GTM
@@ -81,6 +97,8 @@ apis:
   humanURL: https://docs.leandata.com
   baseURL: https://api.leandata.com
   tags:
+  - Availability
+  tags_raw:
   - 🗓️ Availability
   properties:
   - type: OpenAPI
