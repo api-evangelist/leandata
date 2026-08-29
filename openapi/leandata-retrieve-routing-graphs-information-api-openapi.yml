@@ -1,7 +1,7 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: LeanData BookIt 🗓️ Availability 🗓️ Availability Retrieve Routing Graphs Information API
-  description: Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.
+  title: LeanData Graph Retrieve Routing Graphs Information API
+  description: Run LeanData One Time Routing and fetch routing graph metadata to power custom orchestration solutions and integrations.
   version: 1.0.0
 servers:
 - url: https://api.leandata.com

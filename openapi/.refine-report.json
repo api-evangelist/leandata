@@ -1,30 +1,40 @@
 {
   "provider": "leandata",
   "sources": [
-    "leandata-availability-api-openapi.yml",
-    "leandata-legacy-still-supported-api-openapi.yml",
-    "leandata-matching-api-openapi.yml",
-    "leandata-meetings-create-api-openapi.yml",
-    "leandata-meetings-manage-api-openapi.yml",
-    "leandata-meetings-retrieve-api-openapi.yml",
-    "leandata-one-time-routing-api-openapi.yml",
-    "leandata-retrieve-routing-graphs-information-api-openapi.yml",
-    "leandata-scheduling-inputs-api-openapi.yml"
+    "_original/leandata-bookit-openapi.yml",
+    "_original/leandata-graph-openapi.yml",
+    "_original/leandata-matching-openapi.yml"
   ],
   "outputs": [
-    "leandata-availability-api-openapi.yml",
     "leandata-legacy-still-supported-api-openapi.yml",
-    "leandata-matching-api-openapi.yml",
     "leandata-meetings-create-api-openapi.yml",
     "leandata-meetings-manage-api-openapi.yml",
     "leandata-meetings-retrieve-api-openapi.yml",
+    "leandata-availability-api-openapi.yml",
+    "leandata-scheduling-inputs-api-openapi.yml",
     "leandata-one-time-routing-api-openapi.yml",
     "leandata-retrieve-routing-graphs-information-api-openapi.yml",
-    "leandata-scheduling-inputs-api-openapi.yml"
+    "leandata-matching-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (3 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "leandata-bookit-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "leandata-graph-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "leandata-matching-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "leandata-matching-openapi.yml: declared missing tag: Matching"
+  ],
+  "skipped": [
+    "leandata-availability-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-legacy-still-supported-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-matching-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-meetings-create-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-meetings-manage-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-meetings-retrieve-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-one-time-routing-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-retrieve-routing-graphs-information-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "leandata-scheduling-inputs-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

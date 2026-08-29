@@ -1,10 +1,10 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: LeanData BookIt 🗓️ Availability 🗓️ Availability Matching API
-  description: Programmatic scheduling, availability lookup, and meeting management for the LeanData BookIt scheduling product. Power custom UIs with server-to-server access to availability, round-robin, and meeting CRUD.
+  title: LeanData and Round Robin Matching API
+  description: Real-time Salesforce-native matching and routing via the LeanData managed package Apex REST endpoint. Includes lead/contact/account matching, duplicate detection, related-record lookups, and round-robin assignment.
   version: 1.0.0
 servers:
-- url: https://api.leandata.com
+- url: https://yourinstance.my.salesforce.com
 tags:
 - name: Matching
 paths:
