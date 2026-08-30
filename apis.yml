@@ -34,7 +34,8 @@ tags:
   - Account Based Marketing
   - Buying Groups
   - Signal Orchestration
-  - Go-To-Market
+  - Go to Market
+  - GTM
   - CRM
   - AppExchange
 tags_raw:
@@ -109,7 +110,7 @@ apis:
   humanURL: https://docs.leandata.com
   baseURL: https://api.leandata.com
   tags:
-  - Availability
+  - 🗓️ Availability
   tags_raw:
   - 🗓️ Availability
   properties:
