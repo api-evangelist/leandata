@@ -14,532 +14,353 @@ paths:
       tags:
       - 📆 Meetings > Retrieve
       summary: v1/meetings
-      description: '<p>Retrieves meetings associated with a prospect’s email address. By default, the endpoint returns scheduled and canceled meetings from the time of the API call through the future. To query historical meetings, pass a <code>start</code> value in the past (optionally paired with <code>end</code>) to expand the time range backward.</p>
+      description: 'Retrieves meetings associated with a prospect’s email address. By default, the endpoint returns scheduled and canceled meetings from the time of the API call through the future. To query historical meetings, pass a start value in the past (optionally paired with end) to expand the time range backward.
 
-        <hr />
 
-        <h2 id="query-parameters">Query Parameters</h2>
+        Query Parameters
 
-        <div class="click-to-expand-wrapper is-table-wrapper"><table>
 
-        <thead>
+        Parameter
 
-        <tr>
+        Type
 
-        <th>Parameter</th>
+        Required
 
-        <th>Type</th>
+        Description
 
-        <th>Required</th>
 
-        <th>Description</th>
+        prospectEmail
 
-        </tr>
+        string
 
-        </thead>
+        Yes
 
-        <tbody>
+        The email address of the prospect whose meetings you want to retrieve.
 
-        <tr>
 
-        <td><code>prospectEmail</code></td>
+        start
 
-        <td>string</td>
+        string or number
 
-        <td>Yes</td>
+        No
 
-        <td>The email address of the prospect whose meetings you want to retrieve.</td>
+        Start of time range filter. Accepts an ISO 8601 string (YYYY-MM-DDTHH:mm:ss.sssZ) or a Unix timestamp in milliseconds.
 
-        </tr>
 
-        <tr>
+        end
 
-        <td><code>start</code></td>
+        string or number
 
-        <td>string or number</td>
+        No
 
-        <td>No</td>
+        End of time range filter. Accepts an ISO 8601 string (YYYY-MM-DDTHH:mm:ss.sssZ) or a Unix timestamp in milliseconds.
 
-        <td>Start of time range filter. Accepts an ISO 8601 string (<code>YYYY-MM-DDTHH:mm:ss.sssZ</code>) or a Unix timestamp in milliseconds.</td>
 
-        </tr>
+        status
 
-        <tr>
+        string
 
-        <td><code>end</code></td>
+        No
 
-        <td>string or number</td>
+        Filter meetings by status. Allowed values: scheduled, rescheduled,canceled.
 
-        <td>No</td>
 
-        <td>End of time range filter. Accepts an ISO 8601 string (<code>YYYY-MM-DDTHH:mm:ss.sssZ</code>) or a Unix timestamp in milliseconds.</td>
+        Time Filter Behavior
 
-        </tr>
 
-        <tr>
+        If start and/or end are provided, meetings will be filtered by their scheduled start time.
 
-        <td><code>status</code></td>
 
-        <td>string</td>
+        Both ISO 8601 format and Unix timestamp (milliseconds) are supported.
 
-        <td>No</td>
 
-        <td>Filter meetings by status. Allowed values: <code>scheduled</code>, <code>rescheduled</code>,<code>canceled</code>.</td>
+        If no time filters are provided, all meetings associated with the prospect will be returned.
 
-        </tr>
 
-        </tbody>
+        Response Body Parameters
 
-        </table>
 
-        </div><h4 id="time-filter-behavior">Time Filter Behavior</h4>
+        Note: calendarEvent fields are returned from the calendar provider. calendarEvent.status represents the provider’s event status, while bookIt.status represents LeanData’s meeting lifecycle status.
 
-        <ul>
 
-        <li><p>If <code>start</code> and/or <code>end</code> are provided, meetings will be filtered by their scheduled start time.</p>
+        Field
 
-        </li>
+        Type
 
-        <li><p>Both ISO 8601 format and Unix timestamp (milliseconds) are supported.</p>
+        Description
 
-        </li>
 
-        <li><p>If no time filters are provided, all meetings associated with the prospect will be returned.</p>
+        bookIt
 
-        </li>
+        object
 
-        </ul>
+        LeanData BookIt metadata for the meeting.
 
-        <hr />
 
-        <h2 id="response-body-parameters">Response Body Parameters</h2>
+        bookIt.status
 
-        <p><strong>Note:</strong> <code>calendarEvent</code> fields are returned from the calendar provider. <code>calendarEvent.status</code> represents the provider’s event status, while <code>bookIt.status</code> represents LeanData’s meeting lifecycle status.</p>
+        string
 
-        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+        BookIt lifecycle status (for example, scheduled, rescheduled, canceled).
 
-        <thead>
 
-        <tr>
+        calendarEvent
 
-        <th>Field</th>
+        object
 
-        <th>Type</th>
+        Calendar-provider event object (source of truth for provider-level fields like organizer, attendees, and provider status).
 
-        <th>Description</th>
 
-        </tr>
+        calendarEvent.id
 
-        </thead>
+        string
 
-        <tbody>
+        Unique identifier for the calendar event.
 
-        <tr>
 
-        <td><code>bookIt</code></td>
+        calendarEvent.title
 
-        <td>object</td>
+        string
 
-        <td>LeanData BookIt metadata for the meeting.</td>
+        Meeting title.
 
-        </tr>
 
-        <tr>
+        calendarEvent.status
 
-        <td><code>bookIt.status</code></td>
+        string
 
-        <td>string</td>
+        Calendar provider status (for example, confirmed or canceled).
 
-        <td><strong>BookIt lifecycle status</strong> (for example, <code>scheduled</code>, <code>rescheduled</code>, <code>canceled</code>).</td>
 
-        </tr>
+        calendarEvent.scheduledTime.start_time
 
-        <tr>
+        number
 
-        <td><code>calendarEvent</code></td>
+        Meeting start time (Unix epoch milliseconds).
 
-        <td>object</td>
 
-        <td>Calendar-provider event object (source of truth for provider-level fields like organizer, attendees, and provider status).</td>
+        calendarEvent.scheduledTime.end_time
 
-        </tr>
+        number
 
-        <tr>
+        Meeting end time (Unix epoch milliseconds).
 
-        <td><code>calendarEvent.id</code></td>
 
-        <td>string</td>
+        calendarEvent.organizer
 
-        <td>Unique identifier for the calendar event.</td>
+        object
 
-        </tr>
+        Organizer details from the calendar provider.
 
-        <tr>
 
-        <td><code>calendarEvent.title</code></td>
+        calendarEvent.organizer.email
 
-        <td>string</td>
+        string
 
-        <td>Meeting title.</td>
+        Organizer email address.
 
-        </tr>
 
-        <tr>
+        calendarEvent.attendees
 
-        <td><code>calendarEvent.status</code></td>
+        array
 
-        <td>string</td>
+        List of meeting attendees and their response statuses.
 
-        <td><strong>Calendar provider</strong> status (for example, <code>confirmed</code> or <code>canceled</code>).</td>
 
-        </tr>
+        calendarEvent.attendees[].email
 
-        <tr>
+        string
 
-        <td><code>calendarEvent.scheduledTime.start_time</code></td>
+        Attendee email address.
 
-        <td>number</td>
 
-        <td>Meeting start time (Unix epoch milliseconds).</td>
+        calendarEvent.attendees[].responseStatus
 
-        </tr>
+        string
 
-        <tr>
+        Attendee response status (calendar provider value, e.g. accepted, needsAction).
 
-        <td><code>calendarEvent.scheduledTime.end_time</code></td>
 
-        <td>number</td>
+        calendarEvent.attendees[].organizer
 
-        <td>Meeting end time (Unix epoch milliseconds).</td>
+        boolean
 
-        </tr>
+        Whether the attendee is the organizer (if provided by calendar provider).
 
-        <tr>
 
-        <td><code>calendarEvent.organizer</code></td>
+        calendarEvent.attendees[].self
 
-        <td>object</td>
+        boolean
 
-        <td>Organizer details from the calendar provider.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.organizer.email</code></td>
-
-        <td>string</td>
-
-        <td>Organizer email address.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees</code></td>
-
-        <td>array</td>
-
-        <td>List of meeting attendees and their response statuses.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].email</code></td>
-
-        <td>string</td>
-
-        <td>Attendee email address.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].responseStatus</code></td>
-
-        <td>string</td>
-
-        <td>Attendee response status (calendar provider value, e.g. <code>accepted</code>, <code>needsAction</code>).</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].organizer</code></td>
-
-        <td>boolean</td>
-
-        <td>Whether the attendee is the organizer (if provided by calendar provider).</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].self</code></td>
-
-        <td>boolean</td>
-
-        <td>Whether the attendee represents the authenticated calendar user (if provided by calendar provider).</td>
-
-        </tr>
-
-        </tbody>
-
-        </table>
-
-        </div>'
+        Whether the attendee represents the authenticated calendar user (if provided by calendar provider).'
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+      operationId: getV1Meetings
+      x-operation-id-source: derived
   /v1/meeting/:meetingId:
     get:
       tags:
       - 📆 Meetings > Retrieve
       summary: v1/meeting/:meetingId
-      description: '<p>Retrieves detailed information for a single meeting by its unique identifier.</p>
+      description: 'Retrieves detailed information for a single meeting by its unique identifier.
 
-        <p>Use this endpoint to:</p>
 
-        <ul>
+        Use this endpoint to:
 
-        <li><p>Power confirmation pages</p>
 
-        </li>
+        Power confirmation pages
 
-        <li><p>Support reschedule or cancellation flows</p>
 
-        </li>
+        Support reschedule or cancellation flows
 
-        <li><p>Retrieve full attendee details</p>
 
-        </li>
+        Retrieve full attendee details
 
-        </ul>
 
-        <hr />
+        Path Parameters
 
-        <h2 id="path-parameters">Path Parameters</h2>
 
-        <div class="click-to-expand-wrapper is-table-wrapper"><table>
+        Parameter
 
-        <thead>
+        Type
 
-        <tr>
+        Required
 
-        <th>Parameter</th>
+        Description
 
-        <th>Type</th>
 
-        <th>Required</th>
+        meetingId
 
-        <th>Description</th>
+        string
 
-        </tr>
+        Yes
 
-        </thead>
+        The unique identifier of the meeting to retrieve.
 
-        <tbody>
 
-        <tr>
+        Response Body Parameters
 
-        <td><code>meetingId</code></td>
 
-        <td>string</td>
+        Note: calendarEvent fields are returned from the calendar provider. calendarEvent.status represents the provider’s event status, while bookIt.status represents LeanData’s meeting lifecycle status.
 
-        <td>Yes</td>
 
-        <td>The unique identifier of the meeting to retrieve.</td>
+        Field
 
-        </tr>
+        Type
 
-        </tbody>
+        Description
 
-        </table>
 
-        </div><hr />
+        bookIt
 
-        <h2 id="response-body-parameters">Response Body Parameters</h2>
+        object
 
-        <p><strong>Note:</strong> <code>calendarEvent</code> fields are returned from the calendar provider. <code>calendarEvent.status</code> represents the provider’s event status, while <code>bookIt.status</code> represents LeanData’s meeting lifecycle status.</p>
+        LeanData BookIt metadata for the meeting.
 
-        <div class="click-to-expand-wrapper is-table-wrapper"><table>
 
-        <thead>
+        bookIt.status
 
-        <tr>
+        string
 
-        <th>Field</th>
+        BookIt lifecycle status (for example, scheduled, rescheduled, canceled).
 
-        <th>Type</th>
 
-        <th>Description</th>
+        calendarEvent
 
-        </tr>
+        object
 
-        </thead>
+        Calendar-provider event object (source of truth for provider-level fields like organizer, attendees, and provider status).
 
-        <tbody>
 
-        <tr>
+        calendarEvent.id
 
-        <td><code>bookIt</code></td>
+        string
 
-        <td>object</td>
+        Unique identifier for the calendar event.
 
-        <td>LeanData BookIt metadata for the meeting.</td>
 
-        </tr>
+        calendarEvent.title
 
-        <tr>
+        string
 
-        <td><code>bookIt.status</code></td>
+        Meeting title.
 
-        <td>string</td>
 
-        <td><strong>BookIt lifecycle status</strong> (for example, <code>scheduled</code>, <code>rescheduled</code>, <code>canceled</code>).</td>
+        calendarEvent.status
 
-        </tr>
+        string
 
-        <tr>
+        Calendar provider status (for example, confirmed or canceled).
 
-        <td><code>calendarEvent</code></td>
 
-        <td>object</td>
+        calendarEvent.scheduledTime.start_time
 
-        <td>Calendar-provider event object (source of truth for provider-level fields like organizer, attendees, and provider status).</td>
+        number
 
-        </tr>
+        Meeting start time (Unix epoch milliseconds).
 
-        <tr>
 
-        <td><code>calendarEvent.id</code></td>
+        calendarEvent.scheduledTime.end_time
 
-        <td>string</td>
+        number
 
-        <td>Unique identifier for the calendar event.</td>
+        Meeting end time (Unix epoch milliseconds).
 
-        </tr>
 
-        <tr>
+        calendarEvent.organizer
 
-        <td><code>calendarEvent.title</code></td>
+        object
 
-        <td>string</td>
+        Organizer details from the calendar provider.
 
-        <td>Meeting title.</td>
 
-        </tr>
+        calendarEvent.organizer.email
 
-        <tr>
+        string
 
-        <td><code>calendarEvent.status</code></td>
+        Organizer email address.
 
-        <td>string</td>
 
-        <td><strong>Calendar provider</strong> status (for example, <code>confirmed</code> or <code>canceled</code>).</td>
+        calendarEvent.attendees
 
-        </tr>
+        array
 
-        <tr>
+        List of meeting attendees and their response statuses.
 
-        <td><code>calendarEvent.scheduledTime.start_time</code></td>
 
-        <td>number</td>
+        calendarEvent.attendees[].email
 
-        <td>Meeting start time (Unix epoch milliseconds).</td>
+        string
 
-        </tr>
+        Attendee email address.
 
-        <tr>
 
-        <td><code>calendarEvent.scheduledTime.end_time</code></td>
+        calendarEvent.attendees[].responseStatus
 
-        <td>number</td>
+        string
 
-        <td>Meeting end time (Unix epoch milliseconds).</td>
+        Attendee response status (calendar provider value, e.g. accepted, needsAction).
 
-        </tr>
 
-        <tr>
+        calendarEvent.attendees[].organizer
 
-        <td><code>calendarEvent.organizer</code></td>
+        boolean
 
-        <td>object</td>
+        Whether the attendee is the organizer (if provided by calendar provider).
 
-        <td>Organizer details from the calendar provider.</td>
 
-        </tr>
+        calendarEvent.attendees[].self
 
-        <tr>
+        boolean
 
-        <td><code>calendarEvent.organizer.email</code></td>
-
-        <td>string</td>
-
-        <td>Organizer email address.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees</code></td>
-
-        <td>array</td>
-
-        <td>List of meeting attendees and their response statuses.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].email</code></td>
-
-        <td>string</td>
-
-        <td>Attendee email address.</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].responseStatus</code></td>
-
-        <td>string</td>
-
-        <td>Attendee response status (calendar provider value, e.g. <code>accepted</code>, <code>needsAction</code>).</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].organizer</code></td>
-
-        <td>boolean</td>
-
-        <td>Whether the attendee is the organizer (if provided by calendar provider).</td>
-
-        </tr>
-
-        <tr>
-
-        <td><code>calendarEvent.attendees[].self</code></td>
-
-        <td>boolean</td>
-
-        <td>Whether the attendee represents the authenticated calendar user (if provided by calendar provider).</td>
-
-        </tr>
-
-        </tbody>
-
-        </table>
-
-        </div>'
+        Whether the attendee represents the authenticated calendar user (if provided by calendar provider).'
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+      operationId: getV1Meeting:meetingId
+      x-operation-id-source: derived

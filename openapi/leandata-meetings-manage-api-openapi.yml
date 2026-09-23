@@ -14,55 +14,34 @@ paths:
       tags:
       - 📆 Meetings > Manage
       summary: v1/meeting/:meetingId
-      description: '<p>This endpoint is used to reschedule an existing meeting by providing a new start and end time.</p>
+      description: 'This endpoint is used to reschedule an existing meeting by providing a new start and end time.
 
-        <p>💡 The <code>:meetingId</code> path parameter should be replaced with the unique ID of the meeting you want to update.</p>
 
-        <hr />
+        💡 The :meetingId path parameter should be replaced with the unique ID of the meeting you want to update.
 
-        <h4 id="request-body-parameters">Request Body Parameters</h4>
 
-        <ul>
+        Request Body Parameters
 
-        <li><p><code>scheduledTime</code> (required) — An <strong>object</strong> that defines the selected meeting time.</p>
 
-        <ul>
+        scheduledTime (required) — An object that defines the selected meeting time.
 
-        <li><p><code>start_time</code> (required) — A <strong>number</strong> representing the meeting start time in Unix epoch milliseconds.</p>
 
-        </li>
+        start_time (required) — A number representing the meeting start time in Unix epoch milliseconds.
 
-        <li><p><code>end_time</code> (required) — A <strong>number</strong> representing the meeting end time in Unix epoch milliseconds.</p>
 
-        </li>
+        end_time (required) — A number representing the meeting end time in Unix epoch milliseconds.
 
-        <li><p><code>timezone</code> — A <strong>string</strong> in IANA format (e.g. <code>America/Los_Angeles</code>). This value is used solely for <strong>formatting</strong> the confirmation email sent to the prospect. The actual meeting time is determined using the raw timestamps.</p>
 
-        </li>
+        timezone — A string in IANA format (e.g. America/Los_Angeles). This value is used solely for formatting the confirmation email sent to the prospect. The actual meeting time is determined using the raw timestamps.
 
-        </ul>
 
-        </li>
+        Response Body Parameters
 
-        </ul>
 
-        <hr />
+        meetingId — A string representing the unique identifier for the booked meeting.
 
-        <h4 id="response-body-parameters">Response Body Parameters</h4>
 
-        <ul>
-
-        <li><p><code>meetingId</code> — A <strong>string</strong> representing the unique identifier for the booked meeting.</p>
-
-        </li>
-
-        <li><p><code>organizerEmail</code> — A <strong>string</strong> containing the email address of the assigned rep who will host the meeting.</p>
-
-        </li>
-
-        </ul>
-
-        '
+        organizerEmail — A string containing the email address of the assigned rep who will host the meeting.'
       requestBody:
         content:
           application/json:
@@ -84,17 +63,20 @@ paths:
           description: Successful response
           content:
             application/json: {}
+      operationId: patchV1Meeting:meetingId
+      x-operation-id-source: derived
     delete:
       tags:
       - 📆 Meetings > Manage
       summary: v1/meeting/:meetingId
-      description: '<p>This endpoint cancels a previously scheduled meeting. It requires only the meeting ID in the URL path—no request body is needed.</p>
+      description: 'This endpoint cancels a previously scheduled meeting. It requires only the meeting ID in the URL path—no request body is needed.
 
-        <p>A successful cancellation returns a <code>200 OK</code> status. There is no response body.</p>
 
-        '
+        A successful cancellation returns a 200 OK status. There is no response body.'
       responses:
         '200':
           description: Successful response
           content:
             application/json: {}
+      operationId: deleteV1Meeting:meetingId
+      x-operation-id-source: derived

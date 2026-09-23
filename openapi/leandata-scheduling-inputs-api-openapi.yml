@@ -14,93 +14,58 @@ paths:
       tags:
       - 🧠 Scheduling Inputs
       summary: v1/scheduling/retrieve-inputs
-      description: '<p>This endpoint returns the fields defined in your trigger node. Use this endpoint to dynamically determine what prospect data must be collected (including field types and validation rules) prior to calling the routing availability endpoint.</p>
+      description: 'This endpoint returns the fields defined in your trigger node. Use this endpoint to dynamically determine what prospect data must be collected (including field types and validation rules) prior to calling the routing availability endpoint.
 
-        <p>⚠️ <strong>Note:</strong> Routing Links Trigger Nodes are <strong>not</strong> supported.</p>
 
-        <p><strong>Common use cases:</strong></p>
+        ⚠️ Note: Routing Links Trigger Nodes are not supported.
 
-        <ul>
 
-        <li><p>Agentic scheduling: ask only for missing fields</p>
+        Common use cases:
 
-        </li>
 
-        <li><p>Dynamic UI: render required fields based on trigger configuration</p>
+        Agentic scheduling: ask only for missing fields
 
-        </li>
 
-        </ul>
+        Dynamic UI: render required fields based on trigger configuration
 
-        <hr />
 
-        <h2 id="request-body-parameters">Request Body Parameters</h2>
+        Request Body Parameters
 
-        <ul>
 
-        <li><code>nodeName</code> (required) — A <strong>string</strong> value that contains the name of your Trigger Node (in the BookIt Flowbuilder). For more information, check out the <a href="https://leandatahelp.zendesk.com/hc/en-us/articles/5987002499995-New-Prospect-Trigger-Node">Trigger Node Implementation guide</a>.</li>
+        nodeName (required) — A string value that contains the name of your Trigger Node (in the BookIt Flowbuilder). For more information, check out the Trigger Node Implementation guide.
 
-        </ul>
 
-        <hr />
+        Response Body Parameters
 
-        <h2 id="response-body-parameters">Response Body Parameters</h2>
 
-        <ul>
+        name — A string name of the requested trigger node.
 
-        <li><p><code>name</code> — A <strong>string</strong> name of the requested trigger node.</p>
 
-        </li>
+        inputs — An array of input field objects that represent the fields required for routing. Each input field object contains the following properties:
 
-        <li><p><code>inputs</code> — An <strong>array of input field objects</strong> that represent the fields required for routing. Each input field object contains the following properties:</p>
 
-        <ul>
+        ⚠️ Note: All input definitions in the inputs array are configured in the LeanData application. If any updates or changes are needed—such as adding, removing, or modifying input fields—they must be made in the corresponding configuration within LeanData. These definitions cannot be modified through the API.
 
-        <li><p>⚠️ <strong>Note:</strong> All input definitions in the <code>inputs</code> array are configured in the LeanData application. If any updates or changes are needed—such as adding, removing, or modifying input fields—they must be made in the corresponding configuration within LeanData. These definitions cannot be modified through the API.</p>
 
-        <ul>
+        name — A string that represents the unique API name of the input field. This value should be used as the key when submitting data for booking or routing requests.
 
-        <li><p><code>name</code> — A <strong>string</strong> that represents the unique API name of the input field. This value should be used as the key when submitting data for booking or routing requests.</p>
 
-        </li>
+        type — A string that represents the expected data type of the input field.
 
-        <li><p><code>type</code> — A <strong>string</strong> that represents the expected data type of the input field.</p>
 
-        <p>  Supported values include:</p>
+        Supported values include:
 
-        <ul>
 
-        <li><p><code>STRING</code> — A text value</p>
+        STRING — A text value
 
-        </li>
 
-        <li><p><code>PHONE</code> — A text value of the phone number (can include country code).</p>
+        PHONE — A text value of the phone number (can include country code).
 
-        </li>
 
-        <li><p><code>DOUBLE</code> — A numeric value (supports decimal values)</p>
+        DOUBLE — A numeric value (supports decimal values)
 
-        </li>
 
-        <li><p><code>BOOLEAN</code> — A true/false value</p>
-
-        </li>
-
-        </ul>
-
-        </li>
-
-        </ul>
-
-        </li>
-
-        </ul>
-
-        </li>
-
-        </ul>
-
-        '
+        BOOLEAN — A true/false value'
       requestBody:
         content:
           application/json:
@@ -113,3 +78,5 @@ paths:
           description: Successful response
           content:
             application/json: {}
+      operationId: postV1SchedulingRetrieveInputs
+      x-operation-id-source: derived

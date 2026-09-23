@@ -24,7 +24,8 @@
     "leandata-bookit-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
     "leandata-graph-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
     "leandata-matching-openapi.yml: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
-    "leandata-matching-openapi.yml: declared missing tag: Matching"
+    "leandata-matching-openapi.yml: declared missing tag: Matching",
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "leandata-availability-api-openapi.yml: previously refined output, superseded by openapi/_original/",
