@@ -21,6 +21,9 @@ description: >-
   public Postman collection at docs.leandata.com. Commercial offerings are tiered across Standard, Advanced,
   Premium, and Enterprise editions of Orchestration plus BookIt scheduling products and Buying Groups, with
   implementation services billed separately.
+x-docs-platform: postman
+x-docs-platform-confidence: high
+x-docs-platform-checked: 2026-10-03
 tags:
   - Revenue Operations
   - Lead Routing
