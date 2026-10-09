@@ -103,3 +103,21 @@ x-evidence:
     the three-role permission model LeanData documents for BookIt MCP (admins, reps, and external partners
     onboarded by one-time code). Endpoint and role model were confirmed against LeanData's own published
     pages before recording.
+rfc9728:
+  endpoint: https://mcp.leandata.com/mcp
+  metadata_url: https://mcp.leandata.com/.well-known/oauth-protected-resource
+  discovered_via: WWW-Authenticate resource_metadata on an anonymous POST initialize
+  fetched: '2026-09-25'
+  http_status: 200
+  content_type: application/json
+  document:
+    resource: https://mcp.leandata.com
+    authorization_servers:
+    - https://mcp.leandata.com
+    scopes_supported:
+    - admin
+    - user
+    - partner
+    - offline_access
+    bearer_methods_supported:
+    - header
