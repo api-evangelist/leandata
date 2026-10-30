@@ -1,4 +1,4 @@
-# LeanData (leandata)
+# LeanData
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,166 +64,178 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-LeanData is a Sunnyvale, California revenue orchestration platform built on the Salesforce ecosystem. The company is best known for inventing lead-to- account matching and lead routing for B2B revenue teams; its managed package on the Salesforce AppExchange has been deployed by more than 1,000 B2B companies including Uber, Palo Alto Networks, Shopify, Zoom, New Relic, Snowflake, and DocuSign. The current platform spans four product lines — Orchestration (lead/contact/account routing, deduplication, SLAs, signal workflows), BookIt (forms, handoff, and links-based scheduling), Buying Groups (multi-stakeholder pipeline and engagement), and Revenue Insights (reporting and analytics). LeanData exposes four developer APIs that wrap the platform's core capabilities — the Matching API (real-time lead / contact / account identification from external systems), the Round Robin API (advanced weighted distribution, working hours, and vacation-aware assignment), the BookIt API (scheduling inputs, availability, and meeting CRUD for custom UIs), and the Graph API (one-time routing and routing-graph metadata for custom orchestration). The Matching and Round Robin APIs are Salesforce-native and dispatched through the managed package's Apex REST endpoint at /services/apexrest/LeanData/LeanDataAPI; BookIt and Graph are hosted at api.leandata.com and authenticated via OAuth 2.0 server-to-server flows. Commercial offerings are tiered across Standard, Advanced, Premium, and Enterprise editions of Orchestration plus BookIt scheduling products and Buying Groups, with implementation services billed separately.
+LeanData is a Sunnyvale, California revenue orchestration platform built on the Salesforce ecosystem. The company is best known for inventing lead-to- account matching and lead routing for B2B revenue teams; its managed package on the Salesforce AppExchange has been deployed by more than 1,000 B2B companies including Uber, Palo Alto Networks, Shopify, Zoom, New Relic, Snowflake, and DocuSign. The current platform spans four product lines — Orchestration (lead/contact/account routing, deduplication, SLAs, signal workflows), BookIt (forms, handoff, and links-based scheduling), Buying Groups (multi-stakeholder pipeline and engagement), and Revenue Insights (reporting and analytics). LeanData exposes four developer APIs that wrap the platform's core capabilities — the Matching API (real-time lead / contact / account identification from external systems), the Round Robin API (advanced weighted distribution, working hours, and vacation-aware assignment), the BookIt API (scheduling inputs, availability, and meeting CRUD for custom UIs), and the Graph API (one-time routing and routing-graph metadata for custom orchestration). The Matching and Round Robin APIs are Salesforce-native and dispatched through the managed package's Apex REST endpoint at /services/apexrest/LeanData/LeanDataAPI, authenticated with the customer's own Salesforce OAuth 2.0 Connected App; BookIt and Graph are hosted at api.leandata.com behind AWS API Gateway and authenticated with a server-side API key in an X-Api-Key header. Since the Q2 2026 release LeanData also runs a hosted BookIt MCP server at https://mcp.leandata.com/mcp — currently labelled beta — which exposes BookIt scheduling and operational data to MCP-compatible AI clients under OAuth 2.1 with PKCE and dynamic client registration, with admin, user and partner scopes and tool visibility filtered by the caller's BookIt permission set. Developer documentation is published as a public Postman collection at docs.leandata.com. Commercial offerings are tiered across Standard, Advanced, Premium, and Enterprise editions of Orchestration plus BookIt scheduling products and Buying Groups, with implementation services billed separately.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/leandata/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/leandata/refs/heads/main/apis.yml)
+**Areas:** Revenue Operations · Lead Routing · Lead to Account Matching · Salesforce · Sales Engagement · Sales Productivity · Marketing Operations · Scheduling · Meeting Booking · Account Based Marketing · Buying Groups · Signal Orchestration
 
-## Scope
+## LeanData on APIs.io
 
-- **Type:** Index
-- **Position:** Provider
-- **Access:** 3rd-Party
+Everything profiled for LeanData is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/leandata/](https://apis.io/providers/leandata/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (9)
 
-- Revenue Operations
-- Lead Routing
-- Lead to Account Matching
-- Salesforce
-- Sales Engagement
-- Sales Productivity
-- Marketing Operations
-- Scheduling
-- Meeting Booking
-- Account Based Marketing
-- Buying Groups
-- Signal Orchestration
-- Go to Market
-- RevOps
-- GTM
-- CRM
-- AppExchange
+- [LeanData 🗓️ Availability API](https://apis.io/apis/leandata/leandata-availability-api/) — <p>The availability endpoints return meeting configuration and open time slots used to render booking pages or refresh availability. Depending on the…
+- [LeanData Legacy (still supported) API](https://apis.io/apis/leandata/leandata-legacy-still-supported-api/) — <p>This section outlines the endpoints used to retrieve scheduling data for building a custom calendaring experience. Both endpoints return the same…
+- [LeanData Matching API](https://apis.io/apis/leandata/leandata-matching-api/) — The Matching API from LeanData — 1 operation(s) for matching.
+- [LeanData 📆 Meetings > Create API](https://apis.io/apis/leandata/leandata-meetings-create-api/) — <p>Use these endpoints to finalize and book meetings after a timeslot has been selected.</p> <p>⚠️ <strong>Important:</strong> You <strong>must</strong>…
+- [LeanData 📆 Meetings > Manage API](https://apis.io/apis/leandata/leandata-meetings-manage-api/) — The 📆 Meetings > Manage API from LeanData — 1 operation(s) for 📆 meetings > manage.
+- [LeanData 📆 Meetings > Retrieve API](https://apis.io/apis/leandata/leandata-meetings-retrieve-api/) — The 📆 Meetings > Retrieve API from LeanData — 2 operation(s) for 📆 meetings > retrieve.
+- [LeanData One Time Routing API](https://apis.io/apis/leandata/leandata-one-time-routing-api/) — <p>This section describes the endpoints used to trigger 1x Routing for creating a custom orchestration experience, as well as to retrieve the status of the…
+- [LeanData Retrieve Routing Graphs Information API](https://apis.io/apis/leandata/leandata-retrieve-routing-graphs-information-api/) — <p>This section outlines the endpoints used to retrieve Routing Graphs information for building a custom orchestration experience. The endpoint returns…
+- [LeanData 🧠 Scheduling Inputs API](https://apis.io/apis/leandata/leandata-scheduling-inputs-api/) — The 🧠 Scheduling Inputs API from LeanData — 1 operation(s) for 🧠 scheduling inputs.
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-05-25
-- **Modified:** 2026-05-25
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### MCP servers (1)
 
-### LeanData Matching API
+Model Context Protocol servers that expose the API to agents.
 
-Identify Salesforce Leads, Contacts, or Accounts from external systems in real time using LeanData's industry-best matching engine. Supports matched-lead lookup, duplicate-lead detection, all-duplicate-lead retrieval, related-lead inspection, duplicate-contact detection, and account matching and related-account lookup. Operations are dispatched via the managed package's Apex REST endpoint `/services/apexrest/LeanData/LeanDataAPI` against the customer's Salesforce instance, authenticated using a Salesforce OAuth 2.0 Connected App.
+- [LeanData BookIt MCP](https://apis.io/servers/leandata/leandata-bookit-mcp/)
 
-- **Human URL:** [https://docs.leandata.com](https://docs.leandata.com)
+#### Agentic access (1)
 
-#### Tags
+Which operations an agent can call, which act, and which need a human in the loop.
 
-- Matching
-- Lead Matching
-- Contact Matching
-- Account Matching
-- Deduplication
-- Salesforce
+- [Leandata Agentic Access](https://apis.io/agentic-access/leandata/leandata-agentic-access/)
 
-#### Properties
+#### Collections (12)
 
-- [Documentation](https://docs.leandata.com)
-- [OpenAPI](openapi/leandata-matching-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/leandata-matching.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/leandata-matching.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Postman and Open Collection request collections.
 
-### LeanData Round Robin API
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability 🗓️ Availability API](https://apis.io/collections/leandata/open-leandata-availability-api/)
+- [LeanData BookIt API](https://apis.io/collections/leandata/open-leandata-bookit/)
+- [LeanData Graph API](https://apis.io/collections/leandata/open-leandata-graph/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability Legacy (still supported) API](https://apis.io/collections/leandata/open-leandata-legacy-still-supported-api/)
+- [LeanData Matching and Round Robin API](https://apis.io/collections/leandata/open-leandata-matching/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability Matching API](https://apis.io/collections/leandata/open-leandata-matching-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Create API](https://apis.io/collections/leandata/open-leandata-meetings-create-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Manage API](https://apis.io/collections/leandata/open-leandata-meetings-manage-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability 📆 Meetings > Retrieve API](https://apis.io/collections/leandata/open-leandata-meetings-retrieve-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability One Time Routing API](https://apis.io/collections/leandata/open-leandata-one-time-routing-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability Retrieve Routing Graphs Information API](https://apis.io/collections/leandata/open-leandata-retrieve-routing-graphs-information-api/)
+- [LeanData BookIt 🗓️ Availability 🗓️ Availability 🧠 Scheduling Inputs API](https://apis.io/collections/leandata/open-leandata-scheduling-inputs-api/)
 
-Assign Salesforce records using LeanData's advanced round-robin logic, including standard rotation, flexible/weighted distribution, working hours, vacation rules, and pool inspection. Also exposes one-time routing for ad-hoc record assignment. Like the Matching API, all operations are dispatched through the managed package's Apex REST endpoint `/services/apexrest/LeanData/LeanDataAPI` in the customer's Salesforce org.
+#### Overlays (9)
 
-- **Human URL:** [https://docs.leandata.com](https://docs.leandata.com)
+OpenAPI overlays, including conversational phrasing for each operation.
 
-#### Tags
+- [Leandata Availability Overlay](https://apis.io/overlays/leandata/leandata-availability-overlay/)
+- [Leandata Legacy Still Supported Overlay](https://apis.io/overlays/leandata/leandata-legacy-still-supported-overlay/)
+- [Leandata Matching Overlay](https://apis.io/overlays/leandata/leandata-matching-overlay/)
+- [Leandata Meetings Create Overlay](https://apis.io/overlays/leandata/leandata-meetings-create-overlay/)
+- [Leandata Meetings Manage Overlay](https://apis.io/overlays/leandata/leandata-meetings-manage-overlay/)
+- [Leandata Meetings Retrieve Overlay](https://apis.io/overlays/leandata/leandata-meetings-retrieve-overlay/)
+- [Leandata One Time Routing Overlay](https://apis.io/overlays/leandata/leandata-one-time-routing-overlay/)
+- [Leandata Routing Graphs Overlay](https://apis.io/overlays/leandata/leandata-routing-graphs-overlay/)
+- [Leandata Scheduling Inputs Overlay](https://apis.io/overlays/leandata/leandata-scheduling-inputs-overlay/)
 
-- Round Robin
-- Routing
-- Assignment
-- Salesforce
-- Lead Routing
+#### Security (4)
 
-#### Properties
+Authentication, trust centre, and vulnerability disclosure.
 
-- [Documentation](https://docs.leandata.com)
-- [OpenAPI](openapi/leandata-matching-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/leandata-matching.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/leandata-matching.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Leandata Authentication](https://apis.io/security/leandata/leandata-authentication/)
+- [Leandata Domain Security](https://apis.io/security/leandata/leandata-domain-security/)
+- [Leandata Trust Center](https://apis.io/security/leandata/leandata-trust-center/)
+- [Leandata Vulnerability Disclosure](https://apis.io/security/leandata/leandata-vulnerability-disclosure/)
 
-### LeanData BookIt API
+#### OAuth scopes (1)
 
-Programmatic scheduling, availability lookup, and meeting management for LeanData BookIt. Retrieve scheduling inputs, fetch raw or routed availability, create and round-robin meetings, retrieve meetings by prospect or meeting ID, patch (reschedule) and delete (cancel) meetings. Power custom booking UIs with secure server-to-server access hosted at `https://api.leandata.com/v1`. Legacy `/v1/scheduling/route`, `/v1/scheduling/retrieve-info`, and `/v1/scheduling/retrieve-modification-info` endpoints remain supported for existing integrations.
+The permissions the API asks for.
 
-- **Human URL:** [https://docs.leandata.com](https://docs.leandata.com)
+- [Leandata Scopes](https://apis.io/scopes/leandata/leandata-scopes/)
 
-#### Tags
+#### Plans and pricing (1)
 
-- Scheduling
-- Meetings
-- Availability
-- BookIt
-- Booking
+Published plans, tiers and prices.
 
-#### Properties
+- [Leandata Plans Pricing](https://apis.io/plans/leandata/leandata-plans-pricing/)
 
-- [Documentation](https://docs.leandata.com)
-- [OpenAPI](openapi/leandata-bookit-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/leandata-bookit.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/leandata-bookit.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+#### Rate limits (1)
 
-### LeanData Graph API
+Published request limits.
 
-Retrieve routing-graph metadata and trigger LeanData One Time Routing from external systems to power custom orchestration experiences. The Graph API exposes `orchestration/v1/routing-graphs` for graph discovery (trigger nodes, edges, names) and `orchestration/v1/one-time-routing` plus `orchestration/v1/one-time-routing/{jobId}` for invoking and monitoring one-time routing jobs against a Salesforce org. Hosted at `https://api.leandata.com/orchestration/v1`.
+- [Leandata Rate Limits](https://apis.io/rate-limits/leandata/leandata-rate-limits/)
 
-- **Human URL:** [https://docs.leandata.com](https://docs.leandata.com)
+#### FinOps (1)
 
-#### Tags
+What the API costs to run, by operation.
 
-- Orchestration
-- Routing
-- Graph
-- One Time Routing
+- [Leandata Finops](https://apis.io/finops/leandata/leandata-finops/)
 
-#### Properties
+## Where to find this API
 
-- [Documentation](https://docs.leandata.com)
-- [OpenAPI](openapi/leandata-graph-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
-- [Postman Collection](collections/leandata-graph.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/leandata-graph.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
-
-## Common Properties
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
 
 - [Website](https://www.leandata.com)
-- [Portal](https://docs.leandata.com)
 - [Documentation](https://docs.leandata.com)
-- [Documentation](https://api.leandatainc.com)
-- [Support Portal](https://leandatahelp.zendesk.com)
-- [Support Portal](https://support.leandata.com)
+- [Getting started](https://docs.leandata.com)
+- [API reference](https://docs.leandata.com)
+- [Pricing](https://www.leandata.com/pricing/)
+- [Sign up](https://www.leandata.com/demo-request/)
+- [Support](https://support.leandata.com)
 - [Changelog](https://leandatahelp.zendesk.com/hc/en-us/sections/360002566353-Release-Notes)
-- [Pricing](https://www.leandata.com/platform/pricing/)
-- [Plans](plans/leandata-plans-pricing.yml)
-- [Rate Limits](rate-limits/leandata-rate-limits.yml)
-- [Fin Ops](finops/leandata-finops.yml)
-- [Product](https://www.leandata.com/platform/)
-- [Product](https://www.leandata.com/platform/orchestration/)
-- [Product](https://www.leandata.com/platform/bookit/)
-- [Product](https://www.leandata.com/platform/buying-groups/)
-- [Integrations](https://www.leandata.com/platform/integrations/)
-- [Customers](https://www.leandata.com/customers/)
-- [Training](https://www.leandata.com/learning-center/)
-- [Training](https://www.leandata.com/certification/)
-- [Resources](https://www.leandata.com/resources/)
 - [Blog](https://www.leandata.com/blog/)
-- [Forum](https://www.opsstars.com/)
-- [App Exchange](https://appexchange.salesforce.com/listingDetail?listingId=a0N3000000B4HCREA3)
-- [Company](https://www.leandata.com/company/)
-- [Careers](https://www.leandata.com/careers/)
-- [Contact](https://www.leandata.com/contact/)
-- [Newsroom](https://www.leandata.com/press/)
-- [Trust Center](https://www.leandata.com/trust/)
-- [Privacy Policy](https://www.leandata.com/privacy-policy/)
-- [Terms of Service](https://www.leandata.com/terms-of-use/)
-- [LinkedIn](https://www.linkedin.com/company/leandatainc/)
-- [Twitter](https://twitter.com/leandatainc)
-- [YouTube](https://www.youtube.com/@leandatainc)
-- [GitHub Organization](https://github.com/leandata)
-- [Authentication](https://docs.leandata.com)
+- [Security](https://trust.leandata.com/?itemUid=64c9680b-ef79-4c92-baa0-13b541954bef)
+- [Compliance](https://trust.leandata.com/)
+- [Trust centre](https://trust.leandata.com/)
+- [Terms of service](https://www.leandata.com/terms-of-service/)
+- [Privacy policy](https://www.leandata.com/privacy/)
+- [GitHub](https://github.com/leandata)
+- [Status](https://status.leandata.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 61.7** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.8 |
+| Contract quality | 42.3 |
+| Contract governance | 4.5 |
+| Operational transparency | 50.0 |
+| Developer ergonomics | 61.3 |
+| Access clarity | 100.0 |
+
+**Agent readiness 52.3** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+| Pagination Ratio | na |
+| Operation Distinctiveness | — |
+
+**Regulatory alignment 45.1** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/leandata/](https://apis.io/providers/leandata/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for LeanData: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/leandata/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
